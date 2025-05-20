@@ -166,7 +166,7 @@ export const products = [
         description: 'Cà phê đen Gia Lai, đường, Espreso',
         price: 32000,
         image: [cf2],
-        category: 'cf',
+        category: 'coffee',
         subCategory: 'drink',
         size: ['S'],
         bestSeller: false

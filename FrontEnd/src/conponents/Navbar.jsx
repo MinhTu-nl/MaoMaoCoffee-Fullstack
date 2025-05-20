@@ -4,6 +4,7 @@ import { Link, NavLink } from 'react-router-dom'
 
 const Navbar = () => {
     const [visible, setVisible] = useState(false)
+
     return (
         <div className='flex items-center justify-between font-medium'>
             <Link to='/'>
