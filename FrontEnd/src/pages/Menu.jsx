@@ -5,16 +5,23 @@ import ProductItem from '../conponents/ProductItem'
 import Title from '../conponents/Title'
 
 const Menu = () => {
+    // Lấy dữ liệu từ ShopContext
     const { products, search, showSearch } = useContext(ShopContext)
+
+    // State quản lý hiển thị filter và sản phẩm đã lọc
     const [showFilter, setShowFilter] = useState(false)
     const [filterProducts, setFilterProduct] = useState([])
+
+    // State quản lý phân trang
     const [currentPage, setCurrentPage] = useState(1)
     const productsPerPage = 12
 
-    const [category, setCategory] = useState([])
-    const [subCategory, setSubCategory] = useState([])
-    const [sortType, setSortType] = useState('relavent')
+    // State quản lý filter
+    const [category, setCategory] = useState([]) // Lọc theo danh mục chính
+    const [subCategory, setSubCategory] = useState([]) // Lọc theo danh mục phụ
+    const [sortType, setSortType] = useState('relavent') // Sắp xếp sản phẩm
 
+    // Hàm xử lý chọn/bỏ chọn danh mục chính
     const toggleCategory = (e) => {
         if (category.includes(e.target.value)) {
             setCategory(prev => prev.filter(item => item != e.target.value))
@@ -23,6 +30,7 @@ const Menu = () => {
         }
     }
 
+    // Hàm xử lý chọn/bỏ chọn danh mục phụ
     const toggleSubCategory = (e) => {
         if (subCategory.includes(e.target.value)) {
             setSubCategory(prev => prev.filter(item => item != e.target.value))
@@ -31,20 +39,25 @@ const Menu = () => {
         }
     }
 
+    // Hàm áp dụng bộ lọc cho sản phẩm
     const applyFilter = () => {
         let productCopy = products.slice();
+        // Lọc theo từ khóa tìm kiếm
         if (showSearch && search) {
             productCopy = productCopy.filter(item => item.name.toLowerCase().includes(search.toLowerCase()))
         }
+        // Lọc theo danh mục chính
         if (category.length > 0) {
             productCopy = productCopy.filter(item => category.includes(item.category));
         }
+        // Lọc theo danh mục phụ
         if (subCategory.length > 0) {
             productCopy = productCopy.filter(item => subCategory.includes(item.subCategory));
         }
         setFilterProduct(productCopy)
     }
 
+    // Hàm sắp xếp sản phẩm
     const sortProducts = () => {
         let fpCopy = filterProducts.slice()
 
@@ -61,20 +74,23 @@ const Menu = () => {
         }
     }
 
+    // Effect để sắp xếp sản phẩm khi thay đổi kiểu sắp xếp
     useEffect(() => {
         sortProducts()
     }, [sortType])
 
+    // Effect để áp dụng bộ lọc khi thay đổi danh mục hoặc từ khóa tìm kiếm
     useEffect(() => {
         applyFilter()
     }, [category, subCategory, search, showSearch])
 
-    // Calculate pagination
+    // Tính toán phân trang
     const indexOfLastProduct = currentPage * productsPerPage
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage
     const currentProducts = filterProducts.slice(indexOfFirstProduct, indexOfLastProduct)
     const totalPages = Math.ceil(filterProducts.length / productsPerPage)
 
+    // Hàm xử lý chuyển trang
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber)
         window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -82,13 +98,13 @@ const Menu = () => {
 
     return (
         <div className='flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t border-[#0d1321]'>
-            {/* Filter option */}
+            {/* Phần bộ lọc bên trái */}
             <div className='min-w-60'>
                 <p onClick={() => setShowFilter(!showFilter)} className='my-2 text-xl flex items-center cursor-pointer gap-2'>FILTERS
                     <img className={`h-3 sm:hidden ${showFilter ? "rotate-90" : ""}`} src={assets.dropdown_icon} alt="" />
                 </p>
 
-
+                {/* Bộ lọc danh mục phụ */}
                 <div className={`border border-gray-300 pl-5 py-3 mt-6 ${showFilter ? "" : "hidden"} sm:block`}>
                     <p className='mb-3 text-sm font-medium'>Loại</p>
                     <div className='flex flex-col gap-2 text-sm font-light text-gray-700'>
@@ -111,7 +127,7 @@ const Menu = () => {
                     </div>
                 </div>
 
-                {/* Category */}
+                {/* Bộ lọc danh mục chính - Đồ uống */}
                 <div className={`border border-gray-300 pl-5 py-3 mt-6 ${showFilter ? "" : "hidden"} sm:block`}>
                     <p className='mb-3 text-sm font-medium'>CÁC LOẠI NƯỚC UỐNG</p>
                     <div className='flex flex-col gap-2 text-sm font-light text-[#0D1321]'>
@@ -157,6 +173,8 @@ const Menu = () => {
                         </p>
                     </div>
                 </div>
+
+                {/* Bộ lọc danh mục chính - Bánh */}
                 <div className={`border border-gray-300 pl-5 py-3 mt-6 ${showFilter ? "" : "hidden"} sm:block`}>
                     <p className='mb-3 text-sm font-medium'>CÁC LOẠI BÁNH</p>
                     <div className='flex flex-col gap-2 text-sm font-light text-[#0D1321]'>
@@ -179,8 +197,10 @@ const Menu = () => {
                     </div>
                 </div>
             </div>
-            {/* right side */}
+
+            {/* Phần hiển thị sản phẩm bên phải */}
             <div className='flex-1'>
+                {/* Tiêu đề và bộ sắp xếp */}
                 <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6'>
                     <Title text1={"MENU"} />
                     <div className='flex items-center gap-2 bg-gray-100 p-2 rounded-lg'>
@@ -196,8 +216,8 @@ const Menu = () => {
                     </div>
                 </div>
 
-                {/* Map product */}
-                <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6'>
+                {/* Hiển thị danh sách sản phẩm */}
+                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 gap-y-6'>
                     {
                         currentProducts.map((item, index) => (
                             <ProductItem key={index} id={item._id} image={item.image} name={item.name} price={item.price} category={item.category} />
@@ -205,7 +225,7 @@ const Menu = () => {
                     }
                 </div>
 
-                {/* Pagination */}
+                {/* Phân trang */}
                 {totalPages > 1 && (
                     <div className='flex justify-center items-center gap-2 mt-8'>
                         <button
