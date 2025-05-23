@@ -2,11 +2,11 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { ShopContext } from '../contexts/ShopContext'
 import { assets } from '../assets/assets'
-import RelatedProducts from '../conponents/RelatedProducts'
+import RelatedProducts from '../components/RelatedProducts'
 
 const Product = () => {
     const { productId } = useParams()
-    const { products, currency, addToCart, getPriceBySize } = useContext(ShopContext)
+    const { products, currency, addToCart } = useContext(ShopContext)
     const [productData, setProductData] = useState(false)
     const [image, setImage] = useState('')
     const [size, setSize] = useState('')
@@ -60,7 +60,7 @@ const Product = () => {
                         <img src={assets.star_dull_icon} className='w-3 5' alt="" />
                         <p className='pl-2'>122</p>
                     </div>
-                    <p className='mt-5 text-3xl font-medium'>{getPriceBySize(productData, size)} {currency}</p>
+                    <p className='mt-5 text-3xl font-medium'>{productData.price} {currency}</p>
                     <p className='mt-5 text-gray-500 md:w-4/5'>{productData.description}</p>
                     <div className='flex flex-col gap-4 my-8'>
                         <p>Chọn kích cỡ</p>

@@ -1,22 +1,17 @@
 import { createContext, useEffect, useState } from "react";
 import { products } from '../assets/assets'
 import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 
 export const ShopContext = createContext()
 
 const ShopContextProvider = (props) => {
     const currency = 'VNĐ'
-    const devivery_fee = 30000
+    const delivery_fee = 30000
     const [search, setSearch] = useState('')
     const [showSearch, setShowSearch] = useState(false)
     const [cartItems, setCartItems] = useState({})
-
-    const getPriceBySize = (product, size) => {
-        if (product.price && typeof product.price === 'object') {
-            return product.price[size] || product.price.M; // Default to M size if size not found
-        }
-        return product.price; // Return original price if no size-based pricing
-    }
+    const navigrate = useNavigate()
 
     const addToCart = async (itemId, size) => {
         if (!size) {
@@ -57,11 +52,35 @@ const ShopContextProvider = (props) => {
         return totalCount
     }
 
+    const getCartAmount = () => {
+        let totalAmount = 0
+
+        for (const items in cartItems) {
+            let itemInfo = products.find((products) => products._id === items)
+            for (const item in cartItems[items]) {
+                try {
+                    if (cartItems[items][item] > 0) {
+                        totalAmount += itemInfo.price * cartItems[items][item]
+                    }
+                } catch (e) {
+                    console.log(e)
+                }
+            }
+        }
+        return totalAmount
+    }
+
+    const updateQuantily = async (itemId, size, quantily) => {
+        let cartData = structuredClone(cartItems);
+        cartData[itemId][size] = quantily
+        setCartItems(cartData)
+    }
+
     const value = {
-        products, currency, devivery_fee,
+        products, currency, delivery_fee,
         search, setSearch, showSearch, setShowSearch,
         cartItems, setCartItems, addToCart, getCartCount,
-        getPriceBySize,
+        updateQuantily, getCartAmount, navigrate
     }
 
     return (

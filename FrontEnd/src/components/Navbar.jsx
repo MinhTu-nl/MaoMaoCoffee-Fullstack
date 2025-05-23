@@ -19,18 +19,18 @@ const Navbar = () => {
                 <img src={assets.LOGO2} className='w-36' />
             </Link>
 
-            <ul className='hidden sm:flex gap-5 text-sm text-[var(--blue-dark)] font-bold'>
+            <ul className='hidden sm:flex gap-5 text-sm text-[#0D1321]-xl font-bold'>
                 <NavLink to='/' className="flex flex-col items-center gap-1">
-                    <p>HOME</p> <hr className='w-2/4 h-[1.5px] bg-blue-900 hidden' />
+                    <p>HOME</p> <hr className='w-2/4 h-[1.5px] bg-[#0D1321] hidden' />
                 </NavLink>
                 <NavLink to='/About' className="flex flex-col items-center gap-1">
-                    <p>ABOUT</p> <hr className='w-2/4 h-[1.5px] bg-blue-900 hidden' />
+                    <p>ABOUT</p> <hr className='w-2/4 h-[1.5px] bg-[#0D1321] hidden' />
                 </NavLink>
                 <NavLink to='/Menu' className="flex flex-col items-center gap-1">
-                    <p>MENU</p> <hr className='w-2/4 h-[1.5px] bg-blue-900 hidden' />
+                    <p>MENU</p> <hr className='w-2/4 h-[1.5px] bg-[#0D1321] hidden' />
                 </NavLink>
                 <NavLink to='/Contact' className="flex flex-col items-center gap-1">
-                    <p>CONTACT</p> <hr className='w-2/4 h-[1.5px] bg-blue-900 hidden' />
+                    <p>CONTACT</p> <hr className='w-2/4 h-[1.5px] bg-[#0D1321] hidden' />
                 </NavLink>
                 {/* <NavLink to='/' className="flex flex-col items-center gap-1">
                     <p>HOME</p> <hr className='w-2/4 h-[1.5px] bg-black-900 hidden' />

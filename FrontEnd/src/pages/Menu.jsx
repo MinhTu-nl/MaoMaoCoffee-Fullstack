@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { ShopContext } from '../contexts/ShopContext'
 import { assets } from '../assets/assets'
-import ProductItem from '../conponents/ProductItem'
-import Title from '../conponents/Title'
+import ProductItem from '../components/ProductItem'
+import Title from '../components/Title'
 
 const Menu = () => {
     // Lấy dữ liệu từ ShopContext

@@ -1,6 +1,6 @@
 import React from 'react'
-import NewDrink from '../conponents/NewDrink'
-import BestSeller from '../conponents/BestSeller'
+import NewDrink from '../components/NewDrink'
+import BestSeller from '../components/BestSeller'
 
 const Home = () => {
     return (
