@@ -109,22 +109,22 @@ export const products = [
         _id: 'coldbrew5',
         name: 'CÀ PHÊ SỮA',
         description: 'Cà phê Coldbrew, Sữa đặc, Richs',
-        price: 47000,
+        price: 43000,
         image: [cb1],
         category: 'coldbrew',
         subCategory: 'drink',
-        size: ['M'],
+        size: ['S', 'M', 'L'],
         bestSeller: true
     },
     {
         _id: 'coldbrew1',
         name: 'CÀ PHÊ VỊ VẢI',
         description: 'Cà phê Coldbrew, Syrup vải',
-        price: 45000,
+        price: 43000,
         image: [cb2],
         category: 'coldbrew',
         subCategory: 'drink',
-        size: ['M'],
+        size: ['S', 'M', 'L'],
         bestSeller: false
     },
     {
@@ -690,3 +690,11 @@ export const products = [
         bestSeller: false
     },
 ]
+
+// Add helper function to get price by size
+export const getPriceBySize = (product, size) => {
+    if (product.price && typeof product.price === 'object') {
+        return product.price[size] || product.price.M; // Default to M size if size not found
+    }
+    return product.price; // Return original price if no size-based pricing
+}
