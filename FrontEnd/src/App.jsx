@@ -1,6 +1,6 @@
 import React from 'react'
 import Navbar from './components/Navbar'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import Home from './pages/Home'
 import About from './pages/About';
 import Menu from './pages/Menu';
@@ -16,13 +16,15 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import Order from './pages/Order';
 
-
-
 const App = () => {
+  const location = useLocation();
+  const hideFooterPaths = ['/Login'];
+  const hideShow = !hideFooterPaths.includes(location.pathname);
+
   return (
     <div className='px-4 sm:px-[5vw] md:px-[7vm] lg:px-[9vm]'>
       <ToastContainer />
-      <Navbar />
+      {hideShow && <Navbar />}
       <SearchBar />
       <Routes>
         <Route path='/' element={<Home />} />
@@ -34,9 +36,8 @@ const App = () => {
         <Route path='/Login' element={<Login />} />
         <Route path='/Contact' element={<Contact />} />
         <Route path='/Order' element={<Order />} />
-
       </Routes>
-      <Footer />
+      {hideShow && <Footer />}
     </div>
   )
 }

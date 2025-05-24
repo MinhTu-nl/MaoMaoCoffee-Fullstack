@@ -1,6 +1,7 @@
 import LOGO from './LOGO.png'
 import LOGO2 from './LOGO2.png'
 import cart_icon from "./cart_icon.png"
+import cart from './cart2.png'
 import bin_icon from "./bin_icon.png"
 import dropdown_icon from "./dropdown_icon.png"
 import exchange_icon from './exchange_icon.png'
@@ -85,6 +86,7 @@ import ts8 from './TS08.png'
 export const assets = {
     LOGO,
     LOGO2,
+    cart,
     // hero_img,
     cart_icon,
     dropdown_icon,
