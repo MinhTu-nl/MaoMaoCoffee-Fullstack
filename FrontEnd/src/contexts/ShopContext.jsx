@@ -60,7 +60,8 @@ const ShopContextProvider = (props) => {
             for (const item in cartItems[items]) {
                 try {
                     if (cartItems[items][item] > 0) {
-                        totalAmount += itemInfo.price * cartItems[items][item]
+                        const price = typeof itemInfo.price === 'object' ? itemInfo.price[item] : itemInfo.price;
+                        totalAmount += price * cartItems[items][item]
                     }
                 } catch (e) {
                     console.log(e)

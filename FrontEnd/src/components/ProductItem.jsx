@@ -6,6 +6,15 @@ import '../../src/index.css'
 const ProductItem = ({ id, image, name, price, category }) => {
     const { currency } = useContext(ShopContext);
 
+    const getDisplayPrice = () => {
+        if (typeof price === 'object') {
+            // If price is an object, show the first available price
+            const firstSize = Object.keys(price)[0];
+            return price[firstSize];
+        }
+        return price;
+    }
+
     return (
         <div className="group w-[220px]">
             <Link
@@ -27,7 +36,7 @@ const ProductItem = ({ id, image, name, price, category }) => {
                             #{category}
                         </span>
                         <p className="text-sm font-bold text-[#0d1321]">
-                            {price} {currency}
+                            {getDisplayPrice()} {currency}
                         </p>
                     </div>
 

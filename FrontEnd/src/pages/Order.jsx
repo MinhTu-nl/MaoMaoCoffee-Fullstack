@@ -4,6 +4,15 @@ import Title from '../components/Title'
 
 const Order = () => {
     const { products, currency } = useContext(ShopContext)
+
+    const getDisplayPrice = (product, size) => {
+        if (!product || !product.price) return 0;
+        if (typeof product.price === 'object') {
+            return product.price[size] || 0;
+        }
+        return product.price;
+    }
+
     return (
         <div className='border-t pt-16'>
             <div className='text-2xl'>
@@ -18,7 +27,7 @@ const Order = () => {
                                 <div>
                                     <p className='sm:text-base font-medium'>{item.name}</p>
                                     <div className='flex items-center gap-3 text-base text-gray-700'>
-                                        <p className='text-lg'>{currency} {item.price}</p>
+                                        <p className='text-lg'>{getDisplayPrice(item, 'M')} {currency}</p>
                                         <p>Quantily: 1</p>
                                         <p>Size: M</p>
                                     </div>

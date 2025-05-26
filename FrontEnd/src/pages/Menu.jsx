@@ -61,12 +61,21 @@ const Menu = () => {
     const sortProducts = () => {
         let fpCopy = filterProducts.slice()
 
+        const getPriceForSort = (product) => {
+            if (!product || !product.price) return 0;
+            if (typeof product.price === 'object') {
+                // Lấy giá thấp nhất nếu có nhiều kích thước
+                return Math.min(...Object.values(product.price));
+            }
+            return product.price;
+        }
+
         switch (sortType) {
             case 'low-high':
-                setFilterProduct(fpCopy.sort((a, b) => (a.price - b.price)))
+                setFilterProduct(fpCopy.sort((a, b) => getPriceForSort(a) - getPriceForSort(b)))
                 break
             case 'high-low':
-                setFilterProduct(fpCopy.sort((a, b) => (b.price - a.price)))
+                setFilterProduct(fpCopy.sort((a, b) => getPriceForSort(b) - getPriceForSort(a)))
                 break
             default:
                 applyFilter();

@@ -7,32 +7,85 @@ import RelatedProducts from '../components/RelatedProducts'
 const Product = () => {
     const { productId } = useParams()
     const { products, currency, addToCart } = useContext(ShopContext)
-    const [productData, setProductData] = useState(false)
+    const [productData, setProductData] = useState(null)
     const [image, setImage] = useState('')
     const [size, setSize] = useState('')
+    const [price, setPrice] = useState(0)
 
+    /**
+     * Lấy giá của sản phẩm dựa trên kích thước được chọn
+     * @param {Object} product - Thông tin sản phẩm
+     * @param {string} selectedSize - Kích thước được chọn (S, M, L)
+     * @returns {number} Giá của sản phẩm theo kích thước
+     */
+    const getPriceForSize = (product, selectedSize) => {
+        if (!product || !product.price) return 0;
+        if (typeof product.price === 'object') {
+            return product.price[selectedSize] || 0;
+        }
+        return product.price;
+    }
+
+    /**
+     * Lấy thông tin sản phẩm và set giá trị mặc định
+     * - Set ảnh đầu tiên
+     * - Set kích thước mặc định (ưu tiên M, nếu không có thì lấy kích thước đầu tiên)
+     * - Set giá tương ứng với kích thước
+     */
     const fetchProductData = async () => {
-        products.map((item) => {
-            if (item._id === productId) {
-                setProductData(item)
-                setImage(item.image[0])
-                // Set default size to M if available
-                if (item.size && item.size.includes('M')) {
-                    setSize('M')
-                } else if (item.size && item.size.length > 0) {
-                    setSize(item.size[0])
-                }
-                return null;
+        const foundProduct = products.find(item => item._id === productId);
+        if (foundProduct) {
+            setProductData(foundProduct);
+            setImage(foundProduct.image[0]);
+
+            // Set default size and price
+            if (foundProduct.size && foundProduct.size.includes('M')) {
+                setSize('M');
+                setPrice(getPriceForSize(foundProduct, 'M'));
+            } else if (foundProduct.size && foundProduct.size.length > 0) {
+                const firstSize = foundProduct.size[0];
+                setSize(firstSize);
+                setPrice(getPriceForSize(foundProduct, firstSize));
             }
-        })
+        }
     }
 
     useEffect(() => {
-        fetchProductData()
-    }, [productId])
+        fetchProductData();
+    }, [productId]);
 
+    /**
+     * Xử lý khi người dùng thay đổi kích thước
+     * - Cập nhật kích thước mới
+     * - Cập nhật giá tương ứng với kích thước mới
+     * @param {string} newSize - Kích thước mới được chọn
+     */
+    const handleSizeChange = (newSize) => {
+        setSize(newSize);
+        setPrice(getPriceForSize(productData, newSize));
+    }
 
-    return productData ? (
+    /**
+     * Lấy giá hiển thị cho sản phẩm
+     * - Nếu giá là object (có nhiều kích thước): lấy giá đầu tiên có sẵn
+     * - Nếu giá là số: trả về giá đó
+     * @returns {number} Giá hiển thị
+     */
+    const getDisplayPrice = () => {
+        if (typeof price === 'object') {
+            const firstSize = Object.keys(price)[0];
+            return price[firstSize];
+        }
+        return price;
+    }
+
+    if (!productData) {
+        return <div className='opacity-0'></div>;
+    }
+
+    const currentPrice = getPriceForSize(productData, size);
+
+    return (
         <div className='border-t-2 pt-10 transition-opacity ease-in duration-500 placeholder-opacity-100'>
             {/* product data */}
             <div className='flex gap-12 sm:gap-12 flex-col sm:flex-row'>
@@ -60,7 +113,7 @@ const Product = () => {
                         <img src={assets.star_dull_icon} className='w-3 5' alt="" />
                         <p className='pl-2'>122</p>
                     </div>
-                    <p className='mt-5 text-3xl font-medium'>{productData.price} {currency}</p>
+                    <p className='mt-5 text-3xl font-medium'>{currentPrice} {currency}</p>
                     <p className='mt-5 text-gray-500 md:w-4/5'>{productData.description}</p>
                     <div className='flex flex-col gap-4 my-8'>
                         <p>Chọn kích cỡ</p>
@@ -68,7 +121,7 @@ const Product = () => {
                             {
                                 productData.size.map((item, index) => (
                                     <button
-                                        onClick={() => setSize(item)}
+                                        onClick={() => handleSizeChange(item)}
                                         className={`border py-2 px-4 bg-gray-100 ${item === size ? 'border-orange-500' : ''}`}
                                         key={index}
                                     >
@@ -105,9 +158,8 @@ const Product = () => {
             </div>
 
             <RelatedProducts category={productData.category} subCategory={productData.subCategory} />
-
         </div>
-    ) : <div className='opacity-0'></div>
+    );
 }
 
 export default Product
