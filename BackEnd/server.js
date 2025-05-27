@@ -5,6 +5,8 @@ import connectDB from './config/mongodb.js'
 import connectCloudinary from './config/cloudinary.js'
 
 
+import userRouter from './routes/userRoute.js'
+
 // app config
 const app = express()
 const port = process.env.PORT || 4000
@@ -14,6 +16,7 @@ connectCloudinary()
 // midlleware
 app.use(express.json())
 app.use(cors())
+app.use('/api/user', userRouter)
 
 app.get('/', (req, res) => {
     res.send('Im Minh Tú')
