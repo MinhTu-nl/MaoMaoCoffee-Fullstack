@@ -6,6 +6,7 @@ import connectCloudinary from './config/cloudinary.js'
 
 
 import userRouter from './routes/userRoute.js'
+import productRouter from './routes/productRoute.js'
 
 // app config
 const app = express()
@@ -16,7 +17,12 @@ connectCloudinary()
 // midlleware
 app.use(express.json())
 app.use(cors())
+
+//user
 app.use('/api/user', userRouter)
+
+//product
+app.use('/api/product', productRouter)
 
 app.get('/', (req, res) => {
     res.send('Im Minh Tú')
