@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Prata&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --blue-dark: #0d1321;
+  --blue-light: #00509d;
+}
+
+* {
+  font-family: Montserrat;
+}
+
+select,
+input,
+textarea {
+  border: 1px solid #0d1321;
+  outline-color: #00509d;
+  border-radius: 4px;
+}
+
+.active {
+  background-color: #9bcfff;
+  border-color: #00509d;
+}
