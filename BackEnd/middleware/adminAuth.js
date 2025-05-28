@@ -10,7 +10,9 @@ const adminAuth = (req, res, next) => {
             })
         }
         const token_decode = jwt.verify(token, process.env.JWT_SECRET)
-        if (token_decode != process.env.ADMIN_EMAIL + process.env.ADMIN_PASSWORD) {
+
+        // Kiểm tra email trong payload đã giải mã
+        if (token_decode.email !== process.env.ADMIN_EMAIL) {
             return res.json({
                 success: false,
                 message: "Not authorized login Again"

@@ -4,9 +4,9 @@ import 'dotenv/config'
 import connectDB from './config/mongodb.js'
 import connectCloudinary from './config/cloudinary.js'
 
-
 import userRouter from './routes/userRoute.js'
 import productRouter from './routes/productRoute.js'
+import adminRouter from './routes/adminRoute.js'
 
 // app config
 const app = express()
@@ -23,6 +23,9 @@ app.use('/api/user', userRouter)
 
 //product
 app.use('/api/product', productRouter)
+
+//admin
+app.use('/api/admin', adminRouter)
 
 app.get('/', (req, res) => {
     res.send('Im Minh Tú')
