@@ -18,6 +18,8 @@ import razorpay_logo from './razorpay_logo.png'
 import stripe_logo from './stripe_logo.png'
 import cross_icon from './cross_icon.png'
 
+import banner_icon from './banner_icon.png'
+
 import cb1 from './CB01.png'
 import cb2 from './CB02.png'
 import cb3 from './CB03.png'
@@ -87,6 +89,7 @@ export const assets = {
     LOGO,
     LOGO2,
     cart,
+    banner_icon,
     // hero_img,
     cart_icon,
     dropdown_icon,

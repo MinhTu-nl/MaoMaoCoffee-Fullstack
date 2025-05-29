@@ -1,11 +1,11 @@
 import React from 'react'
 
-const Order = () => {
+const User = () => {
     return (
         <div>
-            order
+            users
         </div>
     )
 }
 
-export default Order
+export default User
