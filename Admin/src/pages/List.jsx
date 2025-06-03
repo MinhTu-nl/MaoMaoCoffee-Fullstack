@@ -1,6 +1,6 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { backEndURL, currency } from '../App'
+import { backEndURL } from '../App'
 import { toast } from 'react-toastify'
 import EditProductModal from '../components/EditProductModal'
 import ProductDetailModal from '../components/ProductDetailModal'
@@ -12,7 +12,7 @@ const List = ({ token }) => {
     const [viewingProduct, setViewingProduct] = useState(null);
     const fetchList = async () => {
         try {
-            const res = await axios.get(backEndURL + `/api/product/list`)
+            const res = await axios.get(backEndURL + `/api/product/list?limit=1000`)
             console.log(res.data.data)
             if (res.data.success) {
                 setList(res.data.data)
@@ -71,7 +71,6 @@ const List = ({ token }) => {
                     product={viewingProduct}
                 />
             )}
-            <p className='text-3xl py-2 px-6 mb-4' >All Products List</p>
             <p className='text-sm text-gray-500 px-6 mb-4'>Quantity: {list.length}</p>
             <div className='flex flex-col gap-2'>
                 {/* --------------- LIST TABLE TITLE -------------- */}
@@ -92,7 +91,7 @@ const List = ({ token }) => {
                             <p>{item.category}</p>
                             <p>
                                 {Object.entries(item.price).map(([size, value]) => (
-                                    <span key={size} style={{ display: 'block' }}>{size}: {value} {currency}</span>
+                                    <span key={size} style={{ display: 'block' }}>{size}: {value}</span>
                                 ))}
                             </p>
                             <div className='flex flex-row gap-2 justify-end md:justify-center'>

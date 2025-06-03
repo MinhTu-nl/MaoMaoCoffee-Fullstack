@@ -68,14 +68,18 @@ const EditProductModal = ({ product, onClose, onSave, token }) => {
                     <textarea value={description} onChange={e => setDescription(e.target.value)} className="w-full border px-2 py-1 rounded" placeholder="Mô tả" required />
                     <div className="flex gap-2">
                         <select value={category} onChange={e => setCategory(e.target.value)} className="w-1/2 border px-2 py-1 rounded">
-                            <option value="Coffee">Coffee</option>
-                            <option value="Tea">Tea</option>
-                            <option value="Cake">Cake</option>
+                            <option value="coldbew">Coldbrew</option>
+                            <option value="coffee">Cà phê</option>
+                            <option value="tea">Trà</option>
+                            <option value="milk">Trà sữa</option>
+                            <option value="ice">Đá xay</option>
+                            <option value="croffle">Croffle</option>
+                            <option value="toast">Bánh nướng</option>
                         </select>
                         <select value={subCategory} onChange={e => setSubCategory(e.target.value)} className="w-1/2 border px-2 py-1 rounded">
-                            <option value="Drink">Drink</option>
-                            <option value="Food">Food</option>
-                            <option value="Dessert">Dessert</option>
+                            <option value="drink">Đồ uống</option>
+                            <option value="food">Món ăn</option>
+                            <option value="dessert">Tráng miệng</option>
                         </select>
                     </div>
                     <div>

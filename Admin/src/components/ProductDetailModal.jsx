@@ -48,11 +48,25 @@ const ProductDetailModal = ({ isOpen, onClose, product }) => {
                         <div className="grid grid-cols-2 gap-3">
                             <div>
                                 <h3 className="text-sm font-medium text-gray-700 mb-1">Category</h3>
-                                <p className="text-sm text-gray-600">{product.category}</p>
+                                <p className="text-sm text-gray-600">
+                                    {product.category === 'coldbew' ? 'Coldbrew' :
+                                        product.category === 'coffee' ? 'Cà phê' :
+                                            product.category === 'tea' ? 'Trà' :
+                                                product.category === 'milk' ? 'Trà sữa' :
+                                                    product.category === 'ice' ? 'Đá xay' :
+                                                        product.category === 'croffle' ? 'Croffle' :
+                                                            product.category === 'toast' ? 'Bánh nướng' :
+                                                                product.category}
+                                </p>
                             </div>
                             <div>
                                 <h3 className="text-sm font-medium text-gray-700 mb-1">Sub Category</h3>
-                                <p className="text-sm text-gray-600">{product.subCategory}</p>
+                                <p className="text-sm text-gray-600">
+                                    {product.subCategory === 'drink' ? 'Đồ uống' :
+                                        product.subCategory === 'food' ? 'Món ăn' :
+                                            product.subCategory === 'dessert' ? 'Tráng miệng' :
+                                                product.subCategory}
+                                </p>
                             </div>
                         </div>
 

@@ -130,4 +130,22 @@ const adminLogin = async (req, res) => {
     }
 }
 
-export { loginUser, registerUser, adminLogin }
+const listUsers = async (req, res) => {
+    try {
+        // Lấy tất cả users từ database, loại bỏ trường password
+        const users = await userModel.find({}, { password: 0 });
+
+        res.json({
+            success: true,
+            users
+        });
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Error fetching users'
+        });
+    }
+}
+
+export { loginUser, registerUser, adminLogin, listUsers }

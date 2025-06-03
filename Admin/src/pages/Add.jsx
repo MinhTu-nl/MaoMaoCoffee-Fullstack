@@ -11,8 +11,8 @@ const Add = ({ token }) => {
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
     const [price, setPrice] = useState({})
-    const [category, setCategory] = useState('Coffee')
-    const [subCategory, setSubCategory] = useState('Drink')
+    const [category, setCategory] = useState('coffee')
+    const [subCategory, setSubCategory] = useState('drink')
     const [sizes, setSizes] = useState([])
     const [bestseller, setBestseller] = useState(false)
 
@@ -84,11 +84,21 @@ const Add = ({ token }) => {
                 setBestseller(false)
                 setImages([null])
             } else {
-                toast.error(res.data.message)
+                toast.error(res.data.message || 'Failed to add product')
             }
         } catch (err) {
-            console.log(err)
-            toast.error("Something went wrong")
+            console.error('Error adding product:', err)
+            if (err.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                toast.error(err.response.data.message || 'Server error occurred')
+            } else if (err.request) {
+                // The request was made but no response was received
+                toast.error('No response from server. Please check your connection.')
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                toast.error(err.message || 'Something went wrong')
+            }
         }
     }
 
@@ -153,9 +163,15 @@ const Add = ({ token }) => {
                                 value={category}
                                 className="w-full px-3 py-2 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
-                                <option value="Coffee">Coffee</option>
-                                <option value="Tea">Tea</option>
-                                <option value="Cake">Cake</option>
+                                <option value='coldbew'>Coldbrew</option>
+                                <option value="coffee">Cà phê</option>
+                                <option value="tea">Trà</option>
+                                <option value='milk'>Trà sữa</option>
+                                <option value="ice">Đá xay</option>
+
+                                <option value="croffle">croffle</option>
+                                <option value="toast">Bánh nướng</option>
+
                             </select>
                         </div>
                         <div>
@@ -165,9 +181,9 @@ const Add = ({ token }) => {
                                 value={subCategory}
                                 className="w-full px-3 py-2 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
-                                <option value="Drink">Drink</option>
-                                <option value="Food">Food</option>
-                                <option value="Dessert">Dessert</option>
+                                <option value="drink">Đồ uống</option>
+                                <option value="food">Món ăn</option>
+                                <option value="dessert">Tráng miệng</option>
                             </select>
                         </div>
                     </div>
