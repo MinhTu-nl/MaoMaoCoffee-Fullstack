@@ -6,7 +6,6 @@ import connectCloudinary from './config/cloudinary.js'
 
 import userRouter from './routes/userRoute.js'
 import productRouter from './routes/productRoute.js'
-import adminRouter from './routes/adminRoute.js'
 import cartRouter from './routes/cartRoute.js'
 
 // app config
@@ -25,8 +24,6 @@ app.use('/api/user', userRouter)
 //product
 app.use('/api/product', productRouter)
 
-//admin
-app.use('/api/admin', adminRouter)
 
 //cart
 app.use('/api/cart', cartRouter)
