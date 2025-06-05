@@ -23,7 +23,19 @@ const App = () => {
 
   return (
     <div className='px-4 sm:px-[5vw] md:px-[7vm] lg:px-[9vm]'>
-      <ToastContainer />
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+
+      />
       {hideShow && <Navbar />}
       <SearchBar />
       <Routes>

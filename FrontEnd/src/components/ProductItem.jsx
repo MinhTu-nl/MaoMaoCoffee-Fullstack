@@ -3,7 +3,7 @@ import { ShopContext } from '../contexts/ShopContext'
 import { Link } from 'react-router-dom';
 import '../../src/index.css'
 
-const ProductItem = ({ id, image, name, price, category }) => {
+const ProductItem = ({ id, images, name, price, category }) => {
     const { currency } = useContext(ShopContext);
 
     const getDisplayPrice = () => {
@@ -15,6 +15,12 @@ const ProductItem = ({ id, image, name, price, category }) => {
         return price;
     }
 
+    // Kiểm tra images có tồn tại, là mảng, có phần tử và phần tử đầu tiên là chuỗi hợp lệ
+    // Sử dụng ảnh placeholder nếu không
+    const imageUrl = (images && Array.isArray(images) && images.length > 0 && typeof images[0] === 'string' && images[0].length > 0)
+        ? images[0] // Sử dụng ảnh đầu tiên nếu hợp lệ
+        : images; // Sử dụng ảnh placeholder. HÃY THAY THẾ ĐƯỜNG DẪN NÀY BẰNG ẢNH THẬT!
+
     return (
         <div className="group w-[220px]">
             <Link
@@ -24,7 +30,7 @@ const ProductItem = ({ id, image, name, price, category }) => {
                 <div className="relative w-full aspect-square overflow-hidden bg-gray-50">
                     <img
                         className="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-500"
-                        src={image[0]}
+                        src={imageUrl}
                         alt={name}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

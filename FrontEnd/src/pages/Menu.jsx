@@ -90,8 +90,11 @@ const Menu = () => {
 
     // Effect để áp dụng bộ lọc khi thay đổi danh mục hoặc từ khóa tìm kiếm
     useEffect(() => {
+        console.log('Total products from context:', products.length);
         applyFilter()
-    }, [category, subCategory, search, showSearch])
+        console.log('Filtered products:', filterProducts.length);
+        console.log('Current page products:', currentProducts.length);
+    }, [category, subCategory, search, showSearch, products])
 
     // Tính toán phân trang
     const indexOfLastProduct = currentPage * productsPerPage
@@ -153,7 +156,7 @@ const Menu = () => {
                                 type="checkbox"
                                 onChange={toggleCategory}
                                 className='w-4 h-4 rounded-full appearance-none border-2 border-gray-300 checked:bg-[#0D1321] checked:border-[#0D1321] cursor-pointer'
-                                value={"coldbrew"}
+                                value={"coldbew"}
                             /> Cold Brew
                         </p>
                         <p className='flex gap-2'>
@@ -229,7 +232,7 @@ const Menu = () => {
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 gap-y-6'>
                     {
                         currentProducts.map((item, index) => (
-                            <ProductItem key={index} id={item._id} image={item.image} name={item.name} price={item.price} category={item.category} />
+                            <ProductItem key={index} id={item._id} images={item.images} name={item.name} price={item.price} category={item.category} />
                         ))
                     }
                 </div>

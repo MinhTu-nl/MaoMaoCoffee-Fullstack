@@ -5,10 +5,10 @@ import Title from './Title'
 
 const BestSeller = () => {
     const { products } = useContext(ShopContext)
-    const [bestSeller, setBestSeller] = useState([])
+    const [bestseller, setBestSeller] = useState([])
 
     useEffect(() => {
-        const bestProduct = products.filter((item) => (item.bestSeller));
+        const bestProduct = products.filter((item) => (item.bestseller));
         setBestSeller(bestProduct.slice(0, 5))
     }, [products])
     return (
@@ -19,8 +19,8 @@ const BestSeller = () => {
             </div>
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 justify-items-center max-w-7xl mx-auto'>
                 {
-                    bestSeller.map((item, index) => (
-                        <ProductItem key={index} id={item._id} image={item.image} name={item.name} price={item.price} category={item.category} />
+                    bestseller.map((item, index) => (
+                        <ProductItem key={index} id={item._id} images={item.images} name={item.name} price={item.price} category={item.category} />
                     ))
                 }
             </div>

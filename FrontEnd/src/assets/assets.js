@@ -119,7 +119,7 @@ export const products = [
             M: 43000,
             L: 47000
         },
-        image: [cb1],
+        images: [cb1],
         category: 'coldbrew',
         subCategory: 'drink',
         size: ['S', 'M', 'L'],
@@ -134,7 +134,7 @@ export const products = [
             M: 43000,
             L: 47000
         },
-        image: [cb2],
+        images: [cb2],
         category: 'coldbrew',
         subCategory: 'drink',
         size: ['S', 'M', 'L'],
@@ -147,7 +147,7 @@ export const products = [
         price: {
             M: 43000
         },
-        image: [cb3],
+        images: [cb3],
         category: 'coldbrew',
         subCategory: 'drink',
         size: ['M'],
@@ -160,7 +160,7 @@ export const products = [
         price: {
             M: 48000
         },
-        image: [cb4],
+        images: [cb4],
         category: 'coldbrew',
         subCategory: 'drink',
         size: ['M'],
@@ -173,7 +173,7 @@ export const products = [
         price: {
             M: 48000
         },
-        image: [cb5],
+        images: [cb5],
         category: 'coldbrew',
         subCategory: 'drink',
         size: ['M'],
@@ -186,7 +186,7 @@ export const products = [
         price: {
             S: 32000
         },
-        image: [cf2],
+        images: [cf2],
         category: 'coffee',
         subCategory: 'drink',
         size: ['S'],
@@ -199,7 +199,7 @@ export const products = [
         price: {
             S: 34000
         },
-        image: [cf2],
+        images: [cf2],
         category: 'coffee',
         subCategory: 'drink',
         size: ['S'],
@@ -212,7 +212,7 @@ export const products = [
         price: {
             S: 35000
         },
-        image: [cf8],
+        images: [cf8],
         category: 'coffee',
         subCategory: 'drink',
         size: ['S'],
@@ -225,7 +225,7 @@ export const products = [
         price: {
             S: 37000
         },
-        image: [cf1],
+        images: [cf1],
         category: 'coffee',
         subCategory: 'drink',
         size: ['S'],
@@ -238,7 +238,7 @@ export const products = [
         price: {
             S: 29000
         },
-        image: [cf7],
+        images: [cf7],
         category: 'coffee',
         subCategory: 'drink',
         size: ['S'],
@@ -251,7 +251,7 @@ export const products = [
         price: {
             S: 33000
         },
-        image: [cf6],
+        images: [cf6],
         category: 'coffee',
         subCategory: 'drink',
         size: ['S'],
@@ -264,7 +264,7 @@ export const products = [
         price: {
             S: 45000
         },
-        image: [cf4],
+        images: [cf4],
         category: 'coffee',
         subCategory: 'drink',
         size: ['S'],
@@ -277,7 +277,7 @@ export const products = [
         price: {
             S: 26000
         },
-        image: [cf9],
+        images: [cf9],
         category: 'coffee',
         subCategory: 'drink',
         size: ['S'],
@@ -290,7 +290,7 @@ export const products = [
         price: {
             M: 41000
         },
-        image: [cf3],
+        images: [cf3],
         category: 'coffee',
         subCategory: 'drink',
         size: ['M'],
@@ -303,7 +303,7 @@ export const products = [
         price: {
             M: 41000
         },
-        image: [cf10],
+        images: [cf10],
         category: 'coffee',
         subCategory: 'drink',
         size: ['M'],
@@ -316,7 +316,7 @@ export const products = [
         price: {
             M: 30000
         },
-        image: [t1],
+        images: [t1],
         category: 'tea',
         subCategory: 'drink',
         size: ['M'],
@@ -329,7 +329,7 @@ export const products = [
         price: {
             M: 38000
         },
-        image: [t2],
+        images: [t2],
         category: 'tea',
         subCategory: 'drink',
         size: ['M'],
@@ -342,7 +342,7 @@ export const products = [
         price: {
             M: 38000
         },
-        image: [t3],
+        images: [t3],
         category: 'tea',
         subCategory: 'drink',
         size: ['M'],
@@ -355,7 +355,7 @@ export const products = [
         price: {
             M: 38000
         },
-        image: [t4],
+        images: [t4],
         category: 'tea',
         subCategory: 'drink',
         size: ['M'],
@@ -368,7 +368,7 @@ export const products = [
         price: {
             M: 38000
         },
-        image: [t5],
+        images: [t5],
         category: 'tea',
         subCategory: 'drink',
         size: ['M'],
@@ -381,7 +381,7 @@ export const products = [
         price: {
             L: 47000
         },
-        image: [t6],
+        images: [t6],
         category: 'tea',
         subCategory: 'drink',
         size: ['L'],
@@ -394,7 +394,7 @@ export const products = [
         price: {
             L: 40000
         },
-        image: [t7],
+        images: [t7],
         category: 'tea',
         subCategory: 'drink',
         size: ['L'],
@@ -407,7 +407,7 @@ export const products = [
         price: {
             L: 38000
         },
-        image: [t8],
+        images: [t8],
         category: 'tea',
         subCategory: 'drink',
         size: ['L'],
@@ -420,7 +420,7 @@ export const products = [
         price: {
             L: 30000
         },
-        image: [t10],
+        images: [t10],
         category: 'tea',
         subCategory: 'drink',
         size: ['L'],
@@ -433,7 +433,7 @@ export const products = [
         price: {
             M: 26000
         },
-        image: [t11],
+        images: [t11],
         category: 'tea',
         subCategory: 'drink',
         size: ['M'],
@@ -446,7 +446,7 @@ export const products = [
         price: {
             M: 37000
         },
-        image: [ts1],
+        images: [ts1],
         category: 'milk',
         subCategory: 'drink',
         size: ['M'],
@@ -459,7 +459,7 @@ export const products = [
         price: {
             M: 41000
         },
-        image: [ts2],
+        images: [ts2],
         category: 'milk',
         subCategory: 'drink',
         size: ['M'],
@@ -472,7 +472,7 @@ export const products = [
         price: {
             M: 35000
         },
-        image: [ts3],
+        images: [ts3],
         category: 'milk',
         subCategory: 'drink',
         size: ['M'],
@@ -485,7 +485,7 @@ export const products = [
         price: {
             M: 40000
         },
-        image: [ts4],
+        images: [ts4],
         category: 'milk',
         subCategory: 'drink',
         size: ['M'],
@@ -498,7 +498,7 @@ export const products = [
         price: {
             M: 45000
         },
-        image: [ts5],
+        images: [ts5],
         category: 'milk',
         subCategory: 'drink',
         size: ['M'],
@@ -511,7 +511,7 @@ export const products = [
         price: {
             M: 38000
         },
-        image: [ts6],
+        images: [ts6],
         category: 'milk',
         subCategory: 'drink',
         size: ['M'],
@@ -524,7 +524,7 @@ export const products = [
         price: {
             M: 41000
         },
-        image: [ts7],
+        images: [ts7],
         category: 'milk',
         subCategory: 'drink',
         size: ['M'],
@@ -537,7 +537,7 @@ export const products = [
         price: {
             M: 47000
         },
-        image: [ts8],
+        images: [ts8],
         category: 'milk',
         subCategory: 'drink',
         size: ['M'],
@@ -550,7 +550,7 @@ export const products = [
         price: {
             M: 67000
         },
-        image: [dx1],
+        images: [dx1],
         category: 'ice',
         subCategory: 'drink',
         size: ['M'],
@@ -563,7 +563,7 @@ export const products = [
         price: {
             M: 61000
         },
-        image: [dx2],
+        images: [dx2],
         category: 'ice',
         subCategory: 'drink',
         size: ['M'],
@@ -576,7 +576,7 @@ export const products = [
         price: {
             M: 69000
         },
-        image: [dx3],
+        images: [dx3],
         category: 'ice',
         subCategory: 'drink',
         size: ['M'],
@@ -589,7 +589,7 @@ export const products = [
         price: {
             M: 59000
         },
-        image: [dx4],
+        images: [dx4],
         category: 'ice',
         subCategory: 'drink',
         size: ['M'],
@@ -602,7 +602,7 @@ export const products = [
         price: {
             M: 59000
         },
-        image: [dx5],
+        images: [dx5],
         category: 'ice',
         subCategory: 'drink',
         size: ['M'],
@@ -615,7 +615,7 @@ export const products = [
         price: {
             M: 57000
         },
-        image: [dx6],
+        images: [dx6],
         category: 'ice',
         subCategory: 'drink',
         size: ['M'],
@@ -628,7 +628,7 @@ export const products = [
         price: {
             M: 67000
         },
-        image: [dx7],
+        images: [dx7],
         category: 'ice',
         subCategory: 'drink',
         size: ['M'],
@@ -641,7 +641,7 @@ export const products = [
         price: {
             M: 55000
         },
-        image: [dx8],
+        images: [dx8],
         category: 'ice',
         subCategory: 'drink',
         size: ['M'],
@@ -654,7 +654,7 @@ export const products = [
         price: {
             M: 57000
         },
-        image: [dx9],
+        images: [dx9],
         category: 'ice',
         subCategory: 'drink',
         size: ['M'],
@@ -667,7 +667,7 @@ export const products = [
         price: {
             M: 37000
         },
-        image: [cr1],
+        images: [cr1],
         category: 'croffle',
         subCategory: 'dessert',
         size: ['M'],
@@ -680,7 +680,7 @@ export const products = [
         price: {
             M: 47000
         },
-        image: [cr2],
+        images: [cr2],
         category: 'croffle',
         subCategory: 'dessert',
         size: ['M'],
@@ -693,7 +693,7 @@ export const products = [
         price: {
             M: 39000
         },
-        image: [cr3],
+        images: [cr3],
         category: 'croffle',
         subCategory: 'dessert',
         size: ['M'],
@@ -706,7 +706,7 @@ export const products = [
         price: {
             M: 47000
         },
-        image: [cr4],
+        images: [cr4],
         category: 'croffle',
         subCategory: 'dessert',
         size: ['M'],
@@ -719,7 +719,7 @@ export const products = [
         price: {
             M: 51000
         },
-        image: [toa1],
+        images: [toa1],
         category: 'toast',
         subCategory: 'dessert',
         size: ['M'],
@@ -732,7 +732,7 @@ export const products = [
         price: {
             M: 58000
         },
-        image: [toa2],
+        images: [toa2],
         category: 'toast',
         subCategory: 'dessert',
         size: ['M'],
@@ -745,7 +745,7 @@ export const products = [
         price: {
             M: 58000
         },
-        image: [toa3],
+        images: [toa3],
         category: 'toast',
         subCategory: 'dessert',
         size: ['M'],
@@ -758,7 +758,7 @@ export const products = [
         price: {
             M: 58000
         },
-        image: [toa4],
+        images: [toa4],
         category: 'toast',
         subCategory: 'dessert',
         size: ['M'],
@@ -771,7 +771,7 @@ export const products = [
         price: {
             M: 51000
         },
-        image: [toa5],
+        images: [toa5],
         category: 'toast',
         subCategory: 'dessert',
         size: ['M'],
@@ -784,7 +784,7 @@ export const products = [
         price: {
             M: 58000
         },
-        image: [toa6],
+        images: [toa6],
         category: 'toast',
         subCategory: 'dessert',
         size: ['M'],
@@ -797,7 +797,7 @@ export const products = [
         price: {
             M: 58000
         },
-        image: [toa7],
+        images: [toa7],
         category: 'toast',
         subCategory: 'dessert',
         size: ['M'],

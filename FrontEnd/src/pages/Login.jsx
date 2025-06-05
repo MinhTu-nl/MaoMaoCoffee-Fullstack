@@ -1,11 +1,56 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { assets } from '../assets/assets'
+import { ShopContext } from '../contexts/ShopContext'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const Login = () => {
-    const [currency, setCurrency] = useState('Đăng Ký')
-    const onSumitHandler = async (event) => {
+    const [currency, setCurrency] = useState('Đăng Nhập')
+
+    // BackEnd
+    const { token, setToken, navigate, backendURL } = useContext(ShopContext)
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [name, setName] = useState('')
+
+    const onSubmitHandler = async (event) => {
         event.preventDefault()
+        try {
+            if (currency === 'Đăng Ký') {
+                const res = await axios.post(
+                    backendURL + `/api/user/resgister`,
+                    { name, email, password }
+                )
+                console.log(res.data)
+                if (res.data.success) {
+                    setToken(res.data.success)
+                    localStorage.setItem('token', res.data.token)
+                } else {
+                    toast.error(res.data.message)
+                }
+
+            } else if (currency === "Đăng Nhập") {
+                const res = await axios.post(backendURL + `/api/user/login`, { email, password })
+                console.log(res.data)
+                if (res.data.success) {
+                    setToken(res.data.token)
+                    localStorage.setItem('token', res.data.token)
+                } else {
+                    toast.error(res.data.message)
+                }
+            }
+        } catch (e) {
+            console.log(e)
+            toast.error(e.message)
+        }
     }
+
+    useEffect(() => {
+        if (token && localStorage.getItem('token')) {
+            navigate('/')
+        }
+    }, [token])
+
 
     return (
         <div className='min-h-[80vh] flex items-center justify-center'>
@@ -16,7 +61,7 @@ const Login = () => {
                     <p className='text-gray-500 text-sm'>Chào mừng bạn đến với Mao Mao Coffee</p>
                 </div>
 
-                <form onSubmit={onSumitHandler} className='space-y-4'>
+                <form onSubmit={onSubmitHandler} className='space-y-4'>
                     {currency === 'Đăng Ký' && (
                         <div className='transform transition-all duration-300 ease-in-out'>
                             <input
@@ -24,6 +69,8 @@ const Login = () => {
                                 type='text'
                                 className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#0d1321] focus:ring-2 focus:ring-[#0d1321]/20 outline-none transition-all duration-300'
                                 placeholder='Username'
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
                             />
                         </div>
                     )}
@@ -33,6 +80,8 @@ const Login = () => {
                         className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#0d1321] focus:ring-2 focus:ring-[#0d1321]/20 outline-none transition-all duration-300'
                         placeholder='Email'
                         type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                     />
 
                     <input
@@ -40,6 +89,8 @@ const Login = () => {
                         className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#0d1321] focus:ring-2 focus:ring-[#0d1321]/20 outline-none transition-all duration-300'
                         placeholder='Mật khẩu'
                         type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                     />
 
                     <div className='flex justify-between text-sm mt-2'>

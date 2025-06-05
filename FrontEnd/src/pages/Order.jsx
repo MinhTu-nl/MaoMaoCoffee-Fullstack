@@ -5,10 +5,10 @@ import Title from '../components/Title'
 const Order = () => {
     const { products, currency } = useContext(ShopContext)
 
-    const getDisplayPrice = (product, size) => {
+    const getDisplayPrice = (product, sizes) => {
         if (!product || !product.price) return 0;
         if (typeof product.price === 'object') {
-            return product.price[size] || 0;
+            return product.price[sizes] || 0;
         }
         return product.price;
     }
@@ -23,13 +23,13 @@ const Order = () => {
                     products.slice(1, 4).map((item, index) => (
                         <div key={index} className='py-4 border-b text-gray-700 flex flex-col md:flex-row md:items-center md:justify-between gap-4' >
                             <div className='flex items-start gap-6 text-sm'>
-                                <img className='w-16 sm:w-20' src={item.image[0]} alt="" />
+                                <img className='w-16 sm:w-20' src={item.images[0]} alt="" />
                                 <div>
                                     <p className='sm:text-base font-medium'>{item.name}</p>
                                     <div className='flex items-center gap-3 text-base text-gray-700'>
                                         <p className='text-lg'>{getDisplayPrice(item, 'M')} {currency}</p>
-                                        <p>Quantily: 1</p>
-                                        <p>Size: M</p>
+                                        <p>Quantity: 1</p>
+                                        <p>Sizes: M</p>
                                     </div>
                                     <p className='mt-2'>Date: <span className='text-gray-400'>25, Jul, 2025</span></p>
                                 </div>

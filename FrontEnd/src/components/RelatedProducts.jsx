@@ -34,7 +34,7 @@ const RelatedProducts = ({ category, subCategory }) => {
                 {
                     related.map((item, index) => (
                         <div key={index} onClick={() => handleProductClick(item._id)}>
-                            <ProductItem id={item._id} image={item.image} name={item.name} price={item.price} category={item.category} />
+                            <ProductItem id={item._id} images={item.images} name={item.name} price={item.price} category={item.category} />
                         </div>
                     ))
                 }

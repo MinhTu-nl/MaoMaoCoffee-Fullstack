@@ -8,8 +8,8 @@ const Product = () => {
     const { productId } = useParams()
     const { products, currency, addToCart } = useContext(ShopContext)
     const [productData, setProductData] = useState(null)
-    const [image, setImage] = useState('')
-    const [size, setSize] = useState('')
+    const [images, setImages] = useState('')
+    const [sizes, setSizes] = useState('')
     const [price, setPrice] = useState(0)
 
     /**
@@ -36,15 +36,15 @@ const Product = () => {
         const foundProduct = products.find(item => item._id === productId);
         if (foundProduct) {
             setProductData(foundProduct);
-            setImage(foundProduct.image[0]);
+            setImages(foundProduct.images[0]);
 
             // Set default size and price
-            if (foundProduct.size && foundProduct.size.includes('M')) {
-                setSize('M');
+            if (foundProduct.sizes && foundProduct.sizes.includes('M')) {
+                setSizes('M');
                 setPrice(getPriceForSize(foundProduct, 'M'));
-            } else if (foundProduct.size && foundProduct.size.length > 0) {
-                const firstSize = foundProduct.size[0];
-                setSize(firstSize);
+            } else if (foundProduct.size && foundProduct.sizes.length > 0) {
+                const firstSize = foundProduct.sizes[0];
+                setSizes(firstSize);
                 setPrice(getPriceForSize(foundProduct, firstSize));
             }
         }
@@ -61,7 +61,7 @@ const Product = () => {
      * @param {string} newSize - Kích thước mới được chọn
      */
     const handleSizeChange = (newSize) => {
-        setSize(newSize);
+        setSizes(newSize);
         setPrice(getPriceForSize(productData, newSize));
     }
 
@@ -83,7 +83,7 @@ const Product = () => {
         return <div className='opacity-0'></div>;
     }
 
-    const currentPrice = getPriceForSize(productData, size);
+    const currentPrice = getPriceForSize(productData, sizes);
 
     return (
         <div className='border-t-2 pt-10 transition-opacity ease-in duration-500 placeholder-opacity-100'>
@@ -92,13 +92,13 @@ const Product = () => {
                 <div className='flex-1 flex flex-col-reverse gap-3 sm:flex-row'>
                     <div className='flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full'>
                         {
-                            productData.image.map((item, index) => (
+                            productData.images.map((item, index) => (
                                 <img onClick={() => setImage(item)} src={item} key={index} className='w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer' />
                             ))
                         }
                     </div>
                     <div className='w-[100%] sm:w-[80%]'>
-                        <img src={image} className='w-full h-auto' alt="" />
+                        <img src={images} className='w-full h-auto' alt="" />
                     </div>
                 </div>
 
@@ -119,10 +119,10 @@ const Product = () => {
                         <p>Chọn kích cỡ</p>
                         <div className='flex gap-2'>
                             {
-                                productData.size.map((item, index) => (
+                                productData.sizes.map((item, index) => (
                                     <button
                                         onClick={() => handleSizeChange(item)}
-                                        className={`border py-2 px-4 bg-gray-100 ${item === size ? 'border-orange-500' : ''}`}
+                                        className={`border py-2 px-4 bg-gray-100 ${item === sizes ? 'border-orange-500' : ''}`}
                                         key={index}
                                     >
                                         {item}
@@ -132,7 +132,7 @@ const Product = () => {
                         </div>
                     </div>
 
-                    <button onClick={() => addToCart(productData._id, size)} className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700'>
+                    <button onClick={() => addToCart(productData._id, sizes)} className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700'>
                         Thêm vào giỏ hàng
                     </button>
 
