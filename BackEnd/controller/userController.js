@@ -148,4 +148,33 @@ const listUsers = async (req, res) => {
     }
 }
 
-export { loginUser, registerUser, adminLogin, listUsers }
+const getUser = async (req, res) => {
+    try {
+        // Lấy user ID từ token đã được verify trong middleware
+        const userId = req.user.id;
+
+        // Tìm user trong database, chỉ lấy name và email
+        const user = await userModel.findById(userId).select('name email');
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        res.json({
+            success: true,
+            data: user
+        });
+
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Error fetching user profile'
+        });
+    }
+}
+
+export { loginUser, registerUser, adminLogin, listUsers, getUser }

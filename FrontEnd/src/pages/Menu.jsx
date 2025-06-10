@@ -14,7 +14,7 @@ const Menu = () => {
 
     // State quản lý phân trang
     const [currentPage, setCurrentPage] = useState(1)
-    const productsPerPage = 12
+    const productsPerPage = 20
 
     // State quản lý filter
     const [category, setCategory] = useState([]) // Lọc theo danh mục chính
@@ -29,6 +29,7 @@ const Menu = () => {
             setCategory(prev => [...prev, e.target.value])
         }
     }
+
 
     // Hàm xử lý chọn/bỏ chọn danh mục phụ
     const toggleSubCategory = (e) => {
@@ -112,7 +113,7 @@ const Menu = () => {
         <div className='flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t border-[#0d1321]'>
             {/* Phần bộ lọc bên trái */}
             <div className='min-w-60'>
-                <p onClick={() => setShowFilter(!showFilter)} className='my-2 text-xl flex items-center cursor-pointer gap-2'>FILTERS
+                <p onClick={() => setShowFilter(!showFilter)} className='my-2 text-xl flex items-center cursor-pointer gap-2'>BỘ LỌC
                     <img className={`h-3 sm:hidden ${showFilter ? "rotate-90" : ""}`} src={assets.dropdown_icon} alt="" />
                 </p>
 

@@ -7,6 +7,21 @@ const Order = () => {
     const { products, currency, backendURL, token } = useContext(ShopContext)
     const [orderData, setOrderData] = useState([])
 
+    // Hàm chuyển đổi trạng thái sang tiếng Việt
+    const getStatusInVietnamese = (status) => {
+        const statusMap = {
+            'Order Placed': 'Đã đặt hàng',
+            'Packing': 'Đang đóng gói',
+            'Shipped': 'Đang vận chuyển',
+            'Out for delivery': 'Đang giao hàng',
+            'Delivered': 'Đã giao hàng',
+            'Completed': 'Hoàn thành',
+            'Processing': 'Đang xử lý',
+            'Cancelled': 'Đã hủy'
+        };
+        return statusMap[status] || status;
+    }
+
     const loadOrderData = async () => {
         if (!token) { // Only fetch if token exists
             console.log("Token not available, skipping order data fetch.");
@@ -111,12 +126,12 @@ const Order = () => {
                                     {/* Order Status and Actions */}
                                     <div className='md:w-48 flex flex-col justify-between'>
                                         <div className='flex items-center gap-2 mb-4'>
-                                            <span className={`w-2 h-2 rounded-full ${item.status === 'Completed' ? 'bg-green-500' :
-                                                item.status === 'Processing' ? 'bg-blue-500' :
+                                            <span className={`w-2 h-2 rounded-full ${item.status === 'Delivered' || item.status === 'Completed' ? 'bg-green-500' :
+                                                item.status === 'Processing' || item.status === 'Packing' ? 'bg-blue-500' :
                                                     item.status === 'Cancelled' ? 'bg-red-500' :
                                                         'bg-yellow-500'
                                                 }`}></span>
-                                            <span className='text-sm text-gray-600'>{item.status || 'Unknown Status'}</span>
+                                            <span className='text-sm text-gray-600'>{getStatusInVietnamese(item.status) || 'Trạng thái không xác định'}</span>
                                         </div>
                                         <div className='space-y-3'>
                                             <div className='text-right'>

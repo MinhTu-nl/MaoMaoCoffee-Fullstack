@@ -11,10 +11,12 @@ import Login from './pages/Login';
 import Contact from './pages/Contact';
 import Footer from './components/Footer';
 import SearchBar from './components/SearchBar';
+// import ProfileModal from './components/ProfileModal';
 
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import Order from './pages/Order';
+
 
 const App = () => {
   const location = useLocation();
@@ -48,6 +50,7 @@ const App = () => {
         <Route path='/Login' element={<Login />} />
         <Route path='/Contact' element={<Contact />} />
         <Route path='/Order' element={<Order />} />
+        {/* <Route path='/Profile' element={<ProfileModal />} /> */}
       </Routes>
       {hideShow && <Footer />}
     </div>

@@ -2,9 +2,11 @@ import React, { useContext, useState } from 'react'
 import { assets } from '../assets/assets'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { ShopContext } from '../contexts/ShopContext'
+import ProfileModal from './ProfileModal'
 
 const Navbar = () => {
     const [visible, setVisible] = useState(false)
+    const [showProfileModal, setShowProfileModal] = useState(false)
     const { setShowSearch, getCartCount, navigate, token, setToken, setCartItems } = useContext(ShopContext)
 
 
@@ -21,23 +23,23 @@ const Navbar = () => {
     }
 
     return (
-        <div className='flex items-center justify-between font-medium'>
+        <div className='flex items-center justify-between'>
             <Link to='/'>
                 <img src={assets.LOGO2} className='w-36' />
             </Link>
 
-            <ul className='hidden sm:flex gap-5 text-base text-[#0D1321] font-bold'>
+            <ul className='hidden sm:flex gap-5 text-center text-[#0D1321] font-medium'>
                 <NavLink to='/' className="flex flex-col items-center gap-1">
-                    <p>HOME</p> <hr className='w-3/4 h-[2.5px] bg-[#0D1321] hidden' />
+                    <p>Trang Chủ</p> <hr className='w-3/4 h-[2.5px] bg-[#0D1321] hidden' />
                 </NavLink>
                 <NavLink to='/About' className="flex flex-col items-center gap-1">
-                    <p>ABOUT</p> <hr className='w-3/4 h-[2.5px] bg-[#0D1321] hidden' />
+                    <p>Về Chúng Tôi</p> <hr className='w-3/4 h-[2.5px] bg-[#0D1321] hidden' />
                 </NavLink>
                 <NavLink to='/Menu' className="flex flex-col items-center gap-1">
-                    <p>MENU</p> <hr className='w-3/4 h-[2.5px] bg-[#0D1321] hidden' />
+                    <p>Thực Đơn</p> <hr className='w-3/4 h-[2.5px] bg-[#0D1321] hidden' />
                 </NavLink>
                 <NavLink to='/Contact' className="flex flex-col items-center gap-1">
-                    <p>CONTACT</p> <hr className='w-3/4 h-[2.5px] bg-[#0D1321] hidden' />
+                    <p>Liên Hệ</p> <hr className='w-3/4 h-[2.5px] bg-[#0D1321] hidden' />
                 </NavLink>
                 {/* <NavLink to='/' className="flex flex-col items-center gap-1">
                     <p>HOME</p> <hr className='w-2/4 h-[1.5px] bg-black-900 hidden' />
@@ -57,9 +59,9 @@ const Navbar = () => {
                         token &&
                         <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-4'>
                             <div className='flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 text-gray-500 rounded'>
-                                <p className='cursor-pointer hover:text-black'>My Profile</p>
-                                <p onClick={() => navigate('/Order')} className='cursor-pointer hover:text-black'>Orders</p>
-                                <p onClick={logout} className='cursor-pointer hover:text-black'>Logout</p>
+                                <p onClick={() => setShowProfileModal(true)} className='cursor-pointer hover:text-black'>Hồ Sơ</p>
+                                <p onClick={() => navigate('/Order')} className='cursor-pointer hover:text-black'>Đặt Hàng</p>
+                                <p onClick={logout} className='cursor-pointer hover:text-black'>Đăng Xuất</p>
                             </div>
                         </div>
                     }
@@ -90,6 +92,8 @@ const Navbar = () => {
 
                 </div>
             </div>
+
+            <ProfileModal show={showProfileModal} handleClose={() => setShowProfileModal(false)} />
         </div>
 
 

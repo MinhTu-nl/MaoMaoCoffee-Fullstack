@@ -42,7 +42,7 @@ const Footer = () => {
                 {/* Copyright */}
                 <div className="py-4 text-center">
                     <p className="text-gray-600 text-sm">
-                        © 2024 MaoMao Coffee. All rights reserved.
+                        © 2025 MaoMao Coffee. All rights reserved.
                     </p>
                 </div>
             </div>

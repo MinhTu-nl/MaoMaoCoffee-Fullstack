@@ -11,6 +11,18 @@ const Order = ({ token }) => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
 
+    // Hàm chuyển đổi trạng thái sang tiếng Việt
+    const getStatusInVietnamese = (status) => {
+        const statusMap = {
+            'Order Placed': 'Đã đặt hàng',
+            'Packing': 'Đang đóng gói',
+            'Shipped': 'Đang vận chuyển',
+            'Out for delivery': 'Đang giao hàng',
+            'Delivered': 'Đã giao hàng'
+        };
+        return statusMap[status] || status;
+    }
+
     const fetchAllOrders = async () => {
         if (!token) {
             setError('Vui lòng đăng nhập để xem đơn hàng')
@@ -154,11 +166,11 @@ const Order = ({ token }) => {
                                     value={order.status}
                                     className='p-2 font-semibold border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
                                 >
-                                    <option value="Order Placed">Đã đặt hàng</option>
-                                    <option value="Packing">Đang đóng gói</option>
-                                    <option value="Shipped">Đang vận chuyển</option>
-                                    <option value="Out for delivery">Đang giao hàng</option>
-                                    <option value="Delivered">Đã giao hàng</option>
+                                    <option value="Order Placed">{getStatusInVietnamese('Order Placed')}</option>
+                                    <option value="Packing">{getStatusInVietnamese('Packing')}</option>
+                                    <option value="Shipped">{getStatusInVietnamese('Shipped')}</option>
+                                    <option value="Out for delivery">{getStatusInVietnamese('Out for delivery')}</option>
+                                    <option value="Delivered">{getStatusInVietnamese('Delivered')}</option>
                                 </select>
                             </div>
                         ) : null
