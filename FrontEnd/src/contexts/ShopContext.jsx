@@ -301,7 +301,6 @@ const ShopContextProvider = (props) => {
 
             if (res.data.success) {
                 setProducts(res.data.data);
-                console.log('Fetched products data:', res.data.data);
             } else {
                 toast.error(res.data.message);
             }
@@ -332,7 +331,6 @@ const ShopContextProvider = (props) => {
                 try {
                     setToken(storedToken);
                     await getUserCart();
-                    console.log('Current cart items:', cartItems);
                     const bacXiuProduct = products.find(p => p.name === 'CÀ PHÊ BẠC XỈU');
                     if (bacXiuProduct) {
                         console.log('CÀ PHÊ BẠC XỈU product data:', bacXiuProduct);

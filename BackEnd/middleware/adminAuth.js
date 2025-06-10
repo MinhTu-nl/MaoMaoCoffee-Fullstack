@@ -4,7 +4,7 @@ const adminAuth = (req, res, next) => {
     try {
         const { token } = req.headers
         if (!token) {
-            return res.json({
+            return res.status(401).json({
                 success: false,
                 message: 'Not authorized login Again'
             })
@@ -13,7 +13,7 @@ const adminAuth = (req, res, next) => {
 
         // Kiểm tra email trong payload đã giải mã
         if (token_decode.email !== process.env.ADMIN_EMAIL) {
-            return res.json({
+            return res.status(403).json({
                 success: false,
                 message: "Not authorized login Again"
             })
@@ -21,7 +21,8 @@ const adminAuth = (req, res, next) => {
         next()
     } catch (e) {
         console.log(e)
-        res.json({
+        // jwt.verify throws errors like TokenExpiredError, JsonWebTokenError
+        return res.status(401).json({
             success: false, message: e.message
         })
     }

@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom'
 
 const Sidebar = () => {
     return (
-        <div className='h-screen bg-white border-r border-gray-200 shadow-sm flex flex-col justify-between w-16 md:w-60 transition-all duration-300'>
+        <div className='h-screen-auto bg-white border-r border-gray-200 shadow-sm flex flex-col justify-between w-16 md:w-60 transition-all duration-300'>
             {/* Top: Admin title and navigation */}
             <div>
                 <div className='py-8 flex justify-center items-center border-b border-gray-200'>
