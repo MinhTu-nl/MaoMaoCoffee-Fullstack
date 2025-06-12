@@ -8,6 +8,7 @@ import userRouter from './routes/userRoute.js'
 import productRouter from './routes/productRoute.js'
 import cartRouter from './routes/cartRoutes.js'
 import orderRouter from './routes/orderRoute.js'
+import statsRouter from './routes/statsRoute.js'
 
 // app config
 const app = express()
@@ -30,6 +31,9 @@ app.use('/api/order', orderRouter)
 
 //cart
 app.use('/api/cart', cartRouter)
+
+//stats
+app.use('/api/stats', statsRouter)
 
 app.get('/', (req, res) => {
     res.send('Im Minh Tú')

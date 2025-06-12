@@ -13,6 +13,19 @@ const Sidebar = () => {
                 </div>
                 <div className='flex flex-col gap-2 p-2 md:p-4'>
                     <NavLink
+                        to={"/"}
+                        className={({ isActive }) =>
+                            `flex items-center gap-3 px-2 md:px-4 py-3 rounded-lg transition-all duration-200
+                            ${isActive
+                                ? 'bg-blue-50 text-blue-600'
+                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`
+                        }
+                    >
+                        <img className='w-6 h-6 mx-auto md:mx-0' src={assets.dashboard_icon} alt="" />
+                        <p className='font-medium hidden md:block'>Dashboard</p>
+                    </NavLink>
+
+                    <NavLink
                         to={"/add"}
                         className={({ isActive }) =>
                             `flex items-center gap-3 px-2 md:px-4 py-3 rounded-lg transition-all duration-200

@@ -1,5 +1,6 @@
 import orderModel from "../model/orderModel.js"
 import userModel from "../model/userModel.js"
+import ProductModel from "../model/productsModel.js"
 import mongoose from "mongoose"
 
 const placeOrder = async (req, res) => {
@@ -41,9 +42,18 @@ const placeOrder = async (req, res) => {
             })
         }
 
+        // Fetch product details for each item to include category
+        const itemsWithCategory = await Promise.all(items.map(async (item) => {
+            const product = await ProductModel.findById(item.productId); // Assuming item has productId
+            if (!product) {
+                throw new Error(`Product with ID ${item.productId} not found`);
+            }
+            return { ...item, category: product.category, name: product.name, price: product.price.get(item.size || 'M'), images: product.images };
+        }));
+
         const orderData = {
             userId,
-            items,
+            items: itemsWithCategory,
             address,
             amount,
             paymentMethod: 'COD',

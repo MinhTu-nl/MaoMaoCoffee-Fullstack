@@ -9,6 +9,7 @@ import Order from './pages/Order'
 import Navbar from './components/Navbar'
 import Sidebar from './components/Sidebar'
 import User from './pages/User'
+import Dashboard from './components/Dashboard'
 
 export const backEndURL = import.meta.env.VITE_BACKEND_URL
 export const currency = 'VNĐ'
@@ -38,7 +39,7 @@ const App = () => {
               <Sidebar />
               <div className='w-[75%] mx-auto ml-[max(5vw, 25px)] my-8 text-gray-600 text-base'>
                 <Routes>
-                  <Route path='/' element={<Navigate to="/list" replace />} />
+                  <Route path='/' element={<Dashboard />} />
                   <Route path='/add' element={<Add token={token} />} />
                   <Route path='/list' element={<List token={token} />} />
                   <Route path='/orders' element={<Order token={token} />} />
@@ -46,10 +47,8 @@ const App = () => {
                 </Routes>
               </div>
             </div>
-
           </>
       }
-
     </div>
   )
 }
