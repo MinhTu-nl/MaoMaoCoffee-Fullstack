@@ -2,10 +2,15 @@ import React, { useContext, useEffect, useState } from 'react'
 import { ShopContext } from '../contexts/ShopContext'
 import Title from '../components/Title'
 import axios from 'axios'
+import { toast } from 'react-toastify'
+
 
 const Order = () => {
     const { products, currency, backendURL, token } = useContext(ShopContext)
     const [orderData, setOrderData] = useState([])
+    const [isCancelling, setIsCancelling] = useState(false)
+    const [showConfirmModal, setShowConfirmModal] = useState(false)
+    const [orderToCancelId, setOrderToCancelId] = useState(null)
 
     // Hàm chuyển đổi trạng thái sang tiếng Việt
     const getStatusInVietnamese = (status) => {
@@ -30,6 +35,7 @@ const Order = () => {
         try {
             const res = await axios.get(backendURL + `/api/order/user`, { headers: { Authorization: 'Bearer ' + token } })
             if (res.data.success) {
+                console.log('Fetched orders raw data:', res.data.data.orders); // Log raw data
                 let allOrdersItem = []
                 res.data.data.orders.map((order) => {
                     order.items.map((item) => {
@@ -49,12 +55,14 @@ const Order = () => {
                             ...currentItem, // Include all properties from currentItem (combined backend item + productDetail)
                             lineItemTotal: lineItemTotal, // Store the calculated total for this item
                             // Add order-level details (override if exist in item/productDetail)
+                            orderId: order._id,
                             status: order.status,
                             payment: order.payment,
                             paymentMethod: order.paymentMethod,
                             date: order.date,
                         };
                         allOrdersItem.push(orderItem);
+                        console.log('Created orderItem:', orderItem); // Log each created orderItem
                     });
                 });
                 setOrderData(allOrdersItem);
@@ -94,6 +102,48 @@ const Order = () => {
         return 0; // Default to 0 if price is invalid or null
     };
 
+    // Hàm kiểm tra xem đơn hàng có thể hủy được không
+    const canCancelOrder = (status) => {
+        const nonCancellableStatuses = ["Delivered", "Shipped", "Processing", "Cancelled"]
+        return !nonCancellableStatuses.includes(status)
+    }
+
+    // Hàm hủy đơn hàng
+    const handleCancelOrder = async (orderId) => {
+        setOrderToCancelId(orderId)
+        setShowConfirmModal(true)
+    }
+
+    // Hàm xác nhận hủy đơn hàng từ modal
+    const confirmCancellation = async () => {
+        setShowConfirmModal(false)
+        if (!orderToCancelId) return
+
+        setIsCancelling(true)
+        console.log('Attempting to cancel order with ID:', orderToCancelId);
+        try {
+            const res = await axios.delete(backendURL + `/api/order/${orderToCancelId}`, {
+                headers: { Authorization: 'Bearer ' + token }
+            })
+            if (res.data.success) {
+                toast.success('Hủy đơn hàng thành công')
+                loadOrderData()
+            }
+        } catch (error) {
+            console.error("Error cancelling order:", error)
+            toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi hủy đơn hàng')
+        } finally {
+            setIsCancelling(false)
+            setOrderToCancelId(null)
+        }
+    }
+
+    // Hàm từ chối hủy đơn hàng từ modal
+    const cancelCancellation = () => {
+        setShowConfirmModal(false)
+        setOrderToCancelId(null)
+    }
+
     return (
         <div className='min-h-screen bg-white'>
             <div className='max-w-4xl mx-auto px-4 py-12'>
@@ -117,7 +167,7 @@ const Order = () => {
                                             <h3 className='text-lg font-medium text-gray-900 mb-2'>{item.name || 'Unknown Product'}</h3>
                                             <div className='space-y-1 text-sm text-gray-600'>
                                                 <p>Quantity: {item.quantity || '-'}</p>
-                                                <p>Size: {item.sizes || '-'}</p>
+                                                <p>Size: {item.sizes}</p>
                                                 <p>Date: {item.date ? new Date(item.date).toLocaleDateString('vi-VN') : '-'}</p>
                                             </div>
                                         </div>
@@ -140,12 +190,23 @@ const Order = () => {
                                                 </p>
                                                 <p className='text-sm text-gray-500'>{item.paymentMethod || '-'}</p>
                                             </div>
-                                            <button
-                                                onClick={loadOrderData}
-                                                className='w-full px-4 py-2 text-sm text-gray-700 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors duration-200'
-                                            >
-                                                Theo Dõi Đơn Hàng
-                                            </button>
+                                            <div className='flex gap-2'>
+                                                <button
+                                                    onClick={loadOrderData}
+                                                    className='flex-1 px-4 py-2 text-sm text-gray-700 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors duration-200'
+                                                >
+                                                    Theo Dõi Đơn Hàng
+                                                </button>
+                                                {canCancelOrder(item.status) && (
+                                                    <button
+                                                        onClick={() => handleCancelOrder(item.orderId)}
+                                                        disabled={isCancelling}
+                                                        className='flex-1 px-4 py-2 text-sm text-white bg-red-500 rounded-md hover:bg-red-600 transition-colors duration-200 disabled:opacity-50'
+                                                    >
+                                                        {isCancelling ? 'Đang hủy...' : 'Hủy đơn hàng'}
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -164,6 +225,30 @@ const Order = () => {
                     </div>
                 )}
             </div>
+
+            {/* Confirmation Modal */}
+            {showConfirmModal && (
+                <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
+                    <div className='bg-white rounded-lg p-6 max-w-sm w-full shadow-lg'>
+                        <h4 className='text-lg font-semibold mb-4'>Xác nhận hủy đơn hàng</h4>
+                        <p className='text-gray-700 mb-6'>Bạn có chắc chắn muốn hủy đơn hàng này không?</p>
+                        <div className='flex justify-end gap-3'>
+                            <button
+                                onClick={cancelCancellation}
+                                className='px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors'
+                            >
+                                Không
+                            </button>
+                            <button
+                                onClick={confirmCancellation}
+                                className='px-4 py-2 text-sm text-white bg-red-500 rounded-md hover:bg-red-600 transition-colors'
+                            >
+                                Có
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

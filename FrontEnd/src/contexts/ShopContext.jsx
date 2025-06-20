@@ -224,16 +224,20 @@ const ShopContextProvider = (props) => {
         let totalAmount = 0
 
         for (const items in cartItems) {
-            let itemInfo = products.find((products) => products._id === items)
-            for (const item in cartItems[items]) {
-                try {
-                    if (cartItems[items][item] > 0) {
-                        const price = typeof itemInfo.price === 'object' ? itemInfo.price[item] : itemInfo.price;
-                        totalAmount += price * cartItems[items][item]
+            let itemInfo = products.find((product) => product._id === items)
+            if (itemInfo) {
+                for (const item in cartItems[items]) {
+                    try {
+                        if (cartItems[items][item] > 0) {
+                            const price = typeof itemInfo.price === 'object' ? itemInfo.price[item] : itemInfo.price;
+                            totalAmount += price * cartItems[items][item]
+                        }
+                    } catch (e) {
+                        console.log(e)
                     }
-                } catch (e) {
-                    console.log(e)
                 }
+            } else {
+                console.warn(`Product with ID ${items} not found in products list. Skipping calculation.`);
             }
         }
         return totalAmount
@@ -245,7 +249,6 @@ const ShopContextProvider = (props) => {
         try {
             // Check if user is logged in
             if (!token) {
-                console.warn('No token available for getting user cart');
                 return;
             }
 

@@ -4,7 +4,7 @@ import axios from 'axios';
 import { assets } from '../assets/assets';
 
 const ProfileModal = ({ show, handleClose }) => {
-    const { token, backendURL, currency } = useContext(ShopContext);
+    const { token, backendURL } = useContext(ShopContext);
     const [profileData, setProfileData] = useState({
         name: '',
         email: '',
@@ -12,6 +12,21 @@ const ProfileModal = ({ show, handleClose }) => {
     const [recentOrders, setRecentOrders] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    const fetchRecentOrders = async () => {
+        try {
+            const response = await axios.get(`${backendURL}/api/order/user`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (response.data.success) {
+                // Get the 3 most recent orders
+                const orders = response.data.data.orders.slice(0, 2);
+                setRecentOrders(orders);
+            }
+        } catch (error) {
+            console.error('Error fetching orders:', error);
+        }
+    };
 
     useEffect(() => {
         if (show && token) {
@@ -37,26 +52,23 @@ const ProfileModal = ({ show, handleClose }) => {
                 }
             };
 
-            // Fetch recent orders
-            const fetchRecentOrders = async () => {
-                try {
-                    const response = await axios.get(`${backendURL}/api/order/user`, {
-                        headers: { Authorization: `Bearer ${token}` }
-                    });
-                    if (response.data.success) {
-                        // Get the 3 most recent orders
-                        const orders = response.data.data.orders.slice(0, 3);
-                        setRecentOrders(orders);
-                    }
-                } catch (error) {
-                    console.error('Error fetching orders:', error);
-                }
-            };
-
             fetchProfileData();
             fetchRecentOrders();
         }
     }, [show, token, backendURL]);
+
+    // Thêm useEffect để tự động cập nhật đơn hàng mỗi 30 giây khi modal đang mở
+    useEffect(() => {
+        let intervalId;
+        if (show) {
+            intervalId = setInterval(fetchRecentOrders, 30000); // Cập nhật mỗi 30 giây
+        }
+        return () => {
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+        };
+    }, [show]);
 
     if (!show) return null;
 
@@ -71,6 +83,9 @@ const ProfileModal = ({ show, handleClose }) => {
                             onClick={handleClose}
                             className="text-white hover:text-gray-200 transition-colors"
                         >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
                         </button>
                     </div>
                 </div>
@@ -127,13 +142,21 @@ const ProfileModal = ({ show, handleClose }) => {
 
                             {/* Recent Orders */}
                             <div className="mt-8">
-                                <h3 className="text-lg font-semibold text-gray-800 mb-4">Đơn Hàng Gần Đây</h3>
-                                <div className="space-y-4">
+                                <div className="flex justify-between items-center mb-4">
+                                    <h3 className="text-lg font-semibold text-gray-800">Đơn Hàng Gần Đây</h3>
+                                    <button
+                                        onClick={fetchRecentOrders}
+                                        className="text-sm text-blue-600 hover:text-blue-700"
+                                    >
+                                        Làm mới
+                                    </button>
+                                </div>
+                                <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
                                     {recentOrders.length > 0 ? (
                                         recentOrders.map((order, index) => (
-                                            <div key={index} className="flex items-center space-x-4 p-4 border rounded-lg">
+                                            <div key={index} className="flex items-center space-x-4 p-4 border rounded-lg bg-white hover:bg-gray-50 transition-colors">
                                                 <img
-                                                    src={order.items[0]?.images?.[0] || null}
+                                                    src={order.items[0]?.images?.[0] || assets.parcel_icon}
                                                     alt="Order item"
                                                     className="w-16 h-16 object-cover rounded"
                                                 />
@@ -142,10 +165,13 @@ const ProfileModal = ({ show, handleClose }) => {
                                                     <p className="text-sm text-gray-500">
                                                         {new Date(order.date).toLocaleDateString('vi-VN')}
                                                     </p>
+                                                    <p className="text-sm text-gray-600">
+                                                        Trạng thái: {order.status}
+                                                    </p>
                                                 </div>
                                                 <button
                                                     onClick={() => window.location.href = '/order'}
-                                                    className="px-4 py-2 text-sm text-[#0d1321] font-medium"
+                                                    className="px-4 py-2 text-sm text-[#0d1321] font-medium hover:bg-gray-100 rounded transition-colors"
                                                 >
                                                     Xem Chi Tiết
                                                 </button>
@@ -164,7 +190,7 @@ const ProfileModal = ({ show, handleClose }) => {
                 <div className="bg-gray-50 px-6 py-4 flex justify-end">
                     <button
                         onClick={handleClose}
-                        className="px-6 py-2 bg-[#0d1321] text-white"
+                        className="px-6 py-2 bg-[#0d1321] text-white rounded hover:bg-[#1a1f2e] transition-colors"
                     >
                         Đóng
                     </button>

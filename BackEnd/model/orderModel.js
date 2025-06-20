@@ -31,6 +31,11 @@ const orderSchema = new mongoose.Schema({
             message: 'Address must include street, city and country'
         }
     },
+    branch: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'branch',
+        required: true
+    },
     status: {
         type: String,
         required: true,

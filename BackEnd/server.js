@@ -9,6 +9,8 @@ import productRouter from './routes/productRoute.js'
 import cartRouter from './routes/cartRoutes.js'
 import orderRouter from './routes/orderRoute.js'
 import statsRouter from './routes/statsRoute.js'
+import branchRouter from './routes/branchRoute.js'
+
 
 // app config
 const app = express()
@@ -34,6 +36,9 @@ app.use('/api/cart', cartRouter)
 
 //stats
 app.use('/api/stats', statsRouter)
+
+//branch
+app.use('/api/branch', branchRouter)
 
 app.get('/', (req, res) => {
     res.send('Im Minh Tú')

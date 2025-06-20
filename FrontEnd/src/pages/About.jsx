@@ -1,6 +1,7 @@
 import React from 'react'
 import { assets } from '../assets/assets'
 import { useNavigate } from 'react-router-dom'
+import BranchList from '../components/BranchList'
 
 const About = () => {
     const navigate = useNavigate()
@@ -52,6 +53,12 @@ const About = () => {
                             <p className="text-gray-600">Hỗ trợ nông dân địa phương và sử dụng bao bì thân thiện với môi trường.</p>
                         </div>
                     </div>
+                </div>
+
+                {/* Branches Section */}
+                <div className="mb-20">
+                    <h2 className="text-2xl font-semibold text-gray-800 mb-8 text-center">Hệ thống chi nhánh</h2>
+                    <BranchList />
                 </div>
 
                 {/* Achievements */}

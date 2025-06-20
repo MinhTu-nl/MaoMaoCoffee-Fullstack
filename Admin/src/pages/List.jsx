@@ -71,7 +71,7 @@ const List = ({ token }) => {
                     product={viewingProduct}
                 />
             )}
-            <p className='text-sm text-gray-500 px-6 mb-4'>Quantity: {list.length}</p>
+            <p className='text-sm text-gray-500 px-6 mb-4'>Số lượng sản phẩm hiện có: {list.length}</p>
             <div className='flex flex-col gap-2'>
                 {/* --------------- LIST TABLE TITLE -------------- */}
                 <div className='hidden md:grid grid-cols-[1fr_3fr_1fr_1fr_2fr] items-center py-1 px-2 border bg-gray-100 text-sm'>

@@ -1,5 +1,5 @@
 import express from 'express'
-import { placeOrder, allOrder, userOrder, updateStatus } from '../controller/orderController.js'
+import { placeOrder, allOrder, userOrder, updateStatus, updatePaymentStatus, deleteOrder } from '../controller/orderController.js'
 import verifyToken from '../middleware/auth.js'
 import adminAuth from '../middleware/adminAuth.js'
 
@@ -16,5 +16,11 @@ orderRouter.get('/user', verifyToken, userOrder)
 
 // Update order status (requires authentication)
 orderRouter.patch('/status/:orderId', adminAuth, updateStatus)
+
+// Update payment status (requires authentication)
+orderRouter.patch('/payment/:orderId', adminAuth, updatePaymentStatus)
+
+// Cancel order (requires user authentication)
+orderRouter.delete('/:orderId', verifyToken, deleteOrder)
 
 export default orderRouter
