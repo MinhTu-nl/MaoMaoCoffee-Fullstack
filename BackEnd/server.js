@@ -10,6 +10,7 @@ import cartRouter from './routes/cartRoutes.js'
 import orderRouter from './routes/orderRoute.js'
 import statsRouter from './routes/statsRoute.js'
 import branchRouter from './routes/branchRoute.js'
+import contactRouter from './routes/contactRoute.js'
 
 
 // app config
@@ -39,6 +40,9 @@ app.use('/api/stats', statsRouter)
 
 //branch
 app.use('/api/branch', branchRouter)
+
+//conatact data
+app.use('/api/contact', contactRouter)
 
 app.get('/', (req, res) => {
     res.send('Im Minh Tú')

@@ -5,49 +5,76 @@ import { backEndURL } from '../App'
 
 const User = () => {
     const [users, setUsers] = useState([])
-
-    const fetchUsers = async () => {
-        try {
-            console.log('Fetching users from:', backEndURL + `/api/user/list`)
-            const res = await axios.get(backEndURL + `/api/user/list`)
-            console.log('API Response:', res.data)
-            setUsers(res.data?.users || [])
-            console.log('Updated users state:', res.data?.data || [])
-        } catch (e) {
-            console.log('Error fetching users:', e)
-            setUsers([])
-        }
-    }
+    const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
 
     useEffect(() => {
-        console.log('Component mounted, fetching users...')
+        const fetchUsers = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await axios.get(backEndURL + `/api/user/list`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                setUsers(res.data?.users || [])
+            } catch (e) {
+                setUsers([])
+            }
+        }
         fetchUsers()
     }, [])
 
-    console.log('Current users state:', users)
+    const handleToggleDropdown = (index) => {
+        setOpenDropdownIndex(openDropdownIndex === index ? null : index);
+    };
 
     return (
-        <>
-            <div className='flex flex-col gap-2'>
-                {/* --------------- LIST TABLE TITLE -------------- */}
-                <div className='hidden md:grid grid-cols-[2fr_3fr_4fr] items-center py-1 px-2 border bg-gray-100 text-sm'>
-                    <b>Avatar</b>
-                    <b>Name</b>
-                    <b>Email</b>
+        <div className="p-4 bg-gray-50 max-h-screen">
+            <h2 className="text-lg font-bold mb-4 text-gray-800">Danh sách người dùng</h2>
+            <div className="w-full max-w-6xl mx-auto bg-white overflow-hidden">
+                <div className='hidden md:grid grid-cols-5 items-center py-4 px-8 text-lg font-semibold text-gray-700 border-b bg-gray-100 gap-8'>
+                    <span>Avatar</span>
+                    <span>Name</span>
+                    <span>Email</span>
+                    <span className='text-center'>Contact</span>
+                    <span>Thao tác</span>
                 </div>
-
-                {/* ------------- LIST TABLE DATA--------------- */}
-                {
-                    users?.map((item, index) => (
-                        <div key={index} className='grid grid-cols-[1fr_3fr_1fr] md:grid-cols-[2fr_3fr_4fr] items-center gap-2 py-1 px-2 border text-sm'>
-                            <img className='w-12' src={assets.user_icon} alt="" />
-                            <p>{item?.name || 'N/A'}</p>
-                            <p>{item?.email || 'N/A'}</p>
+                {users?.map((item, index) => (
+                    <div key={index}>
+                        <div className='grid grid-cols-2 md:grid-cols-5 items-center gap-8 py-2 px-4 text-lg relative border-b border-gray-100 bg-white'>
+                            <img className='w-8 h-8 rounded-full object-cover bg-white' src={assets.user_icon} alt="" />
+                            <span className="truncate max-w-[160px] text-gray-800 font-medium">{item?.name || 'N/A'}</span>
+                            <span className="truncate max-w-[240px] text-gray-700">{item?.email || 'N/A'}</span>
+                            <span className="text-gray-800 font-semibold text-xl text-center">{Array.isArray(item?.contactData) ? item.contactData.length : 0}</span>
+                            <div className="flex items-center gap-4">
+                                <button
+                                    className='text-blue-600 text-base border border-blue-200 rounded px-4 py-2 hover:bg-blue-600 hover:text-white transition'
+                                    onClick={() => handleToggleDropdown(index)}
+                                >
+                                    {openDropdownIndex === index ? 'Đóng' : 'Xem'}
+                                </button>
+                            </div>
                         </div>
-                    ))
-                }
+                        {openDropdownIndex === index && (
+                            <div className="px-12 py-4 border-b border-gray-100 bg-white">
+                                {(!item.contactData || item.contactData.length === 0) ? (
+                                    <p className="text-gray-500 italic text-xs">Không có liên hệ nào.</p>
+                                ) : (
+                                    <div className='space-y-3'>
+                                        {item.contactData.map((contact, idx) => (
+                                            <div key={contact._id || idx} className='text-base text-gray-600 border-b border-dashed border-gray-200 pb-3 last:border-b-0'>
+                                                <div><b>Họ tên:</b> {contact.name}</div>
+                                                <div><b>Email:</b> {contact.email}</div>
+                                                <div><b>Tin nhắn:</b> {contact.message}</div>
+                                                <div><b>Ngày gửi:</b> {contact.date ? new Date(contact.date).toLocaleString() : ''}</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                ))}
             </div>
-        </>
+        </div>
     )
 }
 

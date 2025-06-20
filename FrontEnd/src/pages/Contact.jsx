@@ -1,7 +1,50 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import { assets } from '../assets/assets'
+import { ShopContext } from '../contexts/ShopContext';
+import axios from 'axios';
 
 const Contact = () => {
+    // State cho form
+    const [form, setForm] = useState({ name: '', email: '', message: '' });
+    const [loading, setLoading] = useState(false);
+    const [alert, setAlert] = useState(null);
+    const { backendURL } = useContext(ShopContext)
+
+    // Xử lý thay đổi input
+    const handleChange = (e) => {
+        setForm({ ...form, [e.target.id]: e.target.value });
+    };
+
+    // Xử lý submit form
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setAlert(null);
+        try {
+            const token = localStorage.getItem('token');
+            const res = await axios.post(
+                backendURL + '/api/contact/add',
+                form,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+            const data = res.data;
+            if (data.success) {
+                setAlert({ type: 'success', message: 'Gửi liên hệ thành công!' });
+                setForm({ name: '', email: '', message: '' });
+            } else {
+                setAlert({ type: 'error', message: data.message || 'Gửi liên hệ thất bại!' });
+            }
+        } catch (err) {
+            setAlert({ type: 'error', message: err.response?.data?.message || 'Có lỗi xảy ra. Vui lòng thử lại.' });
+        }
+        setLoading(false);
+    };
+
     return (
         <div className="min-h-screen bg-gray-50">
             <div className="max-w-6xl mx-auto px-4 py-16">
@@ -86,7 +129,12 @@ const Contact = () => {
                     {/* Contact Form */}
                     <div className="bg-white rounded-xl shadow-md p-8">
                         <h2 className="text-2xl font-semibold text-gray-800 mb-6">Gửi Tin Nhắn Cho Chúng Tôi</h2>
-                        <form className="space-y-6">
+                        <form className="space-y-6" onSubmit={handleSubmit}>
+                            {alert && (
+                                <div className={`p-2 rounded text-center mb-2 ${alert.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                    {alert.message}
+                                </div>
+                            )}
                             <div>
                                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                                     Họ và tên
@@ -94,8 +142,11 @@ const Contact = () => {
                                 <input
                                     type="text"
                                     id="name"
+                                    value={form.name}
+                                    onChange={handleChange}
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-transparent"
                                     placeholder="Nhập họ và tên của bạn"
+                                    required
                                 />
                             </div>
                             <div>
@@ -105,8 +156,11 @@ const Contact = () => {
                                 <input
                                     type="email"
                                     id="email"
+                                    value={form.email}
+                                    onChange={handleChange}
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-transparent"
                                     placeholder="Nhập email của bạn"
+                                    required
                                 />
                             </div>
                             <div>
@@ -116,15 +170,19 @@ const Contact = () => {
                                 <textarea
                                     id="message"
                                     rows="4"
+                                    value={form.message}
+                                    onChange={handleChange}
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-transparent"
                                     placeholder="Nhập tin nhắn của bạn"
+                                    required
                                 ></textarea>
                             </div>
                             <button
                                 type="submit"
-                                className="w-full bg-gray-800 text-white py-3 rounded-lg hover:bg-gray-700 transition-colors"
+                                className="w-full bg-gray-800 text-white py-3 rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-60"
+                                disabled={loading}
                             >
-                                Gửi Tin Nhắn
+                                {loading ? 'Đang gửi...' : 'Gửi Tin Nhắn'}
                             </button>
                         </form>
                     </div>

@@ -39,12 +39,6 @@ const Order = ({ token }) => {
 
             if (res.data.success) {
                 setOrders(res.data.data.orders)
-                console.log("Fetched orders with branch data:", res.data.data.orders.map(order => ({
-                    id: order._id,
-                    branch: order.branch,
-                    branchName: order.branch?.name,
-                    branchLocation: order.branch?.location
-                })))
                 setError(null)
             } else {
                 setError(res.data.message)
