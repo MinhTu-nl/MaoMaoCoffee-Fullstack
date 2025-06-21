@@ -91,10 +91,7 @@ const Menu = () => {
 
     // Effect để áp dụng bộ lọc khi thay đổi danh mục hoặc từ khóa tìm kiếm
     useEffect(() => {
-        console.log('Total products from context:', products.length);
         applyFilter()
-        console.log('Filtered products:', filterProducts.length);
-        console.log('Current page products:', currentProducts.length);
     }, [category, subCategory, search, showSearch, products])
 
     // Tính toán phân trang

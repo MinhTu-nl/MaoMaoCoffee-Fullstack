@@ -177,4 +177,20 @@ const getUser = async (req, res) => {
     }
 }
 
-export { loginUser, registerUser, adminLogin, listUsers, getUser }
+// Validate admin token
+const validateAdminToken = async (req, res) => {
+    try {
+        // Nếu middleware authMiddleware đã pass, nghĩa là token hợp lệ
+        res.json({
+            success: true,
+            message: 'Token hợp lệ'
+        })
+    } catch (error) {
+        res.status(401).json({
+            success: false,
+            message: 'Token không hợp lệ'
+        })
+    }
+}
+
+export { loginUser, registerUser, adminLogin, listUsers, getUser, validateAdminToken }

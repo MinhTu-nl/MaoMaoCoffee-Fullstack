@@ -52,7 +52,7 @@ const Sidebar = ({ onLogout }) => {
                         }
                     >
                         <img className='w-5 h-5 mx-auto md:mx-0 opacity-80' src={assets.list_icon} alt="" />
-                        <p className='text-sm font-medium hidden md:block'>Danh sách</p>
+                        <p className='text-sm font-medium hidden md:block'>Sản phẩm</p>
                     </NavLink>
 
                     <p className='text-xs font-medium text-gray-400 px-3 py-2 mt-4 hidden md:block'>QUẢN LÝ</p>

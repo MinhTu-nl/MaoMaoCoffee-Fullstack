@@ -11,6 +11,7 @@ import orderRouter from './routes/orderRoute.js'
 import statsRouter from './routes/statsRoute.js'
 import branchRouter from './routes/branchRoute.js'
 import contactRouter from './routes/contactRoute.js'
+import reviewRouter from './routes/reviewRoute.js'
 
 
 // app config
@@ -43,6 +44,9 @@ app.use('/api/branch', branchRouter)
 
 //conatact data
 app.use('/api/contact', contactRouter)
+
+//review
+app.use('/api/review', reviewRouter)
 
 app.get('/', (req, res) => {
     res.send('Im Minh Tú')

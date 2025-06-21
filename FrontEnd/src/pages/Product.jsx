@@ -3,14 +3,43 @@ import { useParams } from 'react-router-dom'
 import { ShopContext } from '../contexts/ShopContext'
 import { assets } from '../assets/assets'
 import RelatedProducts from '../components/RelatedProducts'
+import { toast } from 'react-toastify'
+import axios from 'axios'
 
 const Product = () => {
     const { productId } = useParams()
-    const { products, currency, addToCart } = useContext(ShopContext)
+    const { products, currency, addToCart, token, backendURL } = useContext(ShopContext)
     const [productData, setProductData] = useState(null)
     const [images, setImages] = useState('')
     const [sizes, setSizes] = useState('')
     const [price, setPrice] = useState(0)
+    const [activeTab, setActiveTab] = useState('description')
+    const [rating, setRating] = useState(0)
+    const [comment, setComment] = useState('')
+    const [reviewList, setReviewList] = useState([])
+    const [loadingReview, setLoadingReview] = useState(false)
+
+    // Danh sách đánh giá mẫu nếu chưa có đánh giá thực tế
+    const sampleReviews = [
+        {
+            user: { name: 'Minh Tú' },
+            rating: 5,
+            comment: 'Sản phẩm rất tuyệt vời!',
+            createdAt: new Date().toISOString()
+        },
+        {
+            user: { name: 'Vi Danh' },
+            rating: 4,
+            comment: 'Ngon, sẽ ủng hộ tiếp.',
+            createdAt: new Date().toISOString()
+        },
+        {
+            user: { name: 'Nguyễn Văn A' },
+            rating: 3,
+            comment: 'Ổn, nhưng giao hơi lâu.',
+            createdAt: new Date().toISOString()
+        }
+    ];
 
     /**
      * Lấy giá của sản phẩm dựa trên kích thước được chọn
@@ -50,9 +79,60 @@ const Product = () => {
         }
     }
 
+    // Lấy danh sách đánh giá từ backend (dùng axios)
+    const fetchReviews = async () => {
+        setLoadingReview(true)
+        try {
+            const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+            const res = await axios.get(backendURL + `/api/review/product/${productId}`, config)
+            setReviewList(res.data)
+        } catch (err) {
+            setReviewList([])
+        } finally {
+            setLoadingReview(false)
+        }
+    }
+
+    // Gửi đánh giá (dùng axios)
+    const handleSubmitReview = async () => {
+        if (!token) {
+            toast.error('Bạn cần đăng nhập để gửi đánh giá!')
+            return
+        }
+        if (!rating || !comment) {
+            toast.error('Vui lòng nhập đủ thông tin đánh giá!')
+            return
+        }
+        try {
+            const res = await axios.post(`${backendURL}/api/review/add`, {
+                productId, rating, comment
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            setComment('')
+            setRating(0)
+            toast.success('Gửi đánh giá thành công!')
+            fetchReviews()
+        } catch (err) {
+            toast.error(err.response?.data?.message || 'Gửi đánh giá thất bại')
+        }
+    }
+
+    // Hàm kiểm tra ObjectId hợp lệ (24 ký tự hex)
+    const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
+
     useEffect(() => {
         fetchProductData();
-    }, [productId]);
+        // Chỉ fetch review nếu productId hợp lệ và sản phẩm tồn tại
+        if (isValidObjectId(productId) && products.find(item => item._id === productId)) {
+            fetchReviews();
+        } else {
+            setReviewList([]);
+        }
+    }, [productId, products]);
 
     /**
      * Xử lý khi người dùng thay đổi kích thước
@@ -93,7 +173,7 @@ const Product = () => {
                     <div className='flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full'>
                         {
                             productData.images.map((item, index) => (
-                                <img onClick={() => setImage(item)} src={item} key={index} className='w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer' />
+                                <img onClick={() => setImages(item)} src={item} key={index} className='w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer' />
                             ))
                         }
                     </div>
@@ -122,7 +202,7 @@ const Product = () => {
                                 productData.sizes.map((item, index) => (
                                     <button
                                         onClick={() => handleSizeChange(item)}
-                                        className={`border py-2 px-4 bg-gray-100 ${item === sizes ? 'border-orange-500' : ''}`}
+                                        className={`border py-2 px-4 bg-gray-100 ${item === sizes ? 'border-blue-500' : ''}`}
                                         key={index}
                                     >
                                         {item}
@@ -138,23 +218,111 @@ const Product = () => {
 
                     <hr className='mt-8 sm:w-4/5' />
                     <div className='text-sm text-gray-500 mt-5 flex flex-col gap-1'>
-                        <p>100% Sản phẩm đúng với ảnh</p>
-                        <p>ash on delivery is available on this product</p>
-                        <p>Easay return and exchange policy within 7 days.</p>
+                        <p>Cam kết sản phẩm đúng như hình ảnh</p>
+                        <p>Hỗ trợ thanh toán khi nhận hàng</p>
+                        <p>Nếu có vấn đề về chất lượng, vui lòng liên hệ trong ngày nhận hàng để được hỗ trợ</p>
                     </div>
                 </div>
             </div>
 
             {/* ----------- Description & Review Section ------------- */}
             <div className='mt-20'>
-                <div className='flex'>
-                    <b className='border px-5 py-3 text-sm'>Description</b>
-                    <p className='border px-5 py-3 text-sm'>Review</p>
+                <div className='flex border-b'>
+                    <button
+                        className={`px-5 py-3 text-sm font-bold focus:outline-none transition-colors duration-200 ${activeTab === 'description' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'}`}
+                        onClick={() => setActiveTab('description')}
+                    >
+                        Mô tả
+                    </button>
+                    <button
+                        className={`px-5 py-3 text-sm font-bold focus:outline-none transition-colors duration-200 ${activeTab === 'review' ? 'border-b-2 border-blue-500 text-blue-500' : 'text-gray-500'}`}
+                        onClick={() => setActiveTab('review')}
+                    >
+                        Đánh giá
+                    </button>
                 </div>
-                <div className='flex flex-col gap-4 border px-6 py-6 text-sm text-gray-500'>
-                    <p>An e-commerce website is an online platform that facilitates the buying and selling of products or services over the internet. It serves as a virtual marketplace where businesses and individuals can showcase their products, interact with customers, and conduct transactions without the need for a physical presence. E-commerce websites have gained immense popularity due to their convenience, accessibility, and the global reach they offer.</p>
-                    <p>E-commerce websites typically display products or services along with detailed descriptions, images, prices, and any available variations (e.g., sizes, colors). Each product usually has its own dedicated page with relevant information.</p>
-                </div>
+                {activeTab === 'description' && (
+                    <div className='flex flex-col gap-4 border px-6 py-6 text-sm text-gray-500 rounded-b-xl bg-white'>
+                        {productData.description ? (
+                            <>
+                                <p>{productData.description}</p>
+                                <hr className='my-2' />
+                                <p>Mọi sản phẩm tại MAOMAO đều được chọn lọc kỹ lưỡng, đảm bảo chất lượng và trải nghiệm tốt nhất cho khách hàng. Chúng tôi cam kết mang đến hương vị tuyệt vời và dịch vụ tận tâm trong từng sản phẩm.</p>
+                                <hr className='my-2' />
+                                <p>Chúng tôi luôn lắng nghe ý kiến đóng góp từ khách hàng để không ngừng hoàn thiện và phát triển sản phẩm, dịch vụ.</p>
+                            </>
+                        ) : (
+                            <>
+                                <p>Mọi sản phẩm tại MAOMAO đều được chọn lọc kỹ lưỡng, đảm bảo chất lượng và trải nghiệm tốt nhất cho khách hàng. Chúng tôi cam kết mang đến hương vị tuyệt vời và dịch vụ tận tâm trong từng sản phẩm.</p>
+                                <hr className='my-2' />
+                                <p>Chúng tôi luôn lắng nghe ý kiến đóng góp từ khách hàng để không ngừng hoàn thiện và phát triển sản phẩm, dịch vụ.</p>
+                            </>
+                        )}
+                    </div>
+                )}
+                {activeTab === 'review' && (
+                    <div className='border px-6 py-6 rounded-b-xl bg-white'>
+                        {/* Số sao trung bình & tổng số đánh giá */}
+                        <div className='flex items-center gap-2 mb-4'>
+                            <span className='text-3xl font-bold text-blue-500'>
+                                {(() => {
+                                    const allReviews = [...sampleReviews, ...reviewList];
+                                    return allReviews.length > 0 ?
+                                        (allReviews.reduce((sum, r) => sum + (r.rating || 0), 0) / allReviews.length).toFixed(1) : '0';
+                                })()}
+                            </span>
+                            <div className='flex'>
+                                {[1, 2, 3, 4, 5].map(star => (
+                                    <img key={star} src={assets.star_icon} className='w-5' alt='' />
+                                ))}
+                            </div>
+                            <span className='text-gray-500 ml-2'>({sampleReviews.length + reviewList.length} đánh giá)</span>
+                        </div>
+                        {/* Danh sách đánh giá */}
+                        <div className='flex flex-col gap-4 max-h-60 overflow-y-auto mb-6'>
+                            {loadingReview ? (
+                                <p className='text-gray-400 italic'>Đang tải đánh giá...</p>
+                            ) : (
+                                [...sampleReviews, ...reviewList].map((review, idx) => (
+                                    <div className='flex gap-3 items-start bg-gray-50 p-3 rounded-lg' key={idx}>
+                                        <img src={'https://ui-avatars.com/api/?name=' + encodeURIComponent(review.user?.name || 'User')} className='w-10 h-10 rounded-full' alt='' />
+                                        <div>
+                                            <div className='flex items-center gap-2'>
+                                                <span className='font-semibold'>{review.user?.name || 'Ẩn danh'}</span>
+                                                <div className='flex'>
+                                                    {[1, 2, 3, 4, 5].map(star => (
+                                                        <img key={star} src={star <= review.rating ? assets.star_icon : assets.star_dull_icon} className='w-4' alt='' />
+                                                    ))}
+                                                </div>
+                                                <span className='text-xs text-gray-400 ml-2'>{new Date(review.createdAt).toLocaleDateString('vi-VN')}</span>
+                                            </div>
+                                            <p className='text-gray-700'>{review.comment}</p>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                        {/* Form gửi đánh giá */}
+                        <div className='border-t pt-4 mt-4'>
+                            <p className='font-semibold mb-2'>Gửi đánh giá của bạn</p>
+                            <div className='flex items-center gap-2 mb-2'>
+                                {[1, 2, 3, 4, 5].map(star => (
+                                    <button key={star} type='button' onClick={() => setRating(star)}>
+                                        <img src={star <= rating ? assets.star_icon : assets.star_dull_icon} className='w-6' alt='' />
+                                    </button>
+                                ))}
+                            </div>
+                            <textarea
+                                className='w-full border rounded p-2 mb-2'
+                                rows={3}
+                                placeholder='Nhận xét của bạn...'
+                                value={comment}
+                                onChange={e => setComment(e.target.value)}
+                            />
+                            <button className='bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600' onClick={handleSubmitReview}>Gửi đánh giá</button>
+                        </div>
+                    </div>
+                )}
             </div>
 
             <RelatedProducts category={productData.category} subCategory={productData.subCategory} />

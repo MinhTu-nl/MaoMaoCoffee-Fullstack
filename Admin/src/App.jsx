@@ -17,6 +17,24 @@ export const currency = 'VNĐ'
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token') || '')
 
+  // Chỉ xóa token khi khởi động lại server, không xóa khi F5
+  useEffect(() => {
+    const isFirstLoad = sessionStorage.getItem('isFirstLoad')
+
+    if (!isFirstLoad) {
+      // Lần đầu khởi động server - xóa token
+      localStorage.removeItem('token')
+      setToken('')
+      sessionStorage.setItem('isFirstLoad', 'true')
+    } else {
+      // F5 refresh - giữ nguyên token
+      const savedToken = localStorage.getItem('token')
+      if (savedToken) {
+        setToken(savedToken)
+      }
+    }
+  }, [])
+
   useEffect(() => {
     if (token) {
       localStorage.setItem('token', token)

@@ -15,6 +15,10 @@ const List = ({ token }) => {
     const [subCategoryFilter, setSubCategoryFilter] = useState('');
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
+    const [reviews, setReviews] = useState({});
+    const [showReviews, setShowReviews] = useState({});
+    const [reviewCounts, setReviewCounts] = useState({});
+
     const fetchList = async () => {
         try {
             const res = await axios.get(backEndURL + `/api/product/list?limit=1000`)
@@ -25,6 +29,31 @@ const List = ({ token }) => {
             }
         } catch (e) {
             console.log(e)
+        }
+    }
+
+    const fetchReviewCounts = async () => {
+        try {
+            const res = await axios.get(backEndURL + `/api/review/count-all`)
+            setReviewCounts(res.data)
+        } catch (e) {
+            setReviewCounts({})
+        }
+    }
+
+    const fetchReviews = async (productId) => {
+        try {
+            const res = await axios.get(backEndURL + `/api/review/product/${productId}`)
+            setReviews(prev => ({
+                ...prev,
+                [productId]: res.data
+            }))
+        } catch (e) {
+            console.log(e)
+            setReviews(prev => ({
+                ...prev,
+                [productId]: []
+            }))
         }
     }
 
@@ -41,6 +70,7 @@ const List = ({ token }) => {
             if (res.data.success) {
                 toast.success(res.data.message);
                 await fetchList();
+                await fetchReviewCounts();
             } else {
                 toast.error(res.data.message || 'Có lỗi xảy ra khi xóa sản phẩm');
             }
@@ -50,12 +80,24 @@ const List = ({ token }) => {
         }
     }
 
+
     const handleEdit = (item) => {
         setEditingProduct(item)
     }
 
+    const toggleReviews = (productId) => {
+        if (!showReviews[productId]) {
+            fetchReviews(productId);
+        }
+        setShowReviews(prev => ({
+            ...prev,
+            [productId]: !prev[productId]
+        }));
+    }
+
     useEffect(() => {
         fetchList()
+        fetchReviewCounts()
     }, [])
 
     // Tính danh sách đã lọc
@@ -138,11 +180,12 @@ const List = ({ token }) => {
             <p className='text-sm text-gray-500 px-6 mb-4'>Số lượng sản phẩm hiện có: {filteredList.length}</p>
             <div className='flex flex-col gap-2'>
                 {/* --------------- LIST TABLE TITLE -------------- */}
-                <div className='hidden md:grid grid-cols-[1fr_3fr_1fr_1fr_2fr] items-center py-1 px-2 border bg-gray-100 text-sm'>
+                <div className='hidden md:grid grid-cols-[1fr_3fr_1fr_1fr_1fr_2fr] items-center py-1 px-2 border bg-gray-100 text-sm'>
                     <b>Image</b>
                     <b>Name</b>
                     <b>Category</b>
                     <b>Price</b>
+                    <b>Reviews</b>
                     <b className='text-center'>Action</b>
                 </div>
 
@@ -150,25 +193,71 @@ const List = ({ token }) => {
                 {
                     filteredList
                         .map((item, index) => (
-                            <div key={index} className='grid grid-cols-[1fr_3fr_1fr] md:grid-cols-[1fr_3fr_1fr_1fr_2fr] items-center gap-2 py-1 px-2 border text-sm'>
-                                <img className='w-12' src={Array.isArray(item.images) && item.images[0] ? item.images[0] : ''} alt="" />
-                                <p>{item.name}</p>
-                                <p>{item.category}</p>
-                                <p>
-                                    {Object.entries(item.price).map(([size, value]) => (
-                                        <span key={size} style={{ display: 'block' }}>{size}: {value}</span>
-                                    ))}
-                                </p>
-                                <div className='flex flex-row gap-2 justify-end md:justify-center'>
-                                    <button
-                                        onClick={() => setViewingProduct(item)}
-                                        className='bg-blue-400 hover:bg-blue-600 text-white px-5 py-2 rounded text-xs'
-                                    >
-                                        Xem
-                                    </button>
-                                    <button onClick={() => handleEdit(item)} className='bg-green-400 hover:bg-green-600 text-white px-5 py-2 rounded text-xs'>Sửa</button>
-                                    <button onClick={() => removeProduct(item._id)} className='bg-red-400 hover:bg-red-600 text-white px-5 py-2 rounded text-xs'>Xoá</button>
+                            <div key={index}>
+                                <div className='grid grid-cols-[1fr_3fr_1fr] md:grid-cols-[1fr_3fr_1fr_1fr_1fr_2fr] items-center gap-2 py-1 px-2 border text-sm'>
+                                    <img className='w-12' src={Array.isArray(item.images) && item.images[0] ? item.images[0] : ''} alt="" />
+                                    <p>{item.name}</p>
+                                    <p>{item.category}</p>
+                                    <p>
+                                        {Object.entries(item.price).map(([size, value]) => (
+                                            <span key={size} style={{ display: 'block' }}>{size}: {value}</span>
+                                        ))}
+                                    </p>
+                                    <div className='flex flex-col items-center'>
+                                        <button
+                                            onClick={() => toggleReviews(item._id)}
+                                            className='bg-purple-400 hover:bg-purple-600 text-white px-3 py-1 rounded text-xs mb-1'
+                                        >
+                                            {showReviews[item._id] ? 'Ẩn' : 'Xem'} Đánh giá
+                                        </button>
+                                        <span className='text-xs text-gray-500'>
+                                            ({reviewCounts[item._id] !== undefined ? reviewCounts[item._id] : '--'} đánh giá)
+                                        </span>
+                                    </div>
+                                    <div className='flex flex-row gap-2 justify-end md:justify-center'>
+                                        <button
+                                            onClick={() => setViewingProduct(item)}
+                                            className='bg-blue-400 hover:bg-blue-600 text-white px-5 py-2 rounded text-xs'
+                                        >
+                                            Xem
+                                        </button>
+                                        <button onClick={() => handleEdit(item)} className='bg-green-400 hover:bg-green-600 text-white px-5 py-2 rounded text-xs'>Sửa</button>
+                                        <button onClick={() => removeProduct(item._id)} className='bg-red-400 hover:bg-red-600 text-white px-5 py-2 rounded text-xs'>Xoá</button>
+                                    </div>
                                 </div>
+
+                                {/* Reviews Section */}
+                                {showReviews[item._id] && (
+                                    <div className='bg-gray-50 p-4 border-l-4 border-purple-400'>
+                                        <h4 className='font-semibold mb-3 text-purple-700'>Đánh giá sản phẩm: {item.name}</h4>
+                                        {reviews[item._id]?.length > 0 ? (
+                                            <div className='space-y-3'>
+                                                {reviews[item._id].map((review, idx) => (
+                                                    <div key={idx} className='bg-white p-3 rounded-lg border'>
+                                                        <div className='flex justify-between items-start mb-2'>
+                                                            <div className='flex items-center gap-2'>
+                                                                <span className='font-medium'>{review.user?.name || 'Ẩn danh'}</span>
+                                                                <div className='flex'>
+                                                                    {[1, 2, 3, 4, 5].map(star => (
+                                                                        <span key={star} className='text-yellow-400'>
+                                                                            {star <= review.rating ? '★' : '☆'}
+                                                                        </span>
+                                                                    ))}
+                                                                </div>
+                                                                <span className='text-xs text-gray-500'>
+                                                                    {new Date(review.createdAt).toLocaleDateString('vi-VN')}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <p className='text-gray-700'>{review.comment}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p className='text-gray-500 italic'>Chưa có đánh giá nào.</p>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         ))
                 }
