@@ -16,12 +16,25 @@ import SearchBar from './components/SearchBar';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import Order from './pages/Order';
+import Profile from './pages/Profile';
+import NotFoundPage from './pages/NotFoundPage';
 
 
 const App = () => {
   const location = useLocation();
   const hideFooterPaths = ['/Login'];
-  const hideShow = !hideFooterPaths.includes(location.pathname);
+  const validPaths = [
+    '/', '/About', '/Menu', '/Cart', '/Place-order', '/Login', '/Contact', '/Order', '/Profile'
+  ];
+  const isNotFound = !validPaths.some(path => {
+    if (path.includes(':')) {
+      // dynamic route, e.g. /Products/:productId
+      const base = path.split(':')[0];
+      return location.pathname.startsWith(base);
+    }
+    return location.pathname === path;
+  }) && !location.pathname.startsWith('/Products/');
+  const hideShow = !hideFooterPaths.includes(location.pathname) && !isNotFound;
 
   return (
     <div className='px-4 sm:px-[5vw] md:px-[7vm] lg:px-[9vm]'>
@@ -50,6 +63,8 @@ const App = () => {
         <Route path='/Login' element={<Login />} />
         <Route path='/Contact' element={<Contact />} />
         <Route path='/Order' element={<Order />} />
+        <Route path='/Profile' element={<Profile />} />
+        <Route path='/*' element={<NotFoundPage />} />
         {/* <Route path='/Profile' element={<ProfileModal />} /> */}
       </Routes>
       {hideShow && <Footer />}

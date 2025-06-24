@@ -196,7 +196,6 @@ const ShopContextProvider = (props) => {
                 // Check if item exists in products
                 const productExists = products.find(product => product._id === itemId);
                 if (!productExists) {
-                    console.warn(`Product ${itemId} not found in products list`);
                     continue;
                 }
 

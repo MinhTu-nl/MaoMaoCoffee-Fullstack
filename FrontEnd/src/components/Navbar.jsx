@@ -2,11 +2,9 @@ import React, { useContext, useState } from 'react'
 import { assets } from '../assets/assets'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { ShopContext } from '../contexts/ShopContext'
-import ProfileModal from './ProfileModal'
 
 const Navbar = () => {
     const [visible, setVisible] = useState(false)
-    const [showProfileModal, setShowProfileModal] = useState(false)
     const { setShowSearch, getCartCount, navigate, token, setToken, setCartItems } = useContext(ShopContext)
 
     const logout = () => {
@@ -104,7 +102,7 @@ const Navbar = () => {
                                     <div className='invisible group-hover:visible absolute dropdown-menu right-0 pt-2 opacity-0 group-hover:opacity-100 transition-all duration-200'>
                                         <div className='w-48 py-2 bg-white rounded-xl shadow-lg border border-gray-100'>
                                             <button
-                                                onClick={() => setShowProfileModal(true)}
+                                                onClick={() => navigate('/Profile')}
                                                 className='w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors'
                                             >
                                                 Hồ Sơ
@@ -200,7 +198,6 @@ const Navbar = () => {
                 </div>
             )}
 
-            <ProfileModal show={showProfileModal} handleClose={() => setShowProfileModal(false)} />
         </>
     )
 }

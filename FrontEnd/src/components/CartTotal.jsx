@@ -28,7 +28,7 @@ const CartTotal = ({ items }) => {
                             const productPrice = getProductDisplayPrice(item.productId, item.size);
                             const productName = products.find(p => p._id === item.productId)?.name || 'Unknown Product';
                             return (
-                                <div key={index} className='flex justify-between text-sm text-gray-700'>
+                                <div key={index} className='flex justify-between text-xs text-gray-500'>
                                     <p>{productName} ({item.quantity} x {item.size}):</p>
                                     <p>{productPrice * item.quantity} {currency}</p>
                                 </div>

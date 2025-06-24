@@ -122,7 +122,7 @@ const Cart = () => {
                         <div className='lg:col-span-1'>
                             <div className='sticky top-8'>
                                 <div className='bg-gray-50 p-6'>
-                                    <CartTotal />
+                                    <CartTotal items={cartData.map(item => ({ productId: item._id, size: item.sizes, quantity: item.quantity }))} />
                                     <button
                                         onClick={() => navigate('/Place-order')}
                                         className='w-full mt-6 py-3 bg-black text-white hover:bg-gray-800 transition-colors duration-300'
