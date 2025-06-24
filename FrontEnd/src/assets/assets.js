@@ -21,7 +21,7 @@ import cross_icon from './cross_icon.png'
 import desert_icon from "./desert_icon.png"
 import drink_icon from "./drink_icon.png"
 import user_icon from "./user_icon.png"
-
+import newbox from "./newbox.jpg"
 import banner_icon from './banner_icon.png'
 
 import cb1 from './CB01.png'
@@ -114,7 +114,8 @@ export const assets = {
     cross_icon,
     desert_icon,
     drink_icon,
-    user_icon
+    user_icon,
+    newbox,
 }
 
 export const products = [

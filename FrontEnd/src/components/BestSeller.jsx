@@ -2,6 +2,10 @@ import React, { useContext, useEffect, useState } from 'react'
 import { ShopContext } from '../contexts/ShopContext'
 import ProductItem from './ProductItem'
 import Title from './Title'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Navigation, Autoplay } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/navigation'
 
 const BestSeller = () => {
     const { products } = useContext(ShopContext)
@@ -9,20 +13,52 @@ const BestSeller = () => {
 
     useEffect(() => {
         const bestProduct = products.filter((item) => (item.bestseller));
-        setBestSeller(bestProduct.slice(0, 5))
+        setBestSeller(bestProduct.slice(0, 10))
     }, [products])
+
     return (
-        <div className='my-6 md:my-10 px-4 md:px-6 lg:px-8'>
-            <div className='text-center py-6 md:py-8'>
-                <Title text1={'SẢN PHẨM BÁN CHẠY'}
-                    text2={'Khám phá những món đồ uống được yêu thích nhất của chúng tôi. Được chọn lọc từ hàng ngàn đánh giá của khách hàng, những sản phẩm này đã chinh phục được trái tim của những người yêu thích hương vị độc đáo và chất lượng tuyệt hảo.'} />
-            </div>
-            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 justify-items-center max-w-7xl mx-auto'>
-                {
-                    bestseller.map((item, index) => (
-                        <ProductItem key={index} id={item._id} images={item.images} name={item.name} price={item.price} category={item.category} />
-                    ))
-                }
+        <div className='relative py-12 md:py-16 bg-gradient-to-b from-white via-gray-50/50 to-white overflow-hidden'>
+            {/* Background Pattern */}
+            <div className='absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.1),rgba(255,255,255,0))]' />
+
+            <div className='max-w-7xl mx-auto px-4 md:px-6 lg:px-8 relative'>
+                <div className='text-center mb-10 md:mb-12'>
+                    <Title
+                        text1={'SẢN PHẨM BÁN CHẠY'}
+                        text2={'Khám phá những món đồ uống được yêu thích nhất của chúng tôi. Được chọn lọc từ hàng ngàn đánh giá của khách hàng, những sản phẩm này đã chinh phục được trái tim của những người yêu thích hương vị độc đáo và chất lượng tuyệt hảo.'}
+                    />
+                </div>
+
+                <Swiper
+                    modules={[Navigation, Autoplay]}
+                    navigation
+                    autoplay={{
+                        delay: 3000,
+                        disableOnInteraction: false,
+                    }}
+                    spaceBetween={24}
+                    slidesPerView={1}
+                    breakpoints={{
+                        0: { slidesPerView: 1, spaceBetween: 16 },
+                        520: { slidesPerView: 2, spaceBetween: 20 },
+                        768: { slidesPerView: 3, spaceBetween: 24 },
+                        1024: { slidesPerView: 4, spaceBetween: 24 },
+                        1280: { slidesPerView: 5, spaceBetween: 24 }
+                    }}
+                    className='!pb-12 !pt-4'
+                >
+                    {bestseller.map((item, index) => (
+                        <SwiperSlide key={index} className='px-2'>
+                            <ProductItem
+                                id={item._id}
+                                images={item.images}
+                                name={item.name}
+                                price={item.price}
+                                category={item.category}
+                            />
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
             </div>
         </div>
     )

@@ -64,7 +64,7 @@ const SearchBar = () => {
                         <input
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className='search-input w-full pl-10 pr-12 py-2.5 rounded-full border border-gray-300 focus:border-[#0D1321] focus:ring-2 focus:ring-[#0D1321] focus:ring-opacity-20 outline-none transition-all duration-200 bg-white text-sm'
+                            className='search-input w-full pl-10 pr-12 py-2.5 rounded-full border border-gray-300 focus:border-blue-950 focus:ring-2 focus:ring-blue-950 focus:ring-opacity-20 outline-none transition-all duration-200 bg-white text-sm'
                             placeholder='Tìm kiếm sản phẩm...'
                         />
                         {/* Clear Button */}

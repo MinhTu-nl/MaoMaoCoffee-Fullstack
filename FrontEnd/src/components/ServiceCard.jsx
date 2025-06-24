@@ -9,7 +9,7 @@ const ServiceCard = ({ title, description, iconSrc, buttonText, onClick }) => {
                 <p className="text-gray-600 mb-4">{description}</p>
                 <button
                     onClick={onClick}
-                    className="bg-[#0D1321] text-white px-6 py-2 rounded-full hover:bg-[#1D2331] transition-colors duration-300"
+                    className="bg-blue-950 text-white px-6 py-2 rounded-full hover:bg-[#1D2331] transition-colors duration-300"
                 >
                     {buttonText}
                 </button>

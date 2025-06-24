@@ -57,7 +57,7 @@ const Login = () => {
             <div className='w-full max-w-md p-8 bg-white rounded-lg shadow-lg'>
                 <div className='text-center mb-8'>
                     <img src={assets.LOGO2} alt="Logo" className='w-32 mx-auto mb-4' />
-                    <h2 className='prata-regular text-[#0d1321] text-3xl mb-2'>{currency}</h2>
+                    <h2 className='prata-regular text-blue-950 text-3xl mb-2'>{currency}</h2>
                     <p className='text-gray-500 text-sm'>Chào mừng bạn đến với Mao Mao Coffee</p>
                 </div>
 
@@ -67,7 +67,7 @@ const Login = () => {
                             <input
                                 required
                                 type='text'
-                                className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#0d1321] focus:ring-2 focus:ring-[#0d1321]/20 outline-none transition-all duration-300'
+                                className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-950 focus:ring-2 focus:ring-blue-950/20 outline-none transition-all duration-300'
                                 placeholder='Username'
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
@@ -77,7 +77,7 @@ const Login = () => {
 
                     <input
                         required
-                        className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#0d1321] focus:ring-2 focus:ring-[#0d1321]/20 outline-none transition-all duration-300'
+                        className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-950 focus:ring-2 focus:ring-blue-950/20 outline-none transition-all duration-300'
                         placeholder='Email'
                         type="email"
                         value={email}
@@ -86,7 +86,7 @@ const Login = () => {
 
                     <input
                         required
-                        className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#0d1321] focus:ring-2 focus:ring-[#0d1321]/20 outline-none transition-all duration-300'
+                        className='w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-950 focus:ring-2 focus:ring-blue-950/20 outline-none transition-all duration-300'
                         placeholder='Mật khẩu'
                         type="password"
                         value={password}
@@ -94,13 +94,13 @@ const Login = () => {
                     />
 
                     <div className='flex justify-between text-sm mt-2'>
-                        <button type="button" className='text-[#0d1321] hover:text-[#00509d] transition-colors duration-300'>
+                        <button type="button" className='text-blue-950 hover:text-[#00509d] transition-colors duration-300'>
                             Quên Mật Khẩu?
                         </button>
                         <button
                             type="button"
                             onClick={() => setCurrency(currency === 'Đăng Nhập' ? 'Đăng Ký' : 'Đăng Nhập')}
-                            className='text-[#0d1321] hover:text-[#00509d] transition-colors duration-300'
+                            className='text-blue-950 hover:text-[#00509d] transition-colors duration-300'
                         >
                             {currency === 'Đăng Nhập' ? 'Tạo Tài Khoản' : 'Đăng Nhập Tại Đây'}
                         </button>
@@ -108,7 +108,7 @@ const Login = () => {
 
                     <button
                         type="submit"
-                        className='w-full bg-[#0d1321] text-white py-3 rounded-lg hover:bg-[#00509d] transition-colors duration-300 font-medium mt-6'
+                        className='w-full bg-blue-950 text-white py-3 rounded-lg hover:bg-[#00509d] transition-colors duration-300 font-medium mt-6'
                     >
                         {currency === 'Đăng Nhập' ? 'Đăng Nhập' : 'Đăng Ký'}
                     </button>

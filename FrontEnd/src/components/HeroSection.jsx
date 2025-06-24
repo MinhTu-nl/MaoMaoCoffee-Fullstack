@@ -7,7 +7,7 @@ const HeroSection = () => {
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between px-6">
                 {/* Left: Text */}
                 <div className="flex-1 flex flex-col items-start">
-                    <h1 className="text-5xl md:text-6xl font-extrabold text-[#0d1321] mb-4 leading-tight">
+                    <h1 className="text-5xl md:text-6xl font-extrabold text-blue-950 mb-4 leading-tight">
                         MaoMao Coffee <br />
                         Cà phê ngon <br />
                         Đậm vị, <span className="text-[#00509d]">tươi mới</span>
