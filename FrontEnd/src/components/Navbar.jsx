@@ -35,7 +35,7 @@ const Navbar = () => {
                             <NavLink
                                 to='/'
                                 className={({ isActive }) =>
-                                    `group flex flex-col items-center transition-colors hover:text-blue-950 ${isActive ? 'text-blue-950' : 'text-gray-700'}`
+                                    `group flex flex-col items-center transition-colors hover:text-blue-950 ${isActive ? 'text-blue-600' : 'text-blue-950'}`
                                 }
                             >
                                 <p className='relative'>
@@ -46,7 +46,7 @@ const Navbar = () => {
                             <NavLink
                                 to='/About'
                                 className={({ isActive }) =>
-                                    `group flex flex-col items-center transition-colors hover:text-blue-950 ${isActive ? 'text-blue-950' : 'text-gray-700'}`
+                                    `group flex flex-col items-center transition-colors hover:text-blue-950 ${isActive ? 'text-blue-600' : 'text-blue-950'}`
                                 }
                             >
                                 <p className='relative'>
@@ -57,7 +57,7 @@ const Navbar = () => {
                             <NavLink
                                 to='/Menu'
                                 className={({ isActive }) =>
-                                    `group flex flex-col items-center transition-colors hover:text-blue-950 ${isActive ? 'text-blue-950' : 'text-gray-700'}`
+                                    `group flex flex-col items-center transition-colors hover:text-blue-950 ${isActive ? 'text-blue-600' : 'text-blue-950'}`
                                 }
                             >
                                 <p className='relative'>
@@ -68,7 +68,7 @@ const Navbar = () => {
                             <NavLink
                                 to='/Contact'
                                 className={({ isActive }) =>
-                                    `group flex flex-col items-center transition-colors hover:text-blue-950 ${isActive ? 'text-blue-950' : 'text-gray-700'}`
+                                    `group flex flex-col items-center transition-colors hover:text-blue-950 ${isActive ? 'text-blue-600' : 'text-blue-950'}`
                                 }
                             >
                                 <p className='relative'>

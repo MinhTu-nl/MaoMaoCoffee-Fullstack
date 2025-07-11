@@ -103,13 +103,13 @@ const Add = ({ token }) => {
     }
 
     return (
-        <div className="w-full max-w-screen-xl mx-auto px-2 sm:px-6 md:px-8 py-8">
-            <form onSubmit={onSumbitHandler} className="w-full flex flex-col gap-8">
-                <div className="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow w-full space-y-4">
-                    {/* Image Upload Area */}
-                    <div>
-                        <h2 className="text-base font-semibold mb-4">Product Images</h2>
-                        <div className="flex gap-4 flex-wrap">
+        <div className="w-full min-h-[60vh] flex items-center justify-center">
+            <form onSubmit={onSumbitHandler} className="w-full bg-white rounded-xl shadow flex flex-col md:flex-row gap-8 p-2 md:p-6">
+                {/* Left: Image Upload */}
+                <div className="flex flex-col items-center w-full md:w-1/3 gap-3">
+                    <div className="w-full">
+                        <h2 className="text-xs font-semibold mb-2 text-gray-700">Ảnh sản phẩm</h2>
+                        <div className="flex gap-2 flex-wrap w-full">
                             {images.map((img, idx) => (
                                 <ImageUploadArea
                                     key={idx}
@@ -122,64 +122,62 @@ const Add = ({ token }) => {
                                 <button
                                     type="button"
                                     onClick={handleAddImage}
-                                    className="aspect-square w-24 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-4xl text-gray-400 hover:border-blue-400 hover:text-blue-500 transition-colors"
-                                    title="Add image"
+                                    className="aspect-square w-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-2xl text-gray-400 hover:border-blue-400 hover:text-blue-500 transition-colors"
+                                    title="Thêm ảnh"
                                 >
                                     +
                                 </button>
                             )}
                         </div>
                     </div>
-                    {/* Product Name */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Product Name *</label>
+                </div>
+                {/* Right: Form Fields */}
+                <div className="flex-1 flex flex-col gap-3 w-full">
+                    <div className="grid grid-cols-1 gap-2 w-full">
+                        <label className="text-xs font-medium text-gray-600">Tên sản phẩm *</label>
                         <input
                             onChange={(e) => setName(e.target.value)}
                             value={name}
-                            className="w-full px-3 py-2 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 text-xs border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             type="text"
-                            placeholder="Enter product name"
+                            placeholder="Nhập tên sản phẩm"
                             required
                         />
                     </div>
-                    {/* Description */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Description *</label>
+                    <div className="grid grid-cols-1 gap-2 w-full">
+                        <label className="text-xs font-medium text-gray-600">Mô tả *</label>
                         <textarea
                             onChange={(e) => setDescription(e.target.value)}
                             value={description}
-                            className="w-full px-3 py-2 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            rows="3"
-                            placeholder="Enter product description"
+                            className="w-full px-3 py-2 text-xs border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            rows="2"
+                            placeholder="Nhập mô tả sản phẩm"
                             required
                         />
                     </div>
-                    {/* Category & SubCategory */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-2 w-full">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
+                            <label className="text-xs font-medium text-gray-600">Loại sản phẩm *</label>
                             <select
                                 onChange={(e) => setCategory(e.target.value)}
                                 value={category}
-                                className="w-full px-3 py-2 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-3 py-2 text-xs border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
                                 <option value='coldbew'>Coldbrew</option>
                                 <option value="coffee">Cà phê</option>
                                 <option value="tea">Trà</option>
                                 <option value='milk'>Trà sữa</option>
                                 <option value="ice">Đá xay</option>
-
-                                <option value="croffle">croffle</option>
+                                <option value="croffle">Croffle</option>
                                 <option value="toast">Bánh nướng</option>
-
                             </select>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Sub Category *</label>
+                            <label className="text-xs font-medium text-gray-600">Nhóm *</label>
                             <select
                                 onChange={(e) => setSubCategory(e.target.value)}
                                 value={subCategory}
-                                className="w-full px-3 py-2 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-3 py-2 text-xs border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
                                 <option value="drink">Đồ uống</option>
                                 <option value="food">Món ăn</option>
@@ -187,10 +185,9 @@ const Add = ({ token }) => {
                             </select>
                         </div>
                     </div>
-                    {/* Sizes */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Available Sizes *</label>
-                        <div className="flex flex-wrap gap-2">
+                    <div className="w-full">
+                        <label className="text-xs font-medium text-gray-600">Kích cỡ có sẵn *</label>
+                        <div className="flex flex-wrap gap-2 mt-1 w-full">
                             {['S', 'M', 'L', 'XL', 'XXL'].map((size) => (
                                 <button
                                     key={size}
@@ -202,7 +199,7 @@ const Add = ({ token }) => {
                                                 : [...prev, size]
                                         )
                                     }
-                                    className={`px-4 py-2 rounded-lg transition-colors ${sizes.includes(size)
+                                    className={`px-3 py-1 rounded-lg text-xs transition-colors ${sizes.includes(size)
                                         ? 'bg-blue-600 text-white'
                                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                         }`}
@@ -212,20 +209,19 @@ const Add = ({ token }) => {
                             ))}
                         </div>
                     </div>
-                    {/* Prices */}
                     {sizes.length > 0 && (
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Prices for Selected Sizes *</label>
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                        <div className="w-full">
+                            <label className="text-xs font-medium text-gray-600">Giá cho từng cỡ *</label>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 mt-1 w-full">
                                 {sizes.map((size) => (
                                     <div key={size}>
-                                        <label className="block text-xs text-gray-600 mb-1">Price for {size}</label>
+                                        <label className="block text-[10px] text-gray-600 mb-1">Giá cho cỡ {size}</label>
                                         <input
                                             type="number"
                                             value={price[size] || ''}
                                             onChange={(e) => handlePriceChange(size, e.target.value)}
-                                            className="w-full px-3 py-2 text-base border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            placeholder="Enter price"
+                                            className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            placeholder="Nhập giá"
                                             min="0"
                                             step="0.01"
                                             required
@@ -235,8 +231,7 @@ const Add = ({ token }) => {
                             </div>
                         </div>
                     )}
-                    {/* Bestseller */}
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 mt-2 w-full">
                         <input
                             type="checkbox"
                             id="bestseller"
@@ -244,16 +239,15 @@ const Add = ({ token }) => {
                             onChange={() => setBestseller((prev) => !prev)}
                             className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                         />
-                        <label htmlFor="bestseller" className="text-sm font-medium text-gray-700">
-                            Mark as Bestseller
+                        <label htmlFor="bestseller" className="text-xs font-medium text-gray-700">
+                            Đánh dấu bán chạy
                         </label>
                     </div>
-                    {/* Submit */}
                     <button
                         type="submit"
                         className="w-full px-4 py-3 bg-blue-600 text-white text-base rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors"
                     >
-                        Add Product
+                        Thêm sản phẩm
                     </button>
                 </div>
             </form>

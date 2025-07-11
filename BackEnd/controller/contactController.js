@@ -1,4 +1,5 @@
 import userModel from '../model/userModel.js';
+import Notification from '../model/notificationModel.js';
 
 // User gửi contact
 export const addContact = async (req, res) => {
@@ -11,7 +12,14 @@ export const addContact = async (req, res) => {
             userId,
             { $push: { contactData: contact } }
         );
-
+        // Lấy thông tin user
+        const user = await userModel.findById(userId);
+        // Tạo notification cho admin
+        await Notification.create({
+            type: 'contact',
+            message: `Người dùng ${user?.name || name} (${user?.email || email}) vừa gửi liên hệ`,
+            data: { userId, name: user?.name || name, email: user?.email || email }
+        });
         res.json({ success: true, message: 'Contact sent successfully' });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });

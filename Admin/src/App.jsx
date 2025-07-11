@@ -10,6 +10,7 @@ import Sidebar from './components/Sidebar'
 import User from './pages/User'
 import Dashboard from './components/Dashboard'
 import Branch from './pages/Branch'
+import Notification from './pages/Notification'
 
 export const backEndURL = import.meta.env.VITE_BACKEND_URL
 export const currency = 'VNĐ'
@@ -59,6 +60,7 @@ const App = () => {
                 <Route path='/orders' element={<Order token={token} />} />
                 <Route path='/users' element={<User token={token} />} />
                 <Route path='/branch' element={<Branch token={token} />} />
+                <Route path='/notification' element={<Notification />} />
               </Routes>
             </div>
           </div>

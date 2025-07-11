@@ -18,7 +18,7 @@ const Login = () => {
         try {
             if (currency === 'Đăng Ký') {
                 const res = await axios.post(
-                    backendURL + `/api/user/resgister`,
+                    backendURL + `/api/user/register`,
                     { name, email, password }
                 )
                 console.log(res.data)

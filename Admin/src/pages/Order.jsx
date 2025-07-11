@@ -192,6 +192,12 @@ const Order = ({ token }) => {
                                             <p>{order.address.street}</p>
                                             <p>{[order.address.city, order.address.state, order.address.country].filter(Boolean).join(', ')}</p>
                                             <p className="text-blue-600">{order.address.phone}</p>
+                                            {order.address.note && (
+                                                <p className="text-gray-500 italic">Ghi chú: {order.address.note}</p>
+                                            )}
+                                            {order.note && !order.address.note && (
+                                                <p className="text-gray-500 italic">Ghi chú: {order.note}</p>
+                                            )}
                                         </div>
                                     </div>
 

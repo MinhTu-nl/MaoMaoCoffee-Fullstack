@@ -2,6 +2,7 @@ import orderModel from "../model/orderModel.js"
 import userModel from "../model/userModel.js"
 import ProductModel from "../model/productsModel.js"
 import mongoose from "mongoose"
+import Notification from '../model/notificationModel.js'
 
 const placeOrder = async (req, res) => {
     let session;
@@ -124,6 +125,13 @@ const placeOrder = async (req, res) => {
 
         const newOrder = new orderModel(orderData)
         await newOrder.save(session ? { session } : {})
+
+        // Tạo notification cho admin
+        await Notification.create({
+            type: 'order',
+            message: `Người dùng ${user.name} (${user.email}) vừa đặt hàng mới`,
+            data: { orderId: newOrder._id, userId: user._id, name: user.name, email: user.email }
+        });
 
         // Clear user's cart after successful order
         await userModel.findByIdAndUpdate(

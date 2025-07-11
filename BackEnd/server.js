@@ -12,6 +12,7 @@ import statsRouter from './routes/statsRoute.js'
 import branchRouter from './routes/branchRoute.js'
 import contactRouter from './routes/contactRoute.js'
 import reviewRouter from './routes/reviewRoute.js'
+import notificationRouter from './routes/notificationRoute.js'
 
 
 // app config
@@ -47,6 +48,9 @@ app.use('/api/contact', contactRouter)
 
 //review
 app.use('/api/review', reviewRouter)
+
+//notification
+app.use('/api/notification', notificationRouter)
 
 app.get('/', (req, res) => {
     res.send('Im Minh Tú')

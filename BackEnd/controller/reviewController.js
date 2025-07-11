@@ -2,6 +2,7 @@ import Review from '../model/reviewModel.js'
 import Product from '../model/productsModel.js'
 import mongoose from 'mongoose'
 import User from '../model/userModel.js'
+import Notification from '../model/notificationModel.js'
 
 // Add review
 export const addReview = async (req, res) => {
@@ -12,6 +13,14 @@ export const addReview = async (req, res) => {
         const existed = await Review.findOne({ user, productId })
         if (existed) return res.status(400).json({ message: 'Bạn đã đánh giá sản phẩm này!' })
         const review = await Review.create({ user, productId, rating, comment })
+        // Lấy thông tin user
+        const userInfo = await User.findById(user)
+        // Tạo notification cho admin
+        await Notification.create({
+            type: 'review',
+            message: `Người dùng ${userInfo?.name || user} vừa đánh giá sản phẩm`,
+            data: { reviewId: review._id, userId: user, productId }
+        });
         res.status(201).json(review)
     } catch (err) {
         res.status(500).json({ message: err.message })

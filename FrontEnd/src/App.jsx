@@ -11,6 +11,7 @@ import Login from './pages/Login';
 import Contact from './pages/Contact';
 import Footer from './components/Footer';
 import SearchBar from './components/SearchBar';
+import ScrollToTop from './components/ScrollToTop';
 // import ProfileModal from './components/ProfileModal';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -26,18 +27,15 @@ const App = () => {
   const validPaths = [
     '/', '/About', '/Menu', '/Cart', '/Place-order', '/Login', '/Contact', '/Order', '/Profile'
   ];
-  const isNotFound = !validPaths.some(path => {
-    if (path.includes(':')) {
-      // dynamic route, e.g. /Products/:productId
-      const base = path.split(':')[0];
-      return location.pathname.startsWith(base);
-    }
-    return location.pathname === path;
-  }) && !location.pathname.startsWith('/Products/');
+  const isNotFound = !(
+    validPaths.includes(location.pathname) ||
+    location.pathname.toLowerCase().startsWith('/products/')
+  );
   const hideShow = !hideFooterPaths.includes(location.pathname) && !isNotFound;
 
   return (
     <div className='px-4 sm:px-[5vw] md:px-[7vm] lg:px-[9vm]'>
+      <ScrollToTop />
       <ToastContainer
         position="top-center"
         autoClose={5000}

@@ -64,7 +64,6 @@ const Contact = () => {
                                     </div>
                                     <div>
                                         <h3 className="text-lg font-medium text-gray-800">Địa Chỉ</h3>
-                                        <p className="mt-1 text-gray-600">Đại Học Nam Cần Thơ</p>
                                         <p className="text-gray-600">Cần Thơ, Việt Nam</p>
                                     </div>
                                 </div>
@@ -103,8 +102,7 @@ const Contact = () => {
                                     </div>
                                     <div>
                                         <h3 className="text-lg font-medium text-gray-800">Giờ Làm Việc</h3>
-                                        <p className="mt-1 text-gray-600">Thứ 2 - Thứ 6: 8:00 - 17:00</p>
-                                        <p className="text-gray-600">Thứ 7: 8:00 - 12:00</p>
+                                        <p className="mt-1 text-gray-600">8:00 - 22:00</p>
                                     </div>
                                 </div>
                             </div>

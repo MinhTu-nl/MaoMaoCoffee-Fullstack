@@ -1,8 +1,21 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { assets } from '../assets/assets'
 import { NavLink } from 'react-router-dom'
 
 const Sidebar = ({ onLogout }) => {
+    const [unreadCount, setUnreadCount] = useState(0);
+
+    useEffect(() => {
+        // Lấy số lượng chưa đọc từ localStorage (cập nhật bởi Notification.jsx)
+        const handleStorage = () => {
+            const count = Number(localStorage.getItem('admin_unread_notification') || 0);
+            setUnreadCount(count);
+        };
+        handleStorage();
+        window.addEventListener('storage', handleStorage);
+        return () => window.removeEventListener('storage', handleStorage);
+    }, []);
+
     return (
         <div className='h-screen-auto bg-white border-r border-gray-100 shadow-sm flex flex-col justify-between w-16 md:w-64 transition-all duration-300'>
             {/* Top section: Logo & Navigation */}
@@ -14,7 +27,7 @@ const Sidebar = ({ onLogout }) => {
 
                 {/* Navigation section */}
                 <div className='flex flex-col gap-1.5 p-3'>
-                    <p className='text-xs font-medium text-gray-400 px-3 py-2 hidden md:block'>MENU CHÍNH</p>
+                    <p className='text-[10px] font-medium text-gray-400 px-3 py-2 hidden md:block'>MENU CHÍNH</p>
 
                     <NavLink
                         to={"/"}
@@ -26,7 +39,7 @@ const Sidebar = ({ onLogout }) => {
                         }
                     >
                         <img className='w-5 h-5 mx-auto md:mx-0 opacity-80' src={assets.dashboard_icon} alt="" />
-                        <p className='text-sm font-medium hidden md:block'>Bảng điều khiển</p>
+                        <p className='text-xs font-medium hidden md:block'>Bảng điều khiển</p>
                     </NavLink>
 
                     <NavLink
@@ -39,7 +52,7 @@ const Sidebar = ({ onLogout }) => {
                         }
                     >
                         <img className='w-5 h-5 mx-auto md:mx-0 opacity-80' src={assets.add_icon} alt="" />
-                        <p className='text-sm font-medium hidden md:block'>Thêm sản phẩm</p>
+                        <p className='text-xs font-medium hidden md:block'>Thêm sản phẩm</p>
                     </NavLink>
 
                     <NavLink
@@ -52,10 +65,10 @@ const Sidebar = ({ onLogout }) => {
                         }
                     >
                         <img className='w-5 h-5 mx-auto md:mx-0 opacity-80' src={assets.list_icon} alt="" />
-                        <p className='text-sm font-medium hidden md:block'>Sản phẩm</p>
+                        <p className='text-xs font-medium hidden md:block'>Sản phẩm</p>
                     </NavLink>
 
-                    <p className='text-xs font-medium text-gray-400 px-3 py-2 mt-4 hidden md:block'>QUẢN LÝ</p>
+                    <p className='text-[10px] font-medium text-gray-400 px-3 py-2 mt-4 hidden md:block'>QUẢN LÝ</p>
 
                     <NavLink
                         to={"/orders"}
@@ -67,7 +80,25 @@ const Sidebar = ({ onLogout }) => {
                         }
                     >
                         <img className='w-5 h-5 mx-auto md:mx-0 opacity-80' src={assets.order_icon} alt="" />
-                        <p className='text-sm font-medium hidden md:block'>Đơn hàng</p>
+                        <p className='text-xs font-medium hidden md:block'>Đơn hàng</p>
+                    </NavLink>
+
+                    <NavLink
+                        to={"/notification"}
+                        className={({ isActive }) =>
+                            `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200
+                            ${isActive
+                                ? 'bg-blue-50 text-blue-600'
+                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`
+                        }
+                    >
+                        <div className="relative">
+                            <img className='w-5 h-5 mx-auto md:mx-0 opacity-80' src={assets.order_icon} alt="" />
+                            {unreadCount > 0 && (
+                                <span className="absolute -top-2 -right-2 min-w-[18px] h-5 px-1 bg-red-500 text-white text-xs rounded-full flex items-center justify-center border-2 border-white font-bold">{unreadCount}</span>
+                            )}
+                        </div>
+                        <p className='text-xs font-medium hidden md:block'>Thông báo</p>
                     </NavLink>
 
                     <NavLink
@@ -80,7 +111,7 @@ const Sidebar = ({ onLogout }) => {
                         }
                     >
                         <img className='w-5 h-5 mx-auto md:mx-0 opacity-80' src={assets.user_icon} alt="" />
-                        <p className='text-sm font-medium hidden md:block'>Người dùng</p>
+                        <p className='text-xs font-medium hidden md:block'>Người dùng</p>
                     </NavLink>
 
                     <NavLink
@@ -93,7 +124,7 @@ const Sidebar = ({ onLogout }) => {
                         }
                     >
                         <img className='w-5 h-5 mx-auto md:mx-0 opacity-80' src={assets.list_icon} alt="" />
-                        <p className='text-sm font-medium hidden md:block'>Chi Nhánh</p>
+                        <p className='text-xs font-medium hidden md:block'>Chi Nhánh</p>
                     </NavLink>
                 </div>
             </div>
@@ -109,7 +140,7 @@ const Sidebar = ({ onLogout }) => {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
                     </div>
-                    <span className='text-sm font-medium hidden md:block'>Đăng xuất</span>
+                    <span className='text-xs font-medium hidden md:block'>Đăng xuất</span>
                 </button>
             </div>
         </div>
