@@ -1,3 +1,4 @@
+import express from 'express';
 import userModel from '../model/userModel.js';
 import Notification from '../model/notificationModel.js';
 
@@ -66,5 +67,57 @@ export const deleteContact = async (req, res) => {
         res.json({ success: true, message: 'Contact deleted' });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// Admin gửi phản hồi cho contact
+export const sendFeedback = async (req, res) => {
+    try {
+        const { userId, contactId } = req.params;
+        const { feedback } = req.body;
+        const user = await userModel.findOneAndUpdate(
+            { _id: userId, 'contactData._id': contactId },
+            { $set: { 'contactData.$.feedback': feedback } },
+            { new: true }
+        );
+        if (!user) return res.status(404).json({ success: false, message: 'Contact not found' });
+        res.json({ success: true, message: 'Feedback sent', feedback });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// User lấy contactData của mình (bao gồm phản hồi từ admin)
+export const getUserContacts = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // Lấy user và chỉ lấy contactData
+        const user = await userModel.findById(userId, { contactData: 1, name: 1, email: 1 });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Sắp xếp contactData theo thời gian mới nhất trước
+        const sortedContacts = user.contactData.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        res.json({
+            success: true,
+            contacts: sortedContacts,
+            userInfo: {
+                name: user.name,
+                email: user.email
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching user contacts:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Error fetching contacts'
+        });
     }
 };

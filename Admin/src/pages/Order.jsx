@@ -118,7 +118,7 @@ const Order = ({ token }) => {
     if (loading) {
         return (
             <div className="flex justify-center items-center min-h-screen">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
             </div>
         )
     }
@@ -126,7 +126,7 @@ const Order = ({ token }) => {
     if (error) {
         return (
             <div className="flex justify-center items-center min-h-screen">
-                <div className="text-red-500 text-center">
+                <div className="text-red-600 text-center">
                     <p className="text-xl font-semibold">Lỗi</p>
                     <p>{error}</p>
                 </div>
@@ -136,10 +136,10 @@ const Order = ({ token }) => {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-2xl font-bold mb-6">Quản lý đơn hàng</h1>
+            <h1 className="text-3xl font-bold mb-6 text-blue-950">Quản lý đơn hàng</h1>
             <div className="space-y-4">
                 {orders.length === 0 ? (
-                    <div className="text-center text-gray-500 py-8">
+                    <div className="text-center text-blue-950 py-8 text-lg">
                         Không có đơn hàng nào
                     </div>
                 ) : (
@@ -147,88 +147,90 @@ const Order = ({ token }) => {
                         order && order.items && Array.isArray(order.items) ? (
                             <div
                                 key={order._id || index}
-                                className='bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow p-6'
+                                className='bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-shadow p-6'
                             >
                                 {/* Header Section */}
-                                <div className="flex items-center justify-between border-b pb-4 mb-4">
+                                <div className="flex items-center justify-between border-b border-gray-300 pb-4 mb-4">
                                     <div className="flex items-center gap-3">
                                         <img className='w-10 h-10' src={assets.parcel_icon} alt="Đơn hàng" />
                                         <div>
-                                            <h3 className="font-semibold text-gray-800">Đơn hàng #{order._id.slice(-6)}</h3>
-                                            <p className="text-sm text-gray-500">Ngày đặt: {new Date(order.date).toLocaleDateString('vi-VN')}</p>
+                                            <h3 className="font-bold text-blue-950 text-lg">Đơn hàng #{order._id.slice(-6)}</h3>
+                                            <p className="text-sm text-gray-700 font-medium">Ngày đặt: {new Date(order.date).toLocaleDateString('vi-VN')}</p>
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <p className='text-lg font-semibold text-gray-800'>
+                                        <p className='text-xl font-bold text-blue-950'>
                                             {order.amount.toLocaleString('vi-VN')} {currency}
                                         </p>
-                                        <p className="text-sm text-gray-500">Số lượng: {order.items.length} sản phẩm</p>
+                                        <p className="text-sm text-gray-700 font-medium">Số lượng: {order.items.length} sản phẩm</p>
                                     </div>
                                 </div>
 
                                 {/* Main Content */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {/* Items List */}
-                                    <div className="bg-gray-50 p-4 rounded-lg">
-                                        <h4 className="font-medium text-gray-700 mb-2">Sản phẩm</h4>
-                                        <div className="space-y-2 text-sm">
+                                    <div className="bg-gray-100 p-4 rounded-lg border border-gray-200">
+                                        <h4 className="font-bold text-blue-950 mb-3 text-base">Sản phẩm</h4>
+                                        <div className="space-y-3 text-sm">
                                             {order.items.map((item, itemIndex) => (
-                                                <div key={itemIndex} className="flex justify-between items-center border-b border-gray-100 pb-2 last:border-0">
+                                                <div key={itemIndex} className="flex justify-between items-center border-b border-gray-200 pb-2 last:border-0">
                                                     <div>
-                                                        <p className="font-medium">{item.name}</p>
-                                                        {item.sizes && <p className="text-gray-500 text-xs">Size: {item.sizes}</p>}
+                                                        <p className="font-semibold text-gray-900">{item.name}</p>
+                                                        {item.sizes && <p className="text-gray-700 text-xs font-medium">Size: {item.sizes}</p>}
                                                     </div>
-                                                    <span className="text-gray-600 font-medium">x{item.quantity}</span>
+                                                    <span className="text-gray-900 font-bold">x{item.quantity}</span>
                                                 </div>
                                             ))}
                                         </div>
                                     </div>
 
                                     {/* Customer Info */}
-                                    <div className="bg-gray-50 p-4 rounded-lg">
-                                        <h4 className="font-medium text-gray-700 mb-2">Thông tin khách hàng</h4>
-                                        <div className="space-y-1 text-sm">
-                                            <p className="font-medium">{order.address.firstName} {order.address.lastName}</p>
-                                            <p>{order.address.street}</p>
-                                            <p>{[order.address.city, order.address.state, order.address.country].filter(Boolean).join(', ')}</p>
-                                            <p className="text-blue-600">{order.address.phone}</p>
+                                    <div className="bg-gray-100 p-4 rounded-lg border border-gray-200">
+                                        <h4 className="font-bold text-green-700 mb-3 text-base">Thông tin khách hàng</h4>
+                                        <div className="space-y-2 text-sm">
+                                            <p className="font-semibold text-gray-900">{order.address.firstName} {order.address.lastName}</p>
+                                            <p className="text-gray-800">{order.address.street}</p>
+                                            <p className="text-gray-800">{[order.address.city, order.address.state, order.address.country].filter(Boolean).join(', ')}</p>
+                                            <p className="text-blue-700 font-semibold">{order.address.phone}</p>
                                             {order.address.note && (
-                                                <p className="text-gray-500 italic">Ghi chú: {order.address.note}</p>
+                                                <p className="text-gray-700 italic font-medium">Ghi chú: {order.address.note}</p>
                                             )}
                                             {order.note && !order.address.note && (
-                                                <p className="text-gray-500 italic">Ghi chú: {order.note}</p>
+                                                <p className="text-gray-700 italic font-medium">Ghi chú: {order.note}</p>
                                             )}
                                         </div>
                                     </div>
 
                                     {/* Branch Info */}
-                                    <div className="bg-gray-50 p-4 rounded-lg">
-                                        <h4 className="font-medium text-gray-700 mb-2">Thông tin chi nhánh</h4>
-                                        <div className="space-y-1 text-sm">
-                                            <p className="font-medium">{order.branch?.name || 'N/A'}</p>
+                                    <div className="bg-gray-100 p-4 rounded-lg border border-gray-200">
+                                        <h4 className="font-bold text-yellow-700 mb-3 text-base">Thông tin chi nhánh</h4>
+                                        <div className="space-y-2 text-sm">
+                                            <p className="font-semibold text-gray-900">{order.branch?.name || 'N/A'}</p>
                                             {order.branch?.location && (
-                                                <p className="text-gray-600">{order.branch.location}</p>
+                                                <p className="text-gray-800">{order.branch.location}</p>
                                             )}
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Order Details */}
-                                <div className="mt-4 bg-gray-50 p-4 rounded-lg">
-                                    <h4 className="font-medium text-gray-700 mb-2">Chi tiết đơn hàng</h4>
+                                <div className="mt-4 bg-gray-100 p-4 rounded-lg border border-gray-200">
+                                    <h4 className="font-bold text-gray-900 mb-3 text-base">Chi tiết đơn hàng</h4>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        <div className="space-y-1 text-sm">
-                                            <p>Phương thức: {order.paymentMethod}</p>
+                                        <div className="space-y-2 text-sm">
+                                            <p className="text-gray-800 font-medium">Phương thức: {order.paymentMethod}</p>
                                             <div className="flex items-center gap-2">
-                                                <span className={`w-2 h-2 rounded-full ${order.payment ? 'bg-green-500' : 'bg-red-500'}`}></span>
-                                                <span>{order.payment ? 'Đã thanh toán' : 'Chưa thanh toán'}</span>
+                                                <span className={`w-3 h-3 rounded-full ${order.payment ? 'bg-green-600' : 'bg-red-600'}`}></span>
+                                                <span className={`font-semibold ${order.payment ? 'text-green-700' : 'text-red-700'}`}>
+                                                    {order.payment ? 'Đã thanh toán' : 'Chưa thanh toán'}
+                                                </span>
                                             </div>
                                         </div>
                                         <div className="flex flex-col sm:flex-row gap-3 justify-end">
                                             <select
                                                 onChange={(event) => statusHandler(event, order._id)}
                                                 value={order.status}
-                                                className='p-2 font-medium border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white'
+                                                className='p-2 font-semibold border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900'
                                             >
                                                 <option value="Order Placed">{getStatusInVietnamese('Order Placed')}</option>
                                                 <option value="Packing">{getStatusInVietnamese('Packing')}</option>
@@ -238,14 +240,14 @@ const Order = ({ token }) => {
                                             </select>
                                             <button
                                                 onClick={() => paymentStatusHandler(order._id, order.payment)}
-                                                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors
+                                                className={`px-4 py-2 rounded-md text-sm font-semibold transition-colors
                                                     ${order.payment
-                                                        ? 'bg-green-50 text-green-700 ring-1 ring-green-600/20 hover:bg-green-100'
-                                                        : 'bg-red-50 text-red-700 ring-1 ring-red-600/20 hover:bg-red-100'
+                                                        ? 'bg-green-100 text-green-800 ring-1 ring-green-600 hover:bg-green-200'
+                                                        : 'bg-red-100 text-red-800 ring-1 ring-red-600 hover:bg-red-200'
                                                     }`}
                                             >
                                                 <span className="flex items-center gap-2">
-                                                    <span className={`w-2 h-2 rounded-full ${order.payment ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                                                    <span className={`w-2 h-2 rounded-full ${order.payment ? 'bg-green-600' : 'bg-red-600'}`}></span>
                                                     {order.payment ? 'Đã thanh toán' : 'Chưa thanh toán'}
                                                 </span>
                                             </button>

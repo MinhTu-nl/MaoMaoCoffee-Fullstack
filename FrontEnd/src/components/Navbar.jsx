@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { assets } from '../assets/assets'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { ShopContext } from '../contexts/ShopContext'
+import NotificationBell from './NotificationBell'
 
 const Navbar = () => {
     const [visible, setVisible] = useState(false)
@@ -90,6 +91,9 @@ const Navbar = () => {
                                     className='w-5 h-5'
                                 />
                             </button>
+
+                            {/* Notification Bell - Only show when user is logged in */}
+                            {token && <NotificationBell />}
 
                             <div className='hidden sm:block group relative'>
                                 <button

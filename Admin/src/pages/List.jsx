@@ -19,9 +19,25 @@ const List = ({ token }) => {
     const [showReviews, setShowReviews] = useState({});
     const [reviewCounts, setReviewCounts] = useState({});
 
+    // Danh sách các loại sản phẩm với tên hiển thị đẹp
+    const categoryOptions = [
+        { value: '', label: 'Tất cả loại' },
+        { value: 'coldbew', label: 'Coldbrew' },
+        { value: 'coffee', label: 'Cà phê' },
+        { value: 'tea', label: 'Trà' },
+        { value: 'milk', label: 'Trà sữa' },
+        { value: 'ice', label: 'Đá xay' },
+        { value: 'croffle', label: 'Croffle' },
+        { value: 'toast', label: 'Bánh nướng' }
+    ];
+
     const fetchList = async () => {
         try {
-            const res = await axios.get(backEndURL + `/api/product/list?limit=1000`)
+            const res = await axios.get(backEndURL + `/api/product/list?limit=1000`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
             if (res.data.success) {
                 setList(res.data.data)
             } else {
@@ -80,7 +96,6 @@ const List = ({ token }) => {
         }
     }
 
-
     const handleEdit = (item) => {
         setEditingProduct(item)
     }
@@ -104,64 +119,74 @@ const List = ({ token }) => {
     const filteredList = list
         .filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()))
         .filter(item => !categoryFilter || item.category === categoryFilter)
-        .filter(item => !subCategoryFilter || item.subCategory === subCategoryFilter)
-        .filter(item => {
-            const prices = Object.values(item.price || {}).map(Number);
-            const min = minPrice ? Number(minPrice) : null;
-            const max = maxPrice ? Number(maxPrice) : null;
-            if (min !== null && prices.every(p => p < min)) return false;
-            if (max !== null && prices.every(p => p > max)) return false;
-            if (min !== null && max !== null && prices.every(p => p < min || p > max)) return false;
-            return true;
-        });
+        .filter(item => !subCategoryFilter || item.subCategory === subCategoryFilter);
 
     return (
         <>
-            {/* Bộ lọc + Thanh tìm kiếm ngang hàng */}
-            <div className='px-6 mb-4 flex flex-col md:flex-row md:items-end gap-2'>
-                <div className='flex flex-col md:flex-row gap-2 flex-1'>
-                    <div>
-                        <label className='block text-xs mb-1'>Loại sản phẩm</label>
+            {/* Header với thống kê */}
+            <div className='bg-white rounded-lg shadow-sm p-4 mb-4'>
+                <h1 className='text-xl font-bold text-gray-800 mb-3'>Quản lý Sản phẩm</h1>
+                <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
+                    <div className='bg-blue-50 p-3 rounded-lg'>
+                        <div className='text-blue-600 text-sm font-medium'>Tổng sản phẩm</div>
+                        <div className='text-lg font-bold text-blue-800'>{list.length}</div>
+                    </div>
+                    <div className='bg-green-50 p-3 rounded-lg'>
+                        <div className='text-green-600 text-sm font-medium'>Đang hiển thị</div>
+                        <div className='text-lg font-bold text-green-800'>{filteredList.length}</div>
+                    </div>
+                    <div className='bg-purple-50 p-3 rounded-lg'>
+                        <div className='text-purple-600 text-sm font-medium'>Bestseller</div>
+                        <div className='text-lg font-bold text-purple-800'>
+                            {list.filter(item => item.bestseller).length}
+                        </div>
+                    </div>
+                    <div className='bg-orange-50 p-3 rounded-lg'>
+                        <div className='text-orange-600 text-sm font-medium'>Loại sản phẩm</div>
+                        <div className='text-lg font-bold text-orange-800'>
+                            {new Set(list.map(item => item.category)).size}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Bộ lọc và tìm kiếm */}
+            <div className='bg-white rounded-lg shadow-sm p-4 mb-4'>
+                <div className='flex flex-col sm:flex-row gap-3'>
+                    {/* Tìm kiếm */}
+                    <div className='flex-1'>
+                        <label className='block text-sm font-medium text-gray-700 mb-1'>
+                            Tìm kiếm
+                        </label>
+                        <input
+                            type='text'
+                            placeholder='Nhập tên sản phẩm...'
+                            className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm'
+                            value={searchTerm}
+                            onChange={e => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+
+                    {/* Lọc theo loại */}
+                    <div className='sm:w-48'>
+                        <label className='block text-sm font-medium text-gray-700 mb-1'>
+                            Loại sản phẩm
+                        </label>
                         <select
-                            className='border px-2 py-1 rounded w-full md:w-40'
+                            className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm'
                             value={categoryFilter}
                             onChange={e => setCategoryFilter(e.target.value)}
                         >
-                            <option value=''>Tất cả</option>
-                            <option value='coldbew'>Coldbrew</option>
-                            <option value='coffee'>Cà phê</option>
-                            <option value='tea'>Trà</option>
-                            <option value='milk'>Trà sữa</option>
-                            <option value='ice'>Đá xay</option>
-                            <option value='croffle'>Croffle</option>
-                            <option value='toast'>Bánh nướng</option>
+                            {categoryOptions.map(option => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
                         </select>
                     </div>
-                    <div>
-                        <label className='block text-xs mb-1'>Nhóm</label>
-                        <select
-                            className='border px-2 py-1 rounded w-full md:w-32'
-                            value={subCategoryFilter}
-                            onChange={e => setSubCategoryFilter(e.target.value)}
-                        >
-                            <option value=''>Tất cả</option>
-                            <option value='drink'>Đồ uống</option>
-                            <option value='food'>Món ăn</option>
-                            <option value='dessert'>Tráng miệng</option>
-                        </select>
-                    </div>
-                </div>
-                <div className='flex-1'>
-                    <label className='block text-xs mb-1 invisible md:visible'>&nbsp;</label>
-                    <input
-                        type='text'
-                        placeholder='Tìm kiếm sản phẩm theo tên...'
-                        className='border px-3 py-2 rounded w-full md:w-full mb-2 md:mb-0'
-                        value={searchTerm}
-                        onChange={e => setSearchTerm(e.target.value)}
-                    />
                 </div>
             </div>
+
             {editingProduct && (
                 <EditProductModal
                     product={editingProduct}
@@ -181,12 +206,12 @@ const List = ({ token }) => {
             <div className='flex flex-col gap-2'>
                 {/* --------------- LIST TABLE TITLE -------------- */}
                 <div className='hidden md:grid grid-cols-[1fr_3fr_1fr_1fr_1fr_2fr] items-center py-1 px-2 border bg-gray-100 text-sm'>
-                    <b>Image</b>
-                    <b>Name</b>
-                    <b>Category</b>
-                    <b>Price</b>
-                    <b>Reviews</b>
-                    <b className='text-center'>Action</b>
+                    <b>Ảnh</b>
+                    <b>Tên sản phẩm</b>
+                    <b>Loại sản phẩm</b>
+                    <b>Giá</b>
+                    <b>Đánh giá</b>
+                    <b className='text-center'>Hành động</b>
                 </div>
 
                 {/* ------------- LIST TABLE DATA--------------- */}

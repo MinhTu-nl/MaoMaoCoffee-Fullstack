@@ -77,4 +77,62 @@ export const getUnreadCount = async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
+};
+
+// User lấy notifications liên quan đến mình
+export const getUserNotifications = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // Lấy notifications có data.userId trùng với userId của user hiện tại
+        const notifications = await Notification.find({
+            'data.userId': userId
+        }).sort({ createdAt: -1 });
+
+        res.json({
+            success: true,
+            notifications
+        });
+    } catch (error) {
+        console.error('Error fetching user notifications:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Error fetching notifications'
+        });
+    }
+};
+
+// User đánh dấu notification đã đọc
+export const markUserNotificationAsRead = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { notificationId } = req.params;
+
+        const notification = await Notification.findOneAndUpdate(
+            {
+                _id: notificationId,
+                'data.userId': userId
+            },
+            { isRead: true },
+            { new: true }
+        );
+
+        if (!notification) {
+            return res.status(404).json({
+                success: false,
+                message: 'Notification not found'
+            });
+        }
+
+        res.json({
+            success: true,
+            notification
+        });
+    } catch (error) {
+        console.error('Error marking notification as read:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Error marking notification as read'
+        });
+    }
 }; 

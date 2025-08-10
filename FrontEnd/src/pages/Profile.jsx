@@ -2,6 +2,9 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ShopContext } from '../contexts/ShopContext';
 import { assets } from '../assets/assets';
 import Title from '../components/Title';
+import ChangePasswordModal from '../components/ChangePasswordModal';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 
 const Profile = () => {
@@ -10,6 +13,8 @@ const Profile = () => {
     const [recentOrders, setRecentOrders] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+    const [changePasswordLoading, setChangePasswordLoading] = useState(false);
 
     // Hàm chuyển đổi trạng thái sang tiếng Việt
     const getStatusInVietnamese = (status) => {
@@ -25,6 +30,47 @@ const Profile = () => {
         };
         return statusMap[status] || status;
     }
+
+    // Hàm thay đổi mật khẩu
+    const handleChangePassword = async (currentPassword, newPassword) => {
+        try {
+            setChangePasswordLoading(true);
+
+            const response = await axios.put(`${backendURL}/api/user/change-password`, {
+                currentPassword,
+                newPassword
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.data.success) {
+                toast.success('Mật khẩu đã được thay đổi thành công!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
+                setShowChangePasswordModal(false);
+            }
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || 'Có lỗi xảy ra khi thay đổi mật khẩu';
+            toast.error(errorMessage, {
+                position: "top-right",
+                autoClose: 4000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
+        } finally {
+            setChangePasswordLoading(false);
+        }
+    };
 
     // Lấy thông tin user
     useEffect(() => {
@@ -99,31 +145,56 @@ const Profile = () => {
                     {/* Thông tin cá nhân */}
                     <div>
                         <Title text1="THÔNG TIN CÁ NHÂN" />
-                        <div className="bg-gray-50 rounded-lg p-6 flex items-center gap-6">
-                            <img
-                                src={assets.user_icon}
-                                alt="User icon"
-                                className="w-20 h-20 object-cover rounded-full border-2 border-white shadow-md"
-                            />
-                            <div className="flex-1 space-y-4">
-                                <div>
-                                    <label className="text-xs font-semibold text-gray-600 uppercase tracking-wider">TÊN NGƯỜI DÙNG</label>
-                                    <input
-                                        type="text"
-                                        value={profileData.name}
-                                        readOnly
-                                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white mt-1"
-                                    />
+                        <div className="bg-gray-50 rounded-lg p-6 flex-1 flex flex-col">
+                            <div className="flex items-center gap-6 mb-6">
+                                <img
+                                    src={assets.user_icon}
+                                    alt="User icon"
+                                    className="w-20 h-20 object-cover rounded-full border-2 border-white shadow-md"
+                                />
+                                <div className="flex-1 space-y-4">
+                                    <div>
+                                        <label className="text-xs font-semibold text-gray-600 uppercase tracking-wider">TÊN NGƯỜI DÙNG</label>
+                                        <input
+                                            type="text"
+                                            value={profileData.name}
+                                            readOnly
+                                            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white mt-1"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-xs font-semibold text-gray-600 uppercase tracking-wider">EMAIL</label>
+                                        <input
+                                            type="email"
+                                            value={profileData.email}
+                                            readOnly
+                                            className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white mt-1"
+                                        />
+                                    </div>
                                 </div>
-                                <div>
-                                    <label className="text-xs font-semibold text-gray-600 uppercase tracking-wider">EMAIL</label>
-                                    <input
-                                        type="email"
-                                        value={profileData.email}
-                                        readOnly
-                                        className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white mt-1"
-                                    />
-                                </div>
+                            </div>
+                            {/* Nút thay đổi mật khẩu - thiết kế trung hòa */}
+                            <div className="border-t pt-4 mt-auto space-y-3">
+                                <button
+                                    onClick={() => setShowChangePasswordModal(true)}
+                                    className="w-full flex items-center justify-center gap-2 px-4 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 text-sm font-medium shadow-sm"
+                                >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                    Thay Đổi Mật Khẩu
+                                </button>
+
+                                {/* Nút xem phản hồi */}
+                                <button
+                                    onClick={() => navigate('/Feedback')}
+                                    className="w-full flex items-center justify-center gap-2 px-4 py-3 text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 hover:border-blue-300 transition-all duration-200 text-sm font-medium shadow-sm"
+                                >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                    </svg>
+                                    Xem Phản Hồi
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -191,6 +262,14 @@ const Profile = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Modal thay đổi mật khẩu */}
+            <ChangePasswordModal
+                isOpen={showChangePasswordModal}
+                onClose={() => setShowChangePasswordModal(false)}
+                onSubmit={handleChangePassword}
+                loading={changePasswordLoading}
+            />
         </div>
     );
 };

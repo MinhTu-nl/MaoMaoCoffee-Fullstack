@@ -193,4 +193,66 @@ const validateAdminToken = async (req, res) => {
     }
 }
 
-export { loginUser, registerUser, adminLogin, listUsers, getUser, validateAdminToken }
+// Change password function
+const changePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const userId = req.user.id;
+
+        // Validate input
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({
+                success: false,
+                message: 'Vui lòng cung cấp mật khẩu hiện tại và mật khẩu mới'
+            });
+        }
+
+        // Validate new password length
+        if (newPassword.length < 8) {
+            return res.status(400).json({
+                success: false,
+                message: 'Mật khẩu mới phải có ít nhất 8 ký tự'
+            });
+        }
+
+        // Find user
+        const user = await userModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'Không tìm thấy người dùng'
+            });
+        }
+
+        // Verify current password
+        const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+        if (!isCurrentPasswordValid) {
+            return res.status(400).json({
+                success: false,
+                message: 'Mật khẩu hiện tại không đúng'
+            });
+        }
+
+        // Hash new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+
+        // Update password
+        user.password = hashedNewPassword;
+        await user.save();
+
+        res.json({
+            success: true,
+            message: 'Mật khẩu đã được thay đổi thành công'
+        });
+
+    } catch (error) {
+        console.error('Error changing password:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Lỗi khi thay đổi mật khẩu'
+        });
+    }
+}
+
+export { loginUser, registerUser, adminLogin, listUsers, getUser, validateAdminToken, changePassword }

@@ -4,16 +4,58 @@ import { NavLink } from 'react-router-dom'
 
 const Sidebar = ({ onLogout }) => {
     const [unreadCount, setUnreadCount] = useState(0);
+    const [newOrderCount, setNewOrderCount] = useState(0);
+    const [productCount, setProductCount] = useState(0);
 
     useEffect(() => {
-        // Lấy số lượng chưa đọc từ localStorage (cập nhật bởi Notification.jsx)
-        const handleStorage = () => {
-            const count = Number(localStorage.getItem('admin_unread_notification') || 0);
-            setUnreadCount(count);
+        // Hàm fetch số lượng thông báo chưa đọc
+        const fetchUnreadCount = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/notification/unread/count`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                setUnreadCount(data.unread || 0);
+            } catch {
+                setUnreadCount(0);
+            }
         };
-        handleStorage();
-        window.addEventListener('storage', handleStorage);
-        return () => window.removeEventListener('storage', handleStorage);
+        // Hàm fetch số lượng đơn hàng mới
+        const fetchNewOrderCount = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/all?status=Order%20Placed`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                setNewOrderCount(data.data?.orders?.length || 0);
+            } catch {
+                setNewOrderCount(0);
+            }
+        };
+        // Hàm fetch số lượng sản phẩm
+        const fetchProductCount = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/product/list?limit=1`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                setProductCount(data.pagination?.total || data.data?.length || 0);
+            } catch {
+                setProductCount(0);
+            }
+        };
+        fetchUnreadCount();
+        fetchNewOrderCount();
+        fetchProductCount();
+        const interval = setInterval(() => {
+            fetchUnreadCount();
+            fetchNewOrderCount();
+            fetchProductCount();
+        }, 5000); // 5 giây
+        return () => clearInterval(interval);
     }, []);
 
     return (
@@ -64,7 +106,12 @@ const Sidebar = ({ onLogout }) => {
                                 : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`
                         }
                     >
-                        <img className='w-5 h-5 mx-auto md:mx-0 opacity-80' src={assets.list_icon} alt="" />
+                        <div className="relative">
+                            <img className='w-5 h-5 mx-auto md:mx-0 opacity-80' src={assets.list_icon} alt="" />
+                            {productCount > 0 && (
+                                <span className="absolute -top-2 -right-2 min-w-[18px] h-5 px-1 bg-blue-500 text-white text-xs rounded-full flex items-center justify-center border-2 border-white font-bold">{productCount}</span>
+                            )}
+                        </div>
                         <p className='text-xs font-medium hidden md:block'>Sản phẩm</p>
                     </NavLink>
 
@@ -79,7 +126,12 @@ const Sidebar = ({ onLogout }) => {
                                 : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`
                         }
                     >
-                        <img className='w-5 h-5 mx-auto md:mx-0 opacity-80' src={assets.order_icon} alt="" />
+                        <div className="relative">
+                            <img className='w-5 h-5 mx-auto md:mx-0 opacity-80' src={assets.order_icon} alt="" />
+                            {newOrderCount > 0 && (
+                                <span className="absolute -top-2 -right-2 min-w-[18px] h-5 px-1 bg-red-500 text-white text-xs rounded-full flex items-center justify-center border-2 border-white font-bold">{newOrderCount}</span>
+                            )}
+                        </div>
                         <p className='text-xs font-medium hidden md:block'>Đơn hàng</p>
                     </NavLink>
 

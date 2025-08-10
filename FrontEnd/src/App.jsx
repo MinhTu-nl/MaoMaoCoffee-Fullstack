@@ -9,6 +9,7 @@ import Cart from './pages/Cart';
 import PlaceOrder from './pages/PlaceOrder';
 import Login from './pages/Login';
 import Contact from './pages/Contact';
+import Feedback from './pages/Feedback';
 import Footer from './components/Footer';
 import SearchBar from './components/SearchBar';
 import ScrollToTop from './components/ScrollToTop';
@@ -25,7 +26,7 @@ const App = () => {
   const location = useLocation();
   const hideFooterPaths = ['/Login'];
   const validPaths = [
-    '/', '/About', '/Menu', '/Cart', '/Place-order', '/Login', '/Contact', '/Order', '/Profile'
+    '/', '/About', '/Menu', '/Cart', '/Place-order', '/Login', '/Contact', '/Order', '/Profile', '/Feedback'
   ];
   const isNotFound = !(
     validPaths.includes(location.pathname) ||
@@ -37,17 +38,21 @@ const App = () => {
     <div className='px-4 sm:px-[5vw] md:px-[7vm] lg:px-[9vm]'>
       <ScrollToTop />
       <ToastContainer
-        position="top-center"
-        autoClose={5000}
+        position="top-right"
+        autoClose={4000}
         hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
+        newestOnTop={true}
+        closeOnClick={true}
         rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
+        pauseOnFocusLoss={false}
+        draggable={true}
+        pauseOnHover={true}
         theme="light"
-
+        toastStyle={{
+          borderRadius: '8px',
+          fontSize: '14px',
+          fontWeight: '500',
+        }}
       />
       {hideShow && <Navbar />}
       <SearchBar />
@@ -62,6 +67,7 @@ const App = () => {
         <Route path='/Contact' element={<Contact />} />
         <Route path='/Order' element={<Order />} />
         <Route path='/Profile' element={<Profile />} />
+        <Route path='/Feedback' element={<Feedback />} />
         <Route path='/*' element={<NotFoundPage />} />
         {/* <Route path='/Profile' element={<ProfileModal />} /> */}
       </Routes>

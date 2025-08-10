@@ -74,30 +74,6 @@ const Notification = () => {
         }
     };
 
-    const markAllAsRead = async () => {
-        try {
-            await axios.patch(`${backEndURL}/api/notification/all/read`, {}, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            fetchNotifications();
-            fetchUnreadCount();
-        } catch (err) {
-            setError('Không thể đánh dấu tất cả đã đọc');
-        }
-    };
-
-    const deleteAll = async () => {
-        try {
-            await axios.delete(`${backEndURL}/api/notification/all`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            fetchNotifications();
-            fetchUnreadCount();
-        } catch (err) {
-            setError('Không thể xóa tất cả thông báo');
-        }
-    };
-
     return (
         <div className="w-full max-w-5xl mx-auto px-2 sm:px-6 md:px-8 py-8">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-2">
@@ -107,8 +83,6 @@ const Notification = () => {
                 </div>
                 <div className="flex gap-2 flex-wrap">
                     <button onClick={fetchNotifications} className="px-2.5 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 font-semibold transition text-[10px]">Làm mới</button>
-                    <button onClick={markAllAsRead} className="px-2.5 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600 font-semibold transition text-[10px]">Đánh dấu tất cả đã đọc</button>
-                    <button onClick={deleteAll} className="px-2.5 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 font-semibold transition text-[10px]">Xóa tất cả</button>
                 </div>
             </div>
             {loading && <p className="text-[10px]">Đang tải...</p>}
