@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { assets } from '../assets/assets'
 import axios from 'axios'
 import { backEndURL } from '../App'
+import { toast } from 'react-toastify'
 
 const User = () => {
     const [users, setUsers] = useState([])
@@ -30,7 +31,7 @@ const User = () => {
                 { feedback: reply },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            alert('Gửi phản hồi thành công!');
+            toast.success('Gửi phản hồi thành công!');
             setReplyMessages(prev => ({ ...prev, [contactId]: '' }));
             // Sau khi gửi, cập nhật lại feedback cho contact trên UI (nếu cần)
             setUsers(prevUsers => prevUsers.map(u => {
@@ -43,7 +44,7 @@ const User = () => {
                 };
             }));
         } catch (e) {
-            alert('Gửi phản hồi thất bại!');
+            toast.error('Gửi phản hồi thất bại!');
         }
         setSendingReply(prev => ({ ...prev, [contactId]: false }));
     };

@@ -323,9 +323,36 @@ const updateStatus = async (req, res) => {
             })
         }
 
-        // Prepare update data
+        // Prepare update data with forward-only status progression
         const updateData = {}
         if (status) {
+            // Enforce allowed forward-only progress and no repetition
+            const allowedStatuses = [
+                "Order Placed",
+                "Packing",
+                "Shipped",
+                "Out for delivery",
+                "Delivered"
+            ]
+
+            if (!allowedStatuses.includes(status)) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid status value"
+                })
+            }
+
+            const currentIndex = allowedStatuses.indexOf(order.status)
+            const newIndex = allowedStatuses.indexOf(status)
+
+            // Disallow staying the same or moving backwards
+            if (newIndex <= currentIndex) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Không thể cập nhật về trạng thái trước đó hoặc trùng với trạng thái hiện tại. Chỉ được phép cập nhật tiến về phía trước."
+                })
+            }
+
             updateData.status = status
         }
         if (deliveryStatus) {

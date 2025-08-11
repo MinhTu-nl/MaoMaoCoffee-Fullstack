@@ -1,12 +1,46 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { assets } from '../assets/assets'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { ShopContext } from '../contexts/ShopContext'
 import NotificationBell from './NotificationBell'
+import axios from 'axios'
 
 const Navbar = () => {
     const [visible, setVisible] = useState(false)
-    const { setShowSearch, getCartCount, navigate, token, setToken, setCartItems } = useContext(ShopContext)
+    const { setShowSearch, getCartCount, navigate, token, setToken, setCartItems, backendURL } = useContext(ShopContext)
+    const [feedbackCount, setFeedbackCount] = useState(0)
+    const [orderCount, setOrderCount] = useState(0)
+
+    useEffect(() => {
+        if (!token) {
+            setFeedbackCount(0)
+            setOrderCount(0)
+            return
+        }
+        // Fetch feedback count
+        axios.get(`${backendURL}/api/contact/user-contacts`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        }).then(res => {
+            if (res.data.success && Array.isArray(res.data.contacts)) {
+                setFeedbackCount(res.data.contacts.length)
+            } else {
+                setFeedbackCount(0)
+            }
+        }).catch(() => setFeedbackCount(0))
+        // Fetch order count
+        axios.get(`${backendURL}/api/order/user`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        }).then(res => {
+            if (res.data.success && res.data.data && Array.isArray(res.data.data.orders)) {
+                setOrderCount(res.data.data.orders.length)
+            } else {
+                setOrderCount(0)
+            }
+        }).catch(() => setOrderCount(0))
+    }, [token, backendURL])
 
     const logout = () => {
         navigate('/Login')
@@ -24,11 +58,11 @@ const Navbar = () => {
     return (
         <>
             <nav className='sticky top-0 z-40 bg-white/80 backdrop-blur-md shadow-sm'>
-                <div className='max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-4'>
-                    <div className='flex items-center justify-between gap-8'>
+                <div className='max-w-7xl mx-auto px-2 md:px-6 lg:px-8 py-3 sm:py-4'>
+                    <div className='flex items-center justify-between gap-4 sm:gap-8'>
                         {/* Logo */}
                         <Link to='/' className='flex-shrink-0 transition-transform hover:scale-105'>
-                            <img src={assets.LOGO2} className='w-20' alt="Logo" />
+                            <img src={assets.LOGO2} className='w-16 sm:w-20' alt="Logo" />
                         </Link>
 
                         {/* Desktop Navigation */}
@@ -80,7 +114,7 @@ const Navbar = () => {
                         </ul>
 
                         {/* Right Icons */}
-                        <div className='flex items-center gap-6'>
+                        <div className='flex items-center gap-3 sm:gap-6'>
                             <button
                                 onClick={handleSearchClick}
                                 className='p-2 hover:bg-gray-100 rounded-full transition-colors'
@@ -113,9 +147,17 @@ const Navbar = () => {
                                             </button>
                                             <button
                                                 onClick={() => navigate('/Order')}
-                                                className='w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors'
+                                                className='w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors flex items-center gap-2'
                                             >
                                                 Đặt Hàng
+                                                {orderCount > 0 && <span className="ml-1 w-2 h-2 bg-red-400 rounded-full inline-block"></span>}
+                                            </button>
+                                            <button
+                                                onClick={() => navigate('/Feedback')}
+                                                className='w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors flex items-center gap-2'
+                                            >
+                                                Phản Hồi
+                                                {feedbackCount > 0 && <span className="ml-1 w-2 h-2 bg-red-400 rounded-full inline-block"></span>}
                                             </button>
                                             <button
                                                 onClick={logout}
@@ -139,9 +181,9 @@ const Navbar = () => {
 
                             <button
                                 onClick={() => setVisible(true)}
-                                className='p-2 hover:bg-gray-100 rounded-full transition-colors sm:hidden'
+                                className='p-2 hover:bg-gray-100 rounded-full transition-colors sm:hidden ml-1'
                             >
-                                <img src={assets.menu_icon} alt="menu" className='w-5 h-5' />
+                                <img src={assets.menu_icon} alt="menu" className='w-6 h-6' />
                             </button>
                         </div>
                     </div>
@@ -153,7 +195,7 @@ const Navbar = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 z-50" onClick={() => setVisible(false)}>
                     {/* Mobile Menu Content */}
                     <div
-                        className="fixed top-0 right-0 h-full w-72 bg-white shadow-xl transform transition-transform duration-300 ease-in-out"
+                        className="fixed top-0 right-0 h-full w-72 max-w-full bg-white shadow-2xl border-l border-gray-200 transform transition-transform duration-300 ease-in-out"
                         onClick={e => e.stopPropagation()}
                     >
                         <div className='flex flex-col h-full'>
@@ -162,7 +204,7 @@ const Navbar = () => {
                                     <NavLink
                                         onClick={() => setVisible(false)}
                                         className={({ isActive }) =>
-                                            `block px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors ${isActive ? 'text-blue-950 bg-blue-50' : ''}`
+                                            `block px-6 py-4 text-lg text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors ${isActive ? 'text-blue-950 bg-blue-50' : ''}`
                                         }
                                         to="/"
                                     >
@@ -171,7 +213,7 @@ const Navbar = () => {
                                     <NavLink
                                         onClick={() => setVisible(false)}
                                         className={({ isActive }) =>
-                                            `block px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors ${isActive ? 'text-blue-950 bg-blue-50' : ''}`
+                                            `block px-6 py-4 text-lg text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors ${isActive ? 'text-blue-950 bg-blue-50' : ''}`
                                         }
                                         to="/About"
                                     >
@@ -180,7 +222,7 @@ const Navbar = () => {
                                     <NavLink
                                         onClick={() => setVisible(false)}
                                         className={({ isActive }) =>
-                                            `block px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors ${isActive ? 'text-blue-950 bg-blue-50' : ''}`
+                                            `block px-6 py-4 text-lg text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors ${isActive ? 'text-blue-950 bg-blue-50' : ''}`
                                         }
                                         to="/Menu"
                                     >
@@ -189,12 +231,51 @@ const Navbar = () => {
                                     <NavLink
                                         onClick={() => setVisible(false)}
                                         className={({ isActive }) =>
-                                            `block px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors ${isActive ? 'text-blue-950 bg-blue-50' : ''}`
+                                            `block px-6 py-4 text-lg text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors ${isActive ? 'text-blue-950 bg-blue-50' : ''}`
                                         }
                                         to="/Contact"
                                     >
                                         Liên Hệ
                                     </NavLink>
+                                    {token && (
+                                        <>
+                                            <NavLink
+                                                onClick={() => setVisible(false)}
+                                                className={({ isActive }) =>
+                                                    `block px-6 py-4 text-lg text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors flex items-center gap-2 ${isActive ? 'text-blue-950 bg-blue-50' : ''}`
+                                                }
+                                                to="/Profile"
+                                            >
+                                                Hồ Sơ
+                                            </NavLink>
+                                            <NavLink
+                                                onClick={() => setVisible(false)}
+                                                className={({ isActive }) =>
+                                                    `block px-6 py-4 text-lg text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors flex items-center gap-2 ${isActive ? 'text-blue-950 bg-blue-50' : ''}`
+                                                }
+                                                to="/Order"
+                                            >
+                                                Đặt Hàng
+                                                {orderCount > 0 && <span className="ml-1 w-2 h-2 bg-red-400 rounded-full inline-block"></span>}
+                                            </NavLink>
+                                            <NavLink
+                                                onClick={() => setVisible(false)}
+                                                className={({ isActive }) =>
+                                                    `block px-6 py-4 text-lg text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors flex items-center gap-2 ${isActive ? 'text-blue-950 bg-blue-50' : ''}`
+                                                }
+                                                to="/Feedback"
+                                            >
+                                                Phản Hồi
+                                                {feedbackCount > 0 && <span className="ml-1 w-2 h-2 bg-red-400 rounded-full inline-block"></span>}
+                                            </NavLink>
+                                            <button
+                                                onClick={() => { logout(); setVisible(false); }}
+                                                className='block w-full text-left px-6 py-4 text-lg text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors'
+                                            >
+                                                Đăng Xuất
+                                            </button>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </div>

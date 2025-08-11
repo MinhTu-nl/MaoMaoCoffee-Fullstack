@@ -100,7 +100,6 @@ const Dashboard = () => {
             // Lấy tổng số người dùng
             setTotalUsers(usersRes.data.users?.length || 0);
         } catch (error) {
-            console.error('Error fetching data:', error);
             setError(error.response?.data?.message || 'Có lỗi xảy ra khi tải dữ liệu');
         } finally {
             setLoading(false);
@@ -122,7 +121,7 @@ const Dashboard = () => {
     if (error) {
         return (
             <div className="flex flex-col items-center justify-center h-[70vh]">
-                <div className="text-red-500 text-2xl font-bold mb-2">{error}</div>
+                <div className="text-blue-950 text-2xl font-bold mb-2">{error}: Hãy nhấn "Thử lại" để tiếp tục</div>
                 <button
                     onClick={fetchData}
                     className="mt-4 px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 shadow"

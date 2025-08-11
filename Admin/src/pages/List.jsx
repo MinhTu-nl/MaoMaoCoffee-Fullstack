@@ -13,8 +13,6 @@ const List = ({ token }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [categoryFilter, setCategoryFilter] = useState('');
     const [subCategoryFilter, setSubCategoryFilter] = useState('');
-    const [minPrice, setMinPrice] = useState('');
-    const [maxPrice, setMaxPrice] = useState('');
     const [reviews, setReviews] = useState({});
     const [showReviews, setShowReviews] = useState({});
     const [reviewCounts, setReviewCounts] = useState({});

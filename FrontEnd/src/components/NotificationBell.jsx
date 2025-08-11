@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 // import { useShopContext } from '../contexts/ShopContext';
 import { assets } from '../assets/assets';
 import { ShopContext } from '../contexts/ShopContext';
+import axios from 'axios';
 
 const NotificationBell = () => {
     const [notifications, setNotifications] = useState([]);
@@ -19,19 +20,16 @@ const NotificationBell = () => {
     const fetchNotifications = async () => {
         try {
             setLoading(true);
-            const response = await fetch(`${backendURL}/api/notification/user`, {
-                method: 'GET',
+            const response = await axios.get(`${backendURL}/api/notification/user`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 }
             });
 
-            const data = await response.json();
-
-            if (data.success) {
-                setNotifications(data.notifications);
-                const unread = data.notifications.filter(n => !n.isRead).length;
+            if (response.data.success) {
+                setNotifications(response.data.notifications);
+                const unread = response.data.notifications.filter(n => !n.isRead).length;
                 setUnreadCount(unread);
             }
         } catch (error) {
@@ -43,17 +41,14 @@ const NotificationBell = () => {
 
     const markAsRead = async (notificationId) => {
         try {
-            const response = await fetch(`${backendURL}/api/notification/user/${notificationId}/read`, {
-                method: 'PATCH',
+            const response = await axios.patch(`${backendURL}/api/notification/user/${notificationId}/read`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 }
             });
-
-            const data = await response.json();
-
-            if (data.success) {
+            console.log(response.data);
+            if (response.data.success) {
                 // Update local state
                 setNotifications(prev =>
                     prev.map(n =>
@@ -95,15 +90,13 @@ const NotificationBell = () => {
     };
 
     return (
-        <div className="relative">
+        <div className="relative items-center ">
             {/* Notification Bell */}
             <button
                 onClick={() => setShowDropdown(!showDropdown)}
                 className="relative p-2 text-gray-600 hover:text-orange-500 transition-colors"
             >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM10.5 3.75a6 6 0 0 1 6 6v3.75l1.5 1.5H3l1.5-1.5V9.75a6 6 0 0 1 6-6z" />
-                </svg>
+                <img src={assets.notification_icon} alt="notification" className="w-6 h-6" />
 
                 {/* Unread Badge */}
                 {unreadCount > 0 && (

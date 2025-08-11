@@ -145,7 +145,7 @@ const Sidebar = ({ onLogout }) => {
                         }
                     >
                         <div className="relative">
-                            <img className='w-5 h-5 mx-auto md:mx-0 opacity-80' src={assets.order_icon} alt="" />
+                            <img className='w-5 h-5 mx-auto md:mx-0 opacity-80' src={assets.notification_icon} alt="" />
                             {unreadCount > 0 && (
                                 <span className="absolute -top-2 -right-2 min-w-[18px] h-5 px-1 bg-red-500 text-white text-xs rounded-full flex items-center justify-center border-2 border-white font-bold">{unreadCount}</span>
                             )}

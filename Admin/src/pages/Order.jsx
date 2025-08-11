@@ -63,11 +63,28 @@ const Order = ({ token }) => {
         fetchAllOrders()
     }, [token])
 
-    const statusHandler = async (event, orderId) => {
+    const allowedStatuses = [
+        'Order Placed',
+        'Packing',
+        'Shipped',
+        'Out for delivery',
+        'Delivered',
+    ]
+
+    const statusHandler = async (event, orderId, currentStatus) => {
+        const selectedStatus = event.target.value
+
+        // Prevent no-op or backward transitions on UI
+        const currentIndex = allowedStatuses.indexOf(currentStatus)
+        const newIndex = allowedStatuses.indexOf(selectedStatus)
+        if (newIndex <= currentIndex) {
+            toast.warn('Không thể cập nhật về trạng thái trước đó hoặc trùng với trạng thái hiện tại.')
+            return
+        }
         try {
             const res = await axios.patch(
                 backEndURL + '/api/order/status/' + orderId,
-                { status: event.target.value },
+                { status: selectedStatus },
                 { headers: { token } }
             )
 
@@ -115,6 +132,12 @@ const Order = ({ token }) => {
         }
     }
 
+    // Derived metrics for stats
+    const totalOrders = orders.length
+    const paidCount = orders.filter(o => o.payment).length
+    const unpaidCount = totalOrders - paidCount
+    const paidRate = totalOrders ? Math.round((paidCount / totalOrders) * 100) : 0
+
     if (loading) {
         return (
             <div className="flex justify-center items-center min-h-screen">
@@ -135,8 +158,31 @@ const Order = ({ token }) => {
     }
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-6 text-blue-950">Quản lý đơn hàng</h1>
+        <div className="container mx-auto px-4 py-6">
+            {/* Header + Payment stats in one row */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+                <div className="rounded-lg border border-gray-200 bg-white p-4">
+                    <div className="flex items-center gap-3">
+                        <img src={assets.order_icon} alt="Quản lý đơn hàng" className="h-8 w-8" />
+                        <div>
+                            <h1 className="text-2xl font-bold text-blue-950">Quản lý đơn hàng</h1>
+                            <p className="text-sm text-gray-600">Theo dõi, cập nhật trạng thái và thanh toán</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="rounded-lg border border-gray-200 bg-white p-4">
+                    <div className="mt-3 grid grid-cols-2 gap-3">
+                        <div className="rounded-md border border-green-200 bg-green-50 p-3">
+                            <p className="text-xs font-medium text-green-800">Đã thanh toán</p>
+                            <p className="mt-1 text-2xl font-bold text-green-700">{paidCount}</p>
+                        </div>
+                        <div className="rounded-md border border-red-200 bg-red-50 p-3">
+                            <p className="text-xs font-medium text-red-800">Chưa thanh toán</p>
+                            <p className="mt-1 text-2xl font-bold text-red-700">{unpaidCount}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div className="space-y-4">
                 {orders.length === 0 ? (
                     <div className="text-center text-blue-950 py-8 text-lg">
@@ -228,15 +274,18 @@ const Order = ({ token }) => {
                                         </div>
                                         <div className="flex flex-col sm:flex-row gap-3 justify-end">
                                             <select
-                                                onChange={(event) => statusHandler(event, order._id)}
+                                                onChange={(event) => statusHandler(event, order._id, order.status)}
                                                 value={order.status}
                                                 className='p-2 font-semibold border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900'
                                             >
-                                                <option value="Order Placed">{getStatusInVietnamese('Order Placed')}</option>
-                                                <option value="Packing">{getStatusInVietnamese('Packing')}</option>
-                                                <option value="Shipped">{getStatusInVietnamese('Shipped')}</option>
-                                                <option value="Out for delivery">{getStatusInVietnamese('Out for delivery')}</option>
-                                                <option value="Delivered">{getStatusInVietnamese('Delivered')}</option>
+                                                {allowedStatuses.map((st) => {
+                                                    const disabled = allowedStatuses.indexOf(st) <= allowedStatuses.indexOf(order.status)
+                                                    return (
+                                                        <option key={st} value={st} disabled={disabled}>
+                                                            {getStatusInVietnamese(st)}
+                                                        </option>
+                                                    )
+                                                })}
                                             </select>
                                             <button
                                                 onClick={() => paymentStatusHandler(order._id, order.payment)}

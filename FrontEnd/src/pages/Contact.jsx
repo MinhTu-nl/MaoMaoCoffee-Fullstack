@@ -167,7 +167,7 @@ const Contact = () => {
                                 </label>
                                 <textarea
                                     id="message"
-                                    rows="4"
+                                    rows="1"
                                     value={form.message}
                                     onChange={handleChange}
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-transparent"
