@@ -126,52 +126,60 @@ const Navbar = () => {
                                 />
                             </button>
 
-                            {/* Notifications are moved into the account dropdown */}
-
+                            {/* Account/Profile Section */}
                             <div className='hidden sm:block group relative'>
-                                <button
-                                    onClick={() => token ? null : navigate('/Login')}
-                                    className='relative p-2 hover:bg-gray-100 rounded-full transition-colors'
-                                >
-                                    <img src={assets.profile_icon} className='w-5 h-5' alt="profile" />
-                                    {token && (feedbackCount > 0 || orderCount > 0) && (
-                                        <span className='absolute top-0 right-0 w-2 h-2 bg-red-400 rounded-full translate-x-1/3 -translate-y-1/3'></span>
-                                    )}
-                                </button>
-                                {token && (
-                                    <div className='invisible group-hover:visible absolute dropdown-menu right-0 pt-2 opacity-0 group-hover:opacity-100 transition-all duration-200'>
-                                        <div className='w-48 py-2 bg-white rounded-xl shadow-lg border border-gray-100'>
-                                            <div className='px-2 pb-2 border-b border-gray-100'>
-                                                <NotificationBell />
+                                {token ? (
+                                    // Logged in user
+                                    <>
+                                        <button className='relative p-2 hover:bg-gray-100 rounded-full transition-colors'>
+                                            <img src={assets.profile_icon} className='w-5 h-5' alt="profile" />
+                                            {(feedbackCount > 0 || orderCount > 0) && (
+                                                <span className='absolute top-0 right-0 w-2 h-2 bg-red-400 rounded-full translate-x-1/3 -translate-y-1/3'></span>
+                                            )}
+                                        </button>
+                                        <div className='invisible group-hover:visible absolute dropdown-menu right-0 pt-2 opacity-0 group-hover:opacity-100 transition-all duration-200'>
+                                            <div className='w-48 py-2 bg-white rounded-xl shadow-lg border border-gray-100'>
+                                                <div className='px-2 pb-2 border-b border-gray-100'>
+                                                    <NotificationBell />
+                                                </div>
+                                                <button
+                                                    onClick={() => navigate('/Profile')}
+                                                    className='w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors'
+                                                >
+                                                    Hồ Sơ
+                                                </button>
+                                                <button
+                                                    onClick={() => navigate('/Order')}
+                                                    className='w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors flex items-center gap-2'
+                                                >
+                                                    Đặt Hàng
+                                                    {orderCount > 0 && <span className="ml-1 w-2 h-2 bg-red-400 rounded-full inline-block"></span>}
+                                                </button>
+                                                <button
+                                                    onClick={() => navigate('/Feedback')}
+                                                    className='w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors flex items-center gap-2'
+                                                >
+                                                    Phản Hồi
+                                                    {feedbackCount > 0 && <span className="ml-1 w-2 h-2 bg-red-400 rounded-full inline-block"></span>}
+                                                </button>
+                                                <button
+                                                    onClick={logout}
+                                                    className='w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors'
+                                                >
+                                                    Đăng Xuất
+                                                </button>
                                             </div>
-                                            <button
-                                                onClick={() => navigate('/Profile')}
-                                                className='w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors'
-                                            >
-                                                Hồ Sơ
-                                            </button>
-                                            <button
-                                                onClick={() => navigate('/Order')}
-                                                className='w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors flex items-center gap-2'
-                                            >
-                                                Đặt Hàng
-                                                {orderCount > 0 && <span className="ml-1 w-2 h-2 bg-red-400 rounded-full inline-block"></span>}
-                                            </button>
-                                            <button
-                                                onClick={() => navigate('/Feedback')}
-                                                className='w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors flex items-center gap-2'
-                                            >
-                                                Phản Hồi
-                                                {feedbackCount > 0 && <span className="ml-1 w-2 h-2 bg-red-400 rounded-full inline-block"></span>}
-                                            </button>
-                                            <button
-                                                onClick={logout}
-                                                className='w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors'
-                                            >
-                                                Đăng Xuất
-                                            </button>
                                         </div>
-                                    </div>
+                                    </>
+                                ) : (
+                                    // Not logged in - show clear login button
+                                    <button
+                                        onClick={() => navigate('/Login')}
+                                        className='flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-950 hover:bg-blue-50 rounded-lg transition-colors'
+                                    >
+                                        <img src={assets.profile_icon} className='w-4 h-4' alt="profile" />
+                                        <span className='hidden md:block'>Tài khoản</span>
+                                    </button>
                                 )}
                             </div>
 
@@ -242,7 +250,10 @@ const Navbar = () => {
                                     >
                                         Liên Hệ
                                     </NavLink>
-                                    {token && (
+
+                                    {/* Account Section in Mobile Menu */}
+                                    {token ? (
+                                        // Logged in user
                                         <>
                                             <div className='px-6 pb-2'>
                                                 <NotificationBell />
@@ -283,6 +294,18 @@ const Navbar = () => {
                                                 Đăng Xuất
                                             </button>
                                         </>
+                                    ) : (
+                                        // Not logged in - show clear login option
+                                        <NavLink
+                                            onClick={() => setVisible(false)}
+                                            className={({ isActive }) =>
+                                                `block px-6 py-4 text-lg text-gray-700 hover:bg-gray-50 hover:text-blue-950 transition-colors flex items-center gap-2 ${isActive ? 'text-blue-950 bg-blue-50' : ''}`
+                                            }
+                                            to="/Login"
+                                        >
+                                            <img src={assets.profile_icon} className='w-5 h-5' alt="profile" />
+                                            Đăng nhập / Tài khoản
+                                        </NavLink>
                                     )}
                                 </div>
                             </div>

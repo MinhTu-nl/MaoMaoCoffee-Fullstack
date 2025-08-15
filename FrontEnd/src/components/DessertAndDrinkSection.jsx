@@ -118,7 +118,7 @@ const DessertAndDrinkSection = () => {
                 <div className="text-center mb-10 md:mb-12">
                     <Title text1="Khám phá thực đơn" text2="Chọn món yêu thích của bạn" />
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
                     {items.map((item, idx) => (
                         <ItemBox key={idx} item={item} />
                     ))}

@@ -21,7 +21,7 @@ const NewDrink = () => {
                 <Title text1={'ĐỒ UỐNG MỚI'}
                     text2={'Thưởng thức những món đồ uống mới nhất của chúng tôi. Được tạo ra với công thức độc đáo, kết hợp hài hòa giữa hương vị truyền thống và hiện đại, mang đến trải nghiệm thú vị cho người thưởng thức.'} />
             </div>
-            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 justify-items-center max-w-7xl mx-auto'>
+            <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6 justify-items-center max-w-7xl mx-auto'>
                 {
                     newDrink.map((item, index) => (
                         <ProductItem key={index} id={item._id} images={item.images} name={item.name} price={item.price} category={item.category} />
