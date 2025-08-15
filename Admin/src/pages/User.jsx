@@ -79,95 +79,167 @@ const User = () => {
     const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
     return (
-        <div className="p-4 bg-gray-50 max-h-screen">
-            <h2 className="text-base font-bold mb-4 text-gray-800">Danh sách người dùng</h2>
-            <input
-                type="text"
-                placeholder="Tìm kiếm theo tên người dùng..."
-                value={searchTerm}
-                onChange={e => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-                className="border px-3 py-2 rounded mb-4 w-full max-w-xs"
-            />
-            <div className="w-full max-w-6xl mx-auto bg-white overflow-hidden">
-                <div className='hidden md:grid grid-cols-5 items-center py-3 px-6 text-[11px] font-semibold text-gray-700 border-b bg-gray-100 gap-8'>
-                    <span></span>
-                    <span>Tên người dùng</span>
-                    <span>Email</span>
-                    <span className='text-center'>Liên hệ</span>
-                    <span>Thao tác</span>
+        <div className="p-4 bg-gray-50 min-h-screen">
+            <div className="max-w-6xl mx-auto">
+                <h2 className="text-lg font-bold mb-4 text-gray-800">Danh sách người dùng</h2>
+
+                {/* Search bar */}
+                <div className="mb-4">
+                    <input
+                        type="text"
+                        placeholder="Tìm kiếm theo tên..."
+                        value={searchTerm}
+                        onChange={e => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+                        className="border px-3 py-2 rounded w-full sm:max-w-xs text-sm"
+                    />
                 </div>
-                {currentUsers?.map((item, index) => (
-                    <div key={index}>
-                        <div className='grid grid-cols-2 md:grid-cols-5 items-center gap-8 py-2 px-4 text-[11px] relative border-b border-gray-100 bg-white'>
-                            <img className='w-7 h-7 rounded-full object-cover bg-white' src={assets.user_icon} alt="" />
-                            <span className="truncate max-w-[120px] text-gray-800 font-medium text-[11px]">{item?.name || 'N/A'}</span>
-                            <span className="truncate max-w-[180px] text-gray-700 text-[10px]">{item?.email || 'N/A'}</span>
-                            <span className="text-gray-800 font-semibold text-[11px] text-center">{Array.isArray(item?.contactData) ? item.contactData.length : 0}</span>
-                            <div className="flex items-center gap-2">
-                                <button
-                                    className='text-blue-600 text-[10px] border border-blue-200 rounded px-2.5 py-1 hover:bg-blue-600 hover:text-white transition'
-                                    onClick={() => handleToggleDropdown(index)}
-                                >
-                                    {openDropdownIndex === index ? 'Đóng' : 'Xem'}
-                                </button>
-                            </div>
-                        </div>
-                        {openDropdownIndex === index && (
-                            <div className="px-8 py-3 border-b border-gray-100 bg-white">
-                                {(!item.contactData || item.contactData.length === 0) ? (
-                                    <p className="text-gray-500 italic text-[10px]">Không có liên hệ nào.</p>
-                                ) : (
-                                    <div className='space-y-2'>
-                                        {item.contactData.map((contact, idx) => (
-                                            <div key={contact._id || idx} className='text-[10px] text-gray-600 border-b border-dashed border-gray-200 pb-2 last:border-b-0'>
-                                                <div><b>Họ tên:</b> {contact.name}</div>
-                                                <div><b>Email:</b> {contact.email}</div>
-                                                <div><b>Tin nhắn:</b> {contact.message}</div>
-                                                <div><b>Ngày gửi:</b> {contact.date ? new Date(contact.date).toLocaleString() : ''}</div>
-                                                {/* Input phản hồi admin */}
-                                                {/* Hiển thị phản hồi đã gửi nếu có */}
-                                                {contact.feedback && (
-                                                    <div className="text-green-600 text-[10px] mt-1">
-                                                        <b>Phản hồi của Admin:</b> {contact.feedback}
+
+                {/* User list */}
+                <div className="bg-white rounded-lg shadow overflow-hidden">
+                    {/* Table header - hidden on mobile */}
+                    <div className='hidden sm:grid grid-cols-12 items-center py-3 px-4 text-xs font-semibold text-gray-700 border-b bg-gray-100'>
+                        <div className="col-span-1"></div>
+                        <div className="col-span-3">Tên người dùng</div>
+                        <div className="col-span-4">Email</div>
+                        <div className="col-span-2 text-center">Liên hệ</div>
+                        <div className="col-span-2">Thao tác</div>
+                    </div>
+
+                    {currentUsers.length === 0 ? (
+                        <div className="p-4 text-center text-gray-500">Không tìm thấy người dùng nào</div>
+                    ) : (
+                        currentUsers.map((item, index) => (
+                            <div key={index} className="border-b border-gray-100 last:border-b-0">
+                                {/* User row */}
+                                <div className='grid grid-cols-12 items-center gap-2 py-3 px-4 text-sm relative hover:bg-gray-50'>
+                                    <div className="col-span-2 sm:col-span-1">
+                                        <img className='w-8 h-8 rounded-full object-cover' src={assets.user_icon} alt="User" />
+                                    </div>
+                                    <div className="col-span-4 sm:col-span-3 truncate font-medium text-gray-800">
+                                        {item?.name || 'N/A'}
+                                    </div>
+                                    <div className="col-span-6 sm:col-span-4 truncate text-gray-600 text-xs sm:text-sm">
+                                        {item?.email || 'N/A'}
+                                    </div>
+                                    <div className="hidden sm:col-span-2 sm:flex justify-center text-gray-700 font-medium">
+                                        {Array.isArray(item?.contactData) ? item.contactData.length : 0}
+                                    </div>
+                                    <div className="col-span-12 sm:col-span-2 flex justify-end sm:justify-start mt-2 sm:mt-0">
+                                        <button
+                                            className='text-blue-600 text-xs border border-blue-200 rounded px-3 py-1 hover:bg-blue-600 hover:text-white transition'
+                                            onClick={() => handleToggleDropdown(index)}
+                                        >
+                                            {openDropdownIndex === index ? 'Đóng' : 'Chi tiết'}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Dropdown content */}
+                                {openDropdownIndex === index && (
+                                    <div className="px-4 py-3 bg-gray-50">
+                                        <div className="flex sm:hidden items-center justify-between mb-2">
+                                            <span className="text-xs font-medium">Số liên hệ:</span>
+                                            <span className="text-gray-700 font-medium">
+                                                {Array.isArray(item?.contactData) ? item.contactData.length : 0}
+                                            </span>
+                                        </div>
+
+                                        {(!item.contactData || item.contactData.length === 0) ? (
+                                            <p className="text-gray-500 italic text-xs">Không có liên hệ nào.</p>
+                                        ) : (
+                                            <div className='space-y-3'>
+                                                {item.contactData.map((contact, idx) => (
+                                                    <div key={contact._id || idx} className='text-xs text-gray-600 border-b border-gray-200 pb-3 last:border-b-0'>
+                                                        <div className="grid grid-cols-2 gap-2 mb-1">
+                                                            <div><b>Họ tên:</b> {contact.name}</div>
+                                                            <div><b>Email:</b> {contact.email}</div>
+                                                        </div>
+                                                        <div className="mb-1"><b>Tin nhắn:</b> {contact.message}</div>
+                                                        <div className="mb-2 text-xs text-gray-500">
+                                                            <b>Ngày gửi:</b> {contact.date ? new Date(contact.date).toLocaleString() : ''}
+                                                        </div>
+
+                                                        {/* Admin feedback */}
+                                                        {contact.feedback && (
+                                                            <div className="bg-blue-50 p-2 rounded mb-2">
+                                                                <div className="text-blue-600 text-xs">
+                                                                    <b>Phản hồi của Admin:</b> {contact.feedback}
+                                                                </div>
+                                                            </div>
+                                                        )}
+
+                                                        {/* Reply form */}
+                                                        <div className="mt-2">
+                                                            <input
+                                                                type="text"
+                                                                placeholder="Nhập phản hồi..."
+                                                                className="border px-3 py-2 rounded text-xs w-full mb-2"
+                                                                value={replyMessages[contact._id] || ''}
+                                                                onChange={e => handleReplyChange(contact._id, e.target.value)}
+                                                                disabled={sendingReply[contact._id]}
+                                                            />
+                                                            <button
+                                                                className="bg-blue-500 text-white text-xs px-4 py-1.5 rounded hover:bg-blue-600 transition w-full sm:w-auto disabled:opacity-60"
+                                                                onClick={() => handleSendReply(contact._id, item._id)}
+                                                                disabled={sendingReply[contact._id] || !(replyMessages[contact._id]?.trim())}
+                                                            >
+                                                                {sendingReply[contact._id] ? 'Đang gửi...' : 'Gửi phản hồi'}
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                )}
-                                                <div className="mt-2 flex flex-col gap-2">
-                                                    <input
-                                                        type="text"
-                                                        placeholder="Nhập phản hồi..."
-                                                        className="border px-2 py-1 rounded text-[10px] w-full max-w-xs"
-                                                        value={replyMessages[contact._id] || ''}
-                                                        onChange={e => handleReplyChange(contact._id, e.target.value)}
-                                                        disabled={sendingReply[contact._id]}
-                                                    />
-                                                    <button
-                                                        className="bg-blue-500 text-white text-[10px] px-3 py-1 rounded hover:bg-blue-600 transition w-fit disabled:opacity-60"
-                                                        onClick={() => handleSendReply(contact._id, item._id)}
-                                                        disabled={sendingReply[contact._id] || !(replyMessages[contact._id]?.trim())}
-                                                    >
-                                                        {sendingReply[contact._id] ? 'Đang gửi...' : 'Gửi phản hồi'}
-                                                    </button>
-                                                </div>
+                                                ))}
                                             </div>
-                                        ))}
+                                        )}
                                     </div>
                                 )}
                             </div>
-                        )}
+                        ))
+                    )}
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                    <div className="flex justify-center mt-4 gap-1 sm:gap-2 flex-wrap">
+                        <button
+                            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                            disabled={currentPage === 1}
+                            className="px-3 py-1 rounded bg-gray-200 text-gray-700 disabled:opacity-50 text-xs sm:text-sm"
+                        >
+                            Trước
+                        </button>
+
+                        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                            let pageNum;
+                            if (totalPages <= 5) {
+                                pageNum = i + 1;
+                            } else if (currentPage <= 3) {
+                                pageNum = i + 1;
+                            } else if (currentPage >= totalPages - 2) {
+                                pageNum = totalPages - 4 + i;
+                            } else {
+                                pageNum = currentPage - 2 + i;
+                            }
+
+                            return (
+                                <button
+                                    key={pageNum}
+                                    onClick={() => setCurrentPage(pageNum)}
+                                    className={`px-3 py-1 rounded text-xs sm:text-sm ${currentPage === pageNum ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+                                >
+                                    {pageNum}
+                                </button>
+                            );
+                        })}
+
+                        <button
+                            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                            disabled={currentPage === totalPages}
+                            className="px-3 py-1 rounded bg-gray-200 text-gray-700 disabled:opacity-50 text-xs sm:text-sm"
+                        >
+                            Sau
+                        </button>
                     </div>
-                ))}
-            </div>
-            {/* Pagination */}
-            <div className="flex justify-center mt-4 gap-2">
-                {Array.from({ length: totalPages }, (_, i) => (
-                    <button
-                        key={i}
-                        onClick={() => setCurrentPage(i + 1)}
-                        className={`px-3 py-1 rounded ${currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
-                    >
-                        {i + 1}
-                    </button>
-                ))}
+                )}
             </div>
         </div>
     )

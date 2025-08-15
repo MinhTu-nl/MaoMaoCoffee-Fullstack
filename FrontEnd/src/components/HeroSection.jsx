@@ -23,7 +23,7 @@ const HeroSection = () => {
                     </a> */}
                 </div>
                 {/* Right: Banner Icon */}
-                <div className="flex-1 flex justify-center mt-10 md:mt-0">
+                <div className="flex-1 flex justify-center items-center mt-10 md:mt-0">
                     <img
                         src={assets.banner_icon}
                         alt="Coffee Banner"

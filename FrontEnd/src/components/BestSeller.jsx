@@ -39,7 +39,12 @@ const BestSeller = () => {
                     spaceBetween={24}
                     slidesPerView={1}
                     breakpoints={{
-                        0: { slidesPerView: 1, spaceBetween: 16 },
+                        0: {
+                            slidesPerView: 1,
+                            spaceBetween: 16,
+                            centeredSlides: true, // Thêm dòng này để căn giữa slide
+                            slidesOffsetBefore: 0 // Đảm bảo không có khoảng cách lệch
+                        },
                         520: { slidesPerView: 2, spaceBetween: 20 },
                         768: { slidesPerView: 3, spaceBetween: 24 },
                         1024: { slidesPerView: 4, spaceBetween: 24 },
@@ -48,7 +53,7 @@ const BestSeller = () => {
                     className='!pb-12 !pt-4'
                 >
                     {bestseller.map((item, index) => (
-                        <SwiperSlide key={index} className='px-2'>
+                        <SwiperSlide key={index} className='px-2 flex justify-center'> {/* Thêm flex justify-center */}
                             <ProductItem
                                 id={item._id}
                                 images={item.images}

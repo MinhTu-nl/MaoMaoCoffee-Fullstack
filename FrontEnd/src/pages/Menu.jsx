@@ -246,11 +246,13 @@ const Menu = () => {
                         </div>
                     </div>
 
-                    {/* Hiển thị danh sách sản phẩm */}
-                    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 gap-y-6'>
+                    {/* Hiển thị danh sách sản phẩm - Đã chỉnh sửa grid cho mobile */}
+                    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 gap-y-6 justify-items-center sm:justify-items-start'>
                         {
                             currentProducts.map((item, index) => (
-                                <ProductItem key={index} id={item._id} images={item.images} name={item.name} price={item.price} category={item.category} />
+                                <div key={index} className="w-full max-w-[180px] sm:max-w-none">
+                                    <ProductItem id={item._id} images={item.images} name={item.name} price={item.price} category={item.category} />
+                                </div>
                             ))
                         }
                     </div>

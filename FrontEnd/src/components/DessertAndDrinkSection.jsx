@@ -11,7 +11,6 @@ import ts1 from "../assets/TS01.png"
 import cr1 from "../assets/CRO1.png"
 import toast1 from "../assets/TOA1.png"
 import coldBrew from "../assets/CB01.png"
-
 import { ShopContext } from '../contexts/ShopContext';
 
 const DessertAndDrinkSection = () => {
@@ -25,9 +24,6 @@ const DessertAndDrinkSection = () => {
         { title: 'Croffle', title2: '', image: cr1, category: 'croffle' },
         { title: 'Toast', title2: '', image: toast1, category: 'toast' },
         { title: 'Cold', title2: 'Brew', image: coldBrew, category: 'coldbew' },
-        // { title: 'Cacao', title2: 'Đá', image: 'https://i.imgur.com/1Q9Z1Zm.png', category: 'drink' },
-        // { title: 'Trà', title2: 'Đào', image: 'https://i.imgur.com/2Q9Z1Zm.png', category: 'tea' },
-        // { title: 'Sữa', title2: 'Tươi', image: 'https://i.imgur.com/hcfjA2k.png', category: 'milk' },
     ];
 
     const handleItemClick = (category) => {
@@ -83,12 +79,24 @@ const DessertAndDrinkSection = () => {
                             disableOnInteraction: false,
                         }}
                         spaceBetween={24}
-                        slidesPerView={1}
+                        slidesPerView={2}
+                        centeredSlides={true} // Thêm dòng này để căn giữa slide
                         breakpoints={{
-                            0: { slidesPerView: 1, spaceBetween: 16 },
-                            520: { slidesPerView: 2, spaceBetween: 24 },
-                            768: { slidesPerView: 3, spaceBetween: 32 },
-                            1024: { slidesPerView: 4, spaceBetween: 32 }
+                            520: {
+                                slidesPerView: 2,
+                                spaceBetween: 24,
+                                centeredSlides: false // Tắt căn giữa trên màn hình lớn hơn
+                            },
+                            768: {
+                                slidesPerView: 3,
+                                spaceBetween: 32,
+                                centeredSlides: false
+                            },
+                            1024: {
+                                slidesPerView: 4,
+                                spaceBetween: 32,
+                                centeredSlides: false
+                            }
                         }}
                         className="!pb-12 !pt-4"
                     >
@@ -120,4 +128,4 @@ const DessertAndDrinkSection = () => {
     );
 };
 
-export default DessertAndDrinkSection; 
+export default DessertAndDrinkSection;

@@ -170,24 +170,56 @@ const Order = () => {
 
     return (
         <div className='min-h-screen bg-white'>
-            <div className='max-w-7xl mx-auto px-4 py-12'>
-                <div className='mb-10'>
+            <div className='max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12'>
+                <div className='mb-6 sm:mb-10'>
                     <Title text1={'Đơn Hàng Của Tôi'} text2={''} />
                 </div>
 
                 {Array.isArray(orderData) && orderData.length > 0 ? (
-                    <div className='space-y-8'>
+                    <div className='space-y-4 sm:space-y-8'>
                         {groupedOrders.map((order, idx) => (
-                            <div key={order.orderId} className='w-full border border-gray-200 rounded-xl p-6 bg-white shadow hover:shadow-lg transition-all'>
-                                <div className='flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-2'>
-                                    <div className='flex items-center gap-3'>
-                                        <span className={`w-3 h-3 rounded-full inline-block ${order.status === 'Delivered' || order.status === 'Completed' ? 'bg-green-500' : order.status === 'Processing' || order.status === 'Packing' ? 'bg-blue-500' : order.status === 'Cancelled' ? 'bg-red-500' : 'bg-yellow-500'}`}></span>
-                                        <span className='font-semibold text-gray-700'>{getStatusInVietnamese(order.status)}</span>
+                            <div key={order.orderId} className='w-full border border-gray-200 rounded-lg sm:rounded-xl p-4 sm:p-6 bg-white shadow-sm sm:shadow hover:shadow-md sm:hover:shadow-lg transition-all'>
+                                {/* Header - Order Status and Info */}
+                                <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-4 gap-2'>
+                                    <div className='flex items-center gap-2 sm:gap-3'>
+                                        <span className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full inline-block ${order.status === 'Delivered' || order.status === 'Completed' ? 'bg-green-500' : order.status === 'Processing' || order.status === 'Packing' ? 'bg-blue-500' : order.status === 'Cancelled' ? 'bg-red-500' : 'bg-yellow-500'}`}></span>
+                                        <span className='font-semibold text-sm sm:text-base text-gray-700'>{getStatusInVietnamese(order.status)}</span>
                                         <span className='text-gray-400 text-xs'>| #{order.orderId.slice(-6).toUpperCase()}</span>
                                     </div>
-                                    <div className='text-gray-500 text-sm'>Ngày đặt: {order.date ? new Date(order.date).toLocaleString('vi-VN') : '-'}</div>
+                                    <div className='text-gray-500 text-xs sm:text-sm'>Ngày đặt: {order.date ? new Date(order.date).toLocaleString('vi-VN') : '-'}</div>
                                 </div>
-                                <div className='overflow-x-auto'>
+
+                                {/* Order Items - Mobile Card View */}
+                                <div className='sm:hidden space-y-3'>
+                                    {order.items.map((item, i) => (
+                                        <div key={i} className='border-b pb-3 last:border-b-0'>
+                                            <div className='flex gap-3'>
+                                                <img
+                                                    src={item.images && Array.isArray(item.images) && item.images.length > 0 ? item.images[0] : ''}
+                                                    alt={item.name || 'Product'}
+                                                    className='w-16 h-16 object-cover rounded'
+                                                />
+                                                <div className='flex-1'>
+                                                    <div className='font-medium text-gray-900'>{item.name || 'Unknown'}</div>
+                                                    <div className='text-sm text-gray-500 mt-1'>
+                                                        Size: {item.size} | Số lượng: {item.quantity}
+                                                    </div>
+                                                    <div className='flex justify-between items-center mt-2'>
+                                                        <div className='text-sm'>
+                                                            {getDisplayPrice(item.price, item.size)} {currency}
+                                                        </div>
+                                                        <div className='font-medium'>
+                                                            {item.lineItemTotal} {currency}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Order Items - Desktop Table View */}
+                                <div className='hidden sm:block overflow-x-auto'>
                                     <table className='min-w-full'>
                                         <thead>
                                             <tr className='bg-gray-50'>
@@ -214,26 +246,34 @@ const Order = () => {
                                         </tbody>
                                     </table>
                                 </div>
-                                <div className='flex flex-col md:flex-row md:items-center md:justify-between mt-4 gap-2'>
-                                    <div className='flex items-center gap-4'>
-                                        <span className='text-gray-500 text-sm'>Phương thức: <span className='font-medium text-red-500'>{order.paymentMethod || '-'}</span></span>
-                                        <span className='text-gray-500 text-sm'>Thanh toán: <span className='font-medium text-green-500'>{order.payment ? 'Đã thanh toán' : 'Chưa thanh toán'}</span></span>
+
+                                {/* Footer - Payment Info and Actions */}
+                                <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between mt-4 gap-3 sm:gap-2'>
+                                    <div className='flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4'>
+                                        <span className='text-gray-500 text-xs sm:text-sm'>Phương thức: <span className='font-medium text-red-500'>{order.paymentMethod || '-'}</span></span>
+                                        <span className='text-gray-500 text-xs sm:text-sm'>Thanh toán: <span className='font-medium text-green-500'>{order.payment ? 'Đã thanh toán' : 'Chưa thanh toán'}</span></span>
                                     </div>
-                                    <div className='flex items-center gap-4'>
-                                        <span className='text-lg font-bold text-gray-900'>Tổng: {order.items.reduce((sum, item) => sum + (item.lineItemTotal || 0), 0)} {currency}</span>
-                                        <button onClick={loadOrderData} className='px-4 py-2 text-sm text-gray-700 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors'>Theo Dõi Đơn Hàng</button>
-                                        {canCancelOrder(order.status) && (
-                                            <button onClick={() => handleCancelOrder(order.orderId)} disabled={isCancelling} className='px-4 py-2 text-sm text-white bg-red-500 rounded-md hover:bg-red-600 transition-colors disabled:opacity-50'>
-                                                {isCancelling ? 'Đang hủy...' : 'Hủy đơn hàng'}
-                                            </button>
-                                        )}
+                                    <div className='flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4'>
+                                        <span className='text-base sm:text-lg font-bold text-gray-900'>Tổng: {order.items.reduce((sum, item) => sum + (item.lineItemTotal || 0), 0)} {currency}</span>
+                                        <div className='flex gap-2'>
+                                            <button onClick={loadOrderData} className='px-3 sm:px-4 py-1.5 text-xs sm:text-sm text-gray-700 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors'>Theo Dõi</button>
+                                            {canCancelOrder(order.status) && (
+                                                <button
+                                                    onClick={() => handleCancelOrder(order.orderId)}
+                                                    disabled={isCancelling}
+                                                    className='px-3 sm:px-4 py-1.5 text-xs sm:text-sm text-white bg-red-500 rounded-md hover:bg-red-600 transition-colors disabled:opacity-50'
+                                                >
+                                                    {isCancelling ? 'Đang hủy...' : 'Hủy đơn'}
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         ))}
                     </div>
                 ) : (
-                    <div className='text-center py-16'>
+                    <div className='text-center py-12 sm:py-16'>
                         <div className='text-gray-300 mb-4'>
                             <svg className='mx-auto h-12 w-12' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
                                 <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4' />
@@ -245,30 +285,30 @@ const Order = () => {
                 )}
             </div>
 
-            {/* Confirmation Modal */}
+            {/* Confirmation Modal - Responsive */}
             {showConfirmModal && (
-                <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
-                    <div className='bg-white rounded-lg p-6 max-w-sm w-full shadow-lg'>
-                        <h4 className='text-lg font-semibold mb-4'>Xác nhận hủy đơn hàng</h4>
-                        <p className='text-gray-700 mb-4'>Bạn có chắc chắn muốn hủy đơn hàng này không?</p>
+                <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4'>
+                    <div className='bg-white rounded-lg p-4 sm:p-6 w-full max-w-sm sm:max-w-md shadow-lg'>
+                        <h4 className='text-lg font-semibold mb-3 sm:mb-4'>Xác nhận hủy đơn hàng</h4>
+                        <p className='text-gray-700 mb-3 sm:mb-4'>Bạn có chắc chắn muốn hủy đơn hàng này không?</p>
                         <textarea
-                            className='w-full border border-gray-300 rounded-md p-2 mb-6 focus:outline-none focus:ring-2 focus:ring-red-200'
+                            className='w-full border border-gray-300 rounded-md p-2 mb-4 sm:mb-6 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-red-200'
                             placeholder='Lý do hủy đơn hàng (bắt buộc)'
                             value={cancelReason}
                             onChange={e => setCancelReason(e.target.value)}
                             rows={3}
                             required
                         />
-                        <div className='flex justify-end gap-3'>
+                        <div className='flex justify-end gap-2 sm:gap-3'>
                             <button
                                 onClick={cancelCancellation}
-                                className='px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors'
+                                className='px-3 sm:px-4 py-1.5 text-xs sm:text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors'
                             >
                                 Không
                             </button>
                             <button
                                 onClick={confirmCancellation}
-                                className='px-4 py-2 text-sm text-white bg-red-500 rounded-md hover:bg-red-600 transition-colors'
+                                className='px-3 sm:px-4 py-1.5 text-xs sm:text-sm text-white bg-red-500 rounded-md hover:bg-red-600 transition-colors'
                                 disabled={!cancelReason.trim()}
                             >
                                 Có

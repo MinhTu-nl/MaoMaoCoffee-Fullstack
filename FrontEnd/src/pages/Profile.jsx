@@ -138,21 +138,21 @@ const Profile = () => {
     }
 
     return (
-        <div className="min-h-screen bg-white py-8">
-            <div className="max-w-6xl mx-auto px-4">
+        <div className="min-h-screen bg-white py-4 sm:py-8">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6">
                 {/* Thông tin cá nhân & Giỏ hàng hiện có */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-8 sm:mb-12">
                     {/* Thông tin cá nhân */}
-                    <div>
+                    <div className="order-1 md:order-none">
                         <Title text1="THÔNG TIN CÁ NHÂN" />
-                        <div className="bg-gray-50 rounded-lg p-6 flex-1 flex flex-col">
-                            <div className="flex items-center gap-6 mb-6">
+                        <div className="bg-gray-50 rounded-lg p-4 sm:p-6 flex-1 flex flex-col">
+                            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 mb-4 sm:mb-6">
                                 <img
                                     src={assets.user_icon}
                                     alt="User icon"
-                                    className="w-20 h-20 object-cover rounded-full border-2 border-white shadow-md"
+                                    className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-full border-2 border-white shadow-md"
                                 />
-                                <div className="flex-1 space-y-4">
+                                <div className="w-full space-y-3 sm:space-y-4">
                                     <div>
                                         <label className="text-xs font-semibold text-gray-600 uppercase tracking-wider">TÊN NGƯỜI DÙNG</label>
                                         <input
@@ -173,81 +173,99 @@ const Profile = () => {
                                     </div>
                                 </div>
                             </div>
-                            {/* Nút thay đổi mật khẩu - thiết kế trung hòa */}
-                            <div className="border-t pt-4 mt-auto space-y-3">
+                            <div className="border-t pt-3 sm:pt-4 mt-auto">
                                 <button
                                     onClick={() => setShowChangePasswordModal(true)}
-                                    className="w-full flex items-center justify-center gap-2 px-4 py-3 text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 hover:border-blue-300 transition-all duration-200 text-sm font-medium shadow-sm"
+                                    className="w-full flex items-center justify-center gap-2 px-4 py-2 sm:py-3 text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 hover:border-blue-300 transition-all duration-200 text-sm font-medium shadow-sm"
                                 >
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                     </svg>
                                     Thay Đổi Mật Khẩu
                                 </button>
-
                             </div>
                         </div>
                     </div>
+
                     {/* Giỏ hàng hiện có */}
-                    <div>
+                    <div className="order-3 md:order-none">
                         <Title text1="GIỎ HÀNG HIỆN CÓ" />
-                        <div className="bg-gray-50 rounded-lg p-6 max-h-60 overflow-y-auto">
+                        <div className="bg-gray-50 rounded-lg p-4 sm:p-6 max-h-60 overflow-y-auto">
                             {cartData.length > 0 ? (
                                 cartData.map((item, idx) => (
-                                    <div key={idx} className="flex items-center gap-4 mb-4 last:mb-0 border-b pb-3 last:border-0">
+                                    <div key={idx} className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4 last:mb-0 border-b pb-2 sm:pb-3 last:border-0">
                                         <img
                                             src={item.images && item.images.length > 0 ? item.images[0] : assets.parcel_icon}
                                             alt={item.name}
-                                            className="w-14 h-14 object-cover rounded"
+                                            className="w-10 h-10 sm:w-14 sm:h-14 object-cover rounded"
                                         />
-                                        <div className="flex-1">
-                                            <div className="font-medium text-gray-800 text-sm">{item.name}</div>
-                                            <div className="text-xs text-gray-500">{item.price} {currency} | Size: {item.size}</div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="font-medium text-gray-800 text-xs sm:text-sm truncate">{item.name}</div>
+                                            <div className="text-xs text-gray-500">
+                                                {item.price} {currency} | Size: {item.size}
+                                            </div>
                                         </div>
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-1 sm:gap-2">
                                             <button
-                                                className="px-2 py-1 border rounded text-gray-700"
+                                                className="px-1 sm:px-2 py-1 border rounded text-gray-700 text-xs sm:text-sm"
                                                 onClick={() => updateQuantity(item._id, item.size, Math.max(1, item.quantity - 1))}
-                                            >-</button>
-                                            <span className="px-2 text-sm">{item.quantity}</span>
+                                            >
+                                                -
+                                            </button>
+                                            <span className="px-1 sm:px-2 text-xs sm:text-sm">{item.quantity}</span>
                                             <button
-                                                className="px-2 py-1 border rounded text-gray-700"
+                                                className="px-1 sm:px-2 py-1 border rounded text-gray-700 text-xs sm:text-sm"
                                                 onClick={() => updateQuantity(item._id, item.size, item.quantity + 1)}
-                                            >+</button>
+                                            >
+                                                +
+                                            </button>
                                         </div>
                                     </div>
                                 ))
                             ) : (
-                                <div className="text-gray-400 text-center py-8">Giỏ hàng trống</div>
+                                <div className="text-gray-400 text-center py-6 sm:py-8 text-sm sm:text-base">
+                                    Giỏ hàng trống
+                                </div>
                             )}
                         </div>
                     </div>
                 </div>
+
                 {/* Đơn hàng gần đây */}
-                <div>
+                <div className="order-2 md:order-none">
                     <Title text1="ĐƠN HÀNG GẦN ĐÂY" />
-                    <div className="bg-gray-50 rounded-lg p-6">
+                    <div className="bg-gray-50 rounded-lg p-4 sm:p-6">
                         {recentOrders.length > 0 ? (
                             recentOrders.map((order, idx) => (
-                                <div key={idx} className="flex items-center gap-4 p-4 border rounded-lg bg-white mb-4 last:mb-0">
+                                <div key={idx} className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 border rounded-lg bg-white mb-3 sm:mb-4 last:mb-0">
                                     <img
                                         src={order.items[0]?.images?.[0] || assets.parcel_icon}
                                         alt="Order item"
-                                        className="w-16 h-16 object-cover rounded"
+                                        className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded"
                                     />
-                                    <div className="flex-1">
-                                        <div className="font-medium text-gray-800">{order.items[0]?.name || 'Sản phẩm'}</div>
-                                        <div className="text-sm text-gray-500">{new Date(order.date).toLocaleDateString('vi-VN')}</div>
-                                        <div className="text-sm text-gray-600">Trạng thái: {getStatusInVietnamese(order.status)}</div>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="font-medium text-gray-800 text-sm sm:text-base truncate">
+                                            {order.items[0]?.name || 'Sản phẩm'}
+                                        </div>
+                                        <div className="text-xs sm:text-sm text-gray-500">
+                                            {new Date(order.date).toLocaleDateString('vi-VN')}
+                                        </div>
+                                        <div className="text-xs sm:text-sm text-gray-600">
+                                            Trạng thái: {getStatusInVietnamese(order.status)}
+                                        </div>
                                     </div>
                                     <button
                                         onClick={() => navigate('/order')}
-                                        className="px-4 py-2 text-sm text-blue-950 font-medium hover:bg-gray-100 rounded transition-colors"
-                                    >Xem Chi Tiết</button>
+                                        className="px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm text-blue-950 font-medium hover:bg-gray-100 rounded transition-colors whitespace-nowrap"
+                                    >
+                                        Xem Chi Tiết
+                                    </button>
                                 </div>
                             ))
                         ) : (
-                            <div className="text-gray-400 text-center py-8">Chưa có đơn hàng nào</div>
+                            <div className="text-gray-400 text-center py-6 sm:py-8 text-sm sm:text-base">
+                                Chưa có đơn hàng nào
+                            </div>
                         )}
                     </div>
                 </div>

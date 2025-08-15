@@ -97,8 +97,8 @@ const BranchList = ({ onSelect, selectedBranch }) => {
                 </div>
             </div>
 
-            {/* Branch Table */}
-            <div className="overflow-x-auto">
+            {/* Branch Table - Hidden on mobile, replaced with cards */}
+            <div className="hidden md:block overflow-x-auto">
                 <table className="min-w-full bg-white rounded-lg overflow-hidden">
                     <thead className="bg-gray-50">
                         <tr>
@@ -148,6 +148,33 @@ const BranchList = ({ onSelect, selectedBranch }) => {
                 </table>
             </div>
 
+            {/* Mobile Cards - Visible only on mobile */}
+            <div className="md:hidden space-y-3">
+                {(showAll ? filteredBranches : filteredBranches.slice(0, ITEMS_PER_PAGE)).map((branch) => (
+                    <div
+                        key={branch._id}
+                        className={`p-4 bg-white rounded-lg shadow-sm border ${selectedBranch?._id === branch._id ? 'border-blue-300 bg-blue-50' : 'border-gray-200'}`}
+                    >
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <h3 className="font-medium text-gray-900">{branch.name}</h3>
+                                <p className="text-sm text-gray-500 mt-1">{branch.location}</p>
+                            </div>
+                            <button
+                                onClick={() => onSelect && onSelect(branch)}
+                                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors
+                                    ${selectedBranch?._id === branch._id
+                                        ? 'bg-blue-500 text-white hover:bg-blue-600'
+                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                    }`}
+                            >
+                                {selectedBranch?._id === branch._id ? 'Đã chọn' : 'Chọn'}
+                            </button>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
             {/* Show More Button */}
             {filteredBranches.length > ITEMS_PER_PAGE && (
                 <div className="text-center mt-4">
@@ -170,4 +197,4 @@ const BranchList = ({ onSelect, selectedBranch }) => {
     )
 }
 
-export default BranchList 
+export default BranchList

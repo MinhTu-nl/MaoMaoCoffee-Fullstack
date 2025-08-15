@@ -1,0 +1,17 @@
+{
+  "name": "maomao",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "maomao": "concurrently -n \"FrontEnd,Admin,BackEnd\" -c \"blue,magenta,green\" \"npm --prefix FrontEnd run dev\" \"npm --prefix Admin run dev\" \"npm --prefix BackEnd run server\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  }
+}

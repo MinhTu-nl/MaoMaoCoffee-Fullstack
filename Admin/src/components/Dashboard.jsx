@@ -16,6 +16,7 @@ import { backEndURL, currency } from '../App.jsx';
 import RevenueChart from './charts/RevenueChart';
 import OrderStatusChart from './charts/OrderStatusChart';
 import ProductCategoriesChart from './charts/ProductCategoriesChart';
+import ProductsChart from './charts/ProductsChart';
 
 // Card tổng quan không icon
 const Card = ({ title, value, subtitle }) => (
@@ -50,6 +51,7 @@ const Dashboard = () => {
     const [totalProducts, setTotalProducts] = useState(0);
     const [totalUsers, setTotalUsers] = useState(0);
     const [period, setPeriod] = useState('month');
+    const [topProducts, setTopProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -65,12 +67,13 @@ const Dashboard = () => {
             const token = localStorage.getItem('token');
             const headers = { Authorization: `Bearer ${token}` };
 
-            const [revenueRes, statusRes, categoriesRes, productsRes, usersRes] = await Promise.all([
+            const [revenueRes, statusRes, categoriesRes, productsRes, usersRes, topProductsRes] = await Promise.all([
                 axios.get(backEndURL + `/api/stats/revenue?period=${period}`, { headers }),
                 axios.get(backEndURL + `/api/stats/order-status?period=${period}`, { headers }),
                 axios.get(backEndURL + `/api/product/list?limit=1000`, { headers }),
                 axios.get(backEndURL + `/api/product/list?limit=1`, { headers }),
-                axios.get(backEndURL + `/api/user/list`, { headers })
+                axios.get(backEndURL + `/api/user/list`, { headers }),
+                axios.get(backEndURL + `/api/stats/top-products?period=${period}&limit=10`, { headers })
             ]);
 
             setRevenueData(revenueRes.data.data || {
@@ -99,6 +102,9 @@ const Dashboard = () => {
 
             // Lấy tổng số người dùng
             setTotalUsers(usersRes.data.users?.length || 0);
+
+            // Lấy top sản phẩm bán chạy
+            setTopProducts(topProductsRes.data.data || []);
         } catch (error) {
             setError(error.response?.data?.message || 'Có lỗi xảy ra khi tải dữ liệu');
         } finally {
@@ -171,6 +177,14 @@ const Dashboard = () => {
                 <div className="bg-white rounded-xl shadow p-4 h-80 flex flex-col">
                     <div className="font-semibold mb-2">Danh mục sản phẩm</div>
                     <div className="flex-1"><ProductCategoriesChart data={productCategories} /></div>
+                </div>
+            </div>
+
+            {/* Biểu đồ sản phẩm bán chạy */}
+            <div className="bg-white rounded-xl shadow p-6 mt-8">
+                <div className="text-lg font-semibold mb-4">Sản phẩm bán chạy</div>
+                <div className="h-80">
+                    <ProductsChart data={topProducts} />
                 </div>
             </div>
         </div>

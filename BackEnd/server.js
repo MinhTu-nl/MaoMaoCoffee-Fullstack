@@ -3,6 +3,7 @@ import cors from 'cors'
 import 'dotenv/config'
 import connectDB from './config/mongodb.js'
 import connectCloudinary from './config/cloudinary.js'
+import helmet from 'helmet'
 
 import userRouter from './routes/userRoute.js'
 import productRouter from './routes/productRoute.js'
@@ -18,6 +19,11 @@ import notificationRouter from './routes/notificationRoute.js'
 // app config
 const app = express()
 const port = process.env.PORT || 4000
+
+
+// helmet
+app.use(helmet());
+
 connectDB()
 connectCloudinary()
 

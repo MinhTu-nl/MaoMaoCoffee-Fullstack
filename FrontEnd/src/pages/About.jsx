@@ -47,7 +47,7 @@ const About = () => {
 
                 {/* Mission and Values */}
                 <div className="mb-20">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-8 text-center">Sứ mệnh & Giá trị của chúng tôi</h2>
+                    <h2 className="text-xl font-semibold text-gray-800 mb-8 text-center">Sứ mệnh & Giá trị của chúng tôi</h2>
                     <div className="grid md:grid-cols-3 gap-8">
                         <div className="text-center p-8 border border-gray-200 rounded-2xl shadow hover:shadow-lg transition group bg-white">
                             <div className="flex justify-center mb-4">
