@@ -18,18 +18,21 @@ import notificationRouter from './routes/notificationRoute.js'
 
 // app config
 const app = express()
-const port = 4000
-
+const port = process.env.PORT || 4000
 
 // helmet
 app.use(helmet());
 
+// Connect to databases
 connectDB()
 connectCloudinary()
 
-// midlleware
+// middleware
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+    origin: process.env.CORS_ORIGIN || '*',
+    credentials: true
+}))
 
 //user
 app.use('/api/user', userRouter)
@@ -59,7 +62,27 @@ app.use('/api/review', reviewRouter)
 app.use('/api/notification', notificationRouter)
 
 app.get('/', (req, res) => {
-    res.send('Im Minh Tú')
+    res.json({ message: 'MaoMao Backend API is running!' })
+})
+
+app.get('/health', (req, res) => {
+    res.json({ status: 'OK', timestamp: new Date().toISOString() })
+})
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack)
+    res.status(500).json({
+        error: 'Something went wrong!',
+        message: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
+    })
+})
+
+// 404 handler
+app.use('*', (req, res) => {
+    res.status(404).json({ error: 'Route not found' })
 })
 
 app.listen(port, () => console.log(`Server is running on port: ${port}`))
+
+export default app
