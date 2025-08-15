@@ -18,7 +18,7 @@ import notificationRouter from './routes/notificationRoute.js'
 
 // app config
 const app = express()
-const port = process.env.PORT || 4000
+const port = 4000
 
 
 // helmet
