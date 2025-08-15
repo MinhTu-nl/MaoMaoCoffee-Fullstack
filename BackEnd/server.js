@@ -89,4 +89,7 @@ if (process.env.NODE_ENV !== 'production') {
     app.listen(port, () => console.log(`Server is running on port: ${port}`))
 }
 
-export default app
+// Export a handler compatible with Vercel Node runtime
+export default function handler(req, res) {
+    return app(req, res)
+}
