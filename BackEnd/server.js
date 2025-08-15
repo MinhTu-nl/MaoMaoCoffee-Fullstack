@@ -83,6 +83,10 @@ app.use('*', (req, res) => {
     res.status(404).json({ error: 'Route not found' })
 })
 
-app.listen(port, () => console.log(`Server is running on port: ${port}`))
+// Only start a local server during development. Vercel will handle the
+// request lifecycle in production using the exported handler.
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(port, () => console.log(`Server is running on port: ${port}`))
+}
 
 export default app

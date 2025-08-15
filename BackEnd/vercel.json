@@ -3,9 +3,14 @@
     "builds": [
         {
             "src": "server.js",
-            "use": "@vercel/node@18"
+            "use": "@vercel/node"
         }
     ],
+    "functions": {
+        "server.js": {
+            "runtime": "nodejs18.x"
+        }
+    },
     "routes": [
         {
             "src": "/api/(.*)",
