@@ -5,7 +5,7 @@ import 'swiper/css/navigation';
 import { Navigation, Autoplay } from 'swiper/modules';
 import Title from './Title';
 import cf1 from '../assets/CF1.png'
-import dx1 from "../assets/dx01.png"
+import dx1 from "../assets/DX01.png"
 import t01 from "../assets/T01.png"
 import ts1 from "../assets/TS01.png"
 import cr1 from "../assets/CRO1.png"
