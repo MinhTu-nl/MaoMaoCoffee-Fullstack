@@ -23,10 +23,6 @@ const port = process.env.PORT || 4000
 // helmet
 app.use(helmet());
 
-// Connect to databases
-connectDB()
-connectCloudinary()
-
 // middleware
 app.use(express.json())
 app.use(cors({
@@ -86,10 +82,29 @@ app.use('*', (req, res) => {
 // Only start a local server during development. Vercel will handle the
 // request lifecycle in production using the exported handler.
 if (process.env.NODE_ENV !== 'production') {
+    // Connect to databases only in development
+    connectDB()
+    connectCloudinary()
+
     app.listen(port, () => console.log(`Server is running on port: ${port}`))
 }
 
 // Export a handler compatible with Vercel Node runtime
-export default function handler(req, res) {
-    return app(req, res)
+export default async function handler(req, res) {
+    try {
+        // Connect to databases on first request (lazy loading for Vercel)
+        if (!global._dbConnected) {
+            await connectDB()
+            await connectCloudinary()
+            global._dbConnected = true
+        }
+
+        return app(req, res)
+    } catch (error) {
+        console.error('Handler error:', error)
+        res.status(500).json({
+            error: 'Database connection failed',
+            message: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+        })
+    }
 }
