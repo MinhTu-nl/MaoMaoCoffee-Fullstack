@@ -177,8 +177,7 @@ const Navbar = () => {
                                         onClick={() => navigate('/Login')}
                                         className='flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-950 hover:bg-blue-50 rounded-lg transition-colors'
                                     >
-                                        <img src={assets.profile_icon} className='w-4 h-4' alt="profile" />
-                                        <span className='hidden md:block'>Tài khoản</span>
+                                        <img src={assets.profile_icon} className='w-5 h-5' alt="profile" />
                                     </button>
                                 )}
                             </div>

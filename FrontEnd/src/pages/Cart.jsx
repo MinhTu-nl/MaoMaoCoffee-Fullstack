@@ -55,16 +55,16 @@ const Cart = () => {
                         </button>
                     </div>
                 ) : (
-                    <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
+                    <div className='grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8'>
                         <div className='lg:col-span-2'>
                             {cartData.map((item, index) => {
                                 const productData = products.find((products) => products._id === item._id);
                                 return (
                                     <div
                                         key={index}
-                                        className='group flex items-center gap-6 py-4 border-b border-gray-100 last:border-0'
+                                        className='group flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6 py-4 border-b border-gray-100 last:border-0'
                                     >
-                                        <div className='relative w-20 h-20 overflow-hidden'>
+                                        <div className='relative w-16 h-16 sm:w-20 sm:h-20 overflow-hidden flex-shrink-0'>
                                             <img
                                                 src={productData.images[0]}
                                                 alt={productData.name}
@@ -72,19 +72,19 @@ const Cart = () => {
                                             />
                                         </div>
 
-                                        <div className='flex-1'>
-                                            <h3 className='text-base font-light mb-1'>{productData.name}</h3>
-                                            <div className='flex items-center gap-3 text-sm text-gray-500'>
+                                        <div className='flex-1 min-w-0'>
+                                            <h3 className='text-sm sm:text-base font-light mb-1'>{productData.name}</h3>
+                                            <div className='flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-xs sm:text-sm text-gray-500'>
                                                 <span>{getDisplayPrice(productData, item.sizes)} {currency}</span>
-                                                <span className='px-2 py-0.5 border border-gray-200 text-xs'>{item.sizes}</span>
+                                                <span className='px-2 py-0.5 border border-gray-200 text-xs w-fit'>{item.sizes}</span>
                                             </div>
                                         </div>
 
-                                        <div className='flex items-center gap-4'>
-                                            <div className='flex items-center'>
+                                        <div className='flex items-center gap-3 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end'>
+                                            <div className='flex items-center border border-gray-200 rounded-lg overflow-hidden'>
                                                 <button
                                                     onClick={() => updateQuantity(item._id, item.sizes, Math.max(1, item.quantity - 1))}
-                                                    className='w-6 h-6 flex items-center justify-center border border-gray-200 hover:border-black transition-colors text-sm'
+                                                    className='w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors text-gray-600 hover:text-black font-medium text-sm sm:text-lg'
                                                 >
                                                     -
                                                 </button>
@@ -98,20 +98,20 @@ const Cart = () => {
                                                             updateQuantity(item._id, item.sizes, value);
                                                         }
                                                     }}
-                                                    className='w-10 h-6 text-center border-y border-gray-200 focus:outline-none text-sm'
+                                                    className='w-10 sm:w-12 h-7 sm:h-8 text-center border-x border-gray-200 focus:outline-none text-xs sm:text-sm font-medium bg-white'
                                                 />
                                                 <button
                                                     onClick={() => updateQuantity(item._id, item.sizes, item.quantity + 1)}
-                                                    className='w-6 h-6 flex items-center justify-center border border-gray-200 hover:border-black transition-colors text-sm'
+                                                    className='w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors text-gray-600 hover:text-black font-medium text-sm sm:text-lg'
                                                 >
                                                     +
                                                 </button>
                                             </div>
                                             <button
                                                 onClick={() => updateQuantity(item._id, item.sizes, 0)}
-                                                className='p-1.5 hover:opacity-50 transition-opacity'
+                                                className='p-1.5 sm:p-2 hover:bg-red-50 hover:text-red-500 transition-all duration-200 rounded-full'
                                             >
-                                                <img src={assets.bin_icon} alt="Delete" className='w-4 h-4' />
+                                                <img src={assets.bin_icon} alt="Delete" className='w-3.5 h-3.5 sm:w-4 sm:h-4' />
                                             </button>
                                         </div>
                                     </div>
@@ -121,11 +121,11 @@ const Cart = () => {
 
                         <div className='lg:col-span-1'>
                             <div className='sticky top-8'>
-                                <div className='bg-gray-50 p-6'>
+                                <div className='bg-gray-50 p-4 sm:p-6 rounded-lg'>
                                     <CartTotal items={cartData.map(item => ({ productId: item._id, size: item.sizes, quantity: item.quantity }))} />
                                     <button
                                         onClick={() => navigate('/Place-order')}
-                                        className='w-full mt-6 py-3 bg-black text-white hover:bg-gray-800 transition-colors duration-300'
+                                        className='w-full mt-4 sm:mt-6 py-3 bg-black text-white hover:bg-gray-800 transition-colors duration-300 rounded-lg'
                                     >
                                         Thanh Toán
                                     </button>

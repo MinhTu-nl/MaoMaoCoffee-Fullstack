@@ -19,6 +19,7 @@ import notificationRouter from './routes/notificationRoute.js'
 // app config
 const app = express()
 const port = process.env.PORT || 4000
+const isProduction = process.env.NODE_ENV === 'production'
 
 // helmet
 app.use(helmet());
@@ -79,17 +80,29 @@ app.use('*', (req, res) => {
     res.status(404).json({ error: 'Route not found' })
 })
 
-// Only start a local server during development. Vercel will handle the
-// request lifecycle in production using the exported handler.
-if (process.env.NODE_ENV !== 'production') {
-    // Connect to databases only in development
-    connectDB()
-    connectCloudinary()
+// Start local server for development
+if (!isProduction) {
+    const startLocalServer = async () => {
+        try {
+            // Connect to databases
+            await connectDB()
+            await connectCloudinary()
 
-    app.listen(port, () => console.log(`Server is running on port: ${port}`))
+            app.listen(port, () => {
+                console.log(`🚀 Server is running on port: ${port}`)
+                console.log(`📱 Environment: ${process.env.NODE_ENV || 'development'}`)
+                console.log(`🌐 Local URL: http://localhost:${port}`)
+            })
+        } catch (error) {
+            console.error('❌ Failed to start local server:', error)
+            process.exit(1)
+        }
+    }
+
+    startLocalServer()
 }
 
-// Export a handler compatible with Vercel Node runtime
+// Export handler for Vercel (production)
 export default async function handler(req, res) {
     try {
         // Connect to databases on first request (lazy loading for Vercel)
