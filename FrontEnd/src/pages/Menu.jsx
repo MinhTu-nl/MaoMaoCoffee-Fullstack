@@ -246,53 +246,98 @@ const Menu = () => {
                         </div>
                     </div>
 
-                    {/* Hiển thị danh sách sản phẩm - Đã chỉnh sửa grid cho mobile */}
-                    <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6 justify-items-center max-w-7xl mx-auto'>
+                    {/* Hiển thị danh sách sản phẩm - Responsive cho mobile */}
+                    <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4 lg:gap-6 justify-items-center'>
                         {
                             currentProducts.map((item, index) => (
-                                <div key={index} className="w-full max-w-[180px] sm:max-w-none">
-                                    <ProductItem id={item._id} images={item.images} name={item.name} price={item.price} category={item.category} />
+                                <div key={index} className="w-full max-w-[160px] sm:max-w-[180px] md:max-w-none">
+                                    <ProductItem
+                                        id={item._id}
+                                        images={item.images}
+                                        name={item.name}
+                                        price={item.price}
+                                        category={item.category}
+                                    />
                                 </div>
                             ))
                         }
                     </div>
 
-                    {/* Phân trang */}
+                    {/* Thông báo khi không có sản phẩm */}
+                    {currentProducts.length === 0 && (
+                        <div className='text-center py-16'>
+                            <div className='w-20 h-20 mx-auto mb-4'>
+                                <img src={assets.bin_icon} alt="No products" className='w-full h-full opacity-20' />
+                            </div>
+                            <p className='text-lg text-gray-400 mb-2'>Không tìm thấy sản phẩm</p>
+                            <p className='text-sm text-gray-300'>Vui lòng thử lại với bộ lọc khác</p>
+                        </div>
+                    )}
+
+                    {/* Phân trang - Responsive cho mobile */}
                     {totalPages > 1 && (
-                        <div className='flex justify-center items-center gap-2 mt-8'>
+                        <div className='flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-2 mt-8'>
+                            {/* Nút Previous */}
                             <button
                                 onClick={() => handlePageChange(currentPage - 1)}
                                 disabled={currentPage === 1}
-                                className={`px-3 py-1 rounded-md ${currentPage === 1
+                                className={`px-3 py-2 sm:px-3 sm:py-1 rounded-md text-sm font-medium transition-colors ${currentPage === 1
                                     ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                                    : 'bg-blue-950 text-white hover:bg-blue-950'
+                                    : 'bg-blue-950 text-white hover:bg-blue-800 active:bg-blue-900'
                                     }`}
                             >
-                                Trước
+                                ← Trước
                             </button>
 
-                            {[...Array(totalPages)].map((_, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => handlePageChange(index + 1)}
-                                    className={`px-3 py-1 rounded-md ${currentPage === index + 1
-                                        ? 'bg-blue-950 text-white'
-                                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                                        }`}
-                                >
-                                    {index + 1}
-                                </button>
-                            ))}
+                            {/* Số trang - Ẩn một số trang trên mobile để tránh quá dài */}
+                            <div className='flex items-center gap-1 sm:gap-2'>
+                                {[...Array(totalPages)].map((_, index) => {
+                                    const pageNumber = index + 1;
+                                    const isCurrentPage = currentPage === pageNumber;
 
+                                    // Trên mobile, chỉ hiển thị trang hiện tại và 2 trang xung quanh
+                                    const shouldShow = window.innerWidth < 640
+                                        ? (pageNumber === 1 ||
+                                            pageNumber === totalPages ||
+                                            Math.abs(pageNumber - currentPage) <= 1)
+                                        : true;
+
+                                    if (!shouldShow) {
+                                        // Hiển thị dấu ... khi bỏ qua nhiều trang
+                                        if (pageNumber === 2 && currentPage > 3) {
+                                            return <span key={`ellipsis-1`} className="px-2 text-gray-400">...</span>;
+                                        }
+                                        if (pageNumber === totalPages - 1 && currentPage < totalPages - 2) {
+                                            return <span key={`ellipsis-2`} className="px-2 text-gray-400">...</span>;
+                                        }
+                                        return null;
+                                    }
+
+                                    return (
+                                        <button
+                                            key={index}
+                                            onClick={() => handlePageChange(pageNumber)}
+                                            className={`px-2 py-1 sm:px-3 sm:py-1 rounded-md text-sm font-medium transition-colors ${isCurrentPage
+                                                ? 'bg-blue-950 text-white'
+                                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300 active:bg-gray-400'
+                                                }`}
+                                        >
+                                            {pageNumber}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Nút Next */}
                             <button
                                 onClick={() => handlePageChange(currentPage + 1)}
                                 disabled={currentPage === totalPages}
-                                className={`px-3 py-1 rounded-md ${currentPage === totalPages
+                                className={`px-3 py-2 sm:px-3 sm:py-1 rounded-md text-sm font-medium transition-colors ${currentPage === totalPages
                                     ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                                    : 'bg-blue-950 text-white hover:bg-blue-950'
+                                    : 'bg-blue-950 text-white hover:bg-blue-800 active:bg-blue-900'
                                     }`}
                             >
-                                Sau
+                                Sau →
                             </button>
                         </div>
                     )}
