@@ -9,10 +9,12 @@ const Login = ({ setToken, setUserRole }) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
+    // Xử lý submit form đăng nhập, gửi dữ liệu lên server để xác thực (có thể xác thực từ file hoặc database phía backend)
     const onSumithandler = async (e) => {
         try {
             e.preventDefault()
             setError('')
+            // Gửi request đăng nhập admin
             const res = await axios.post(backEndURL + '/api/user/admin', { email, password })
             if (res.data.success) {
                 setToken(res.data.token)

@@ -8,7 +8,7 @@ const Sidebar = ({ onLogout }) => {
     const [productCount, setProductCount] = useState(0);
 
     useEffect(() => {
-        // Hàm fetch số lượng thông báo chưa đọc
+        // Hàm fetch số lượng thông báo chưa đọc từ API (có thể lấy từ file hoặc database phía backend)
         const fetchUnreadCount = async () => {
             try {
                 const token = localStorage.getItem('token');
@@ -21,7 +21,7 @@ const Sidebar = ({ onLogout }) => {
                 setUnreadCount(0);
             }
         };
-        // Hàm fetch số lượng đơn hàng mới
+        // Hàm fetch số lượng đơn hàng mới từ API (có thể lấy từ file hoặc database phía backend)
         const fetchNewOrderCount = async () => {
             try {
                 const token = localStorage.getItem('token');
@@ -34,7 +34,7 @@ const Sidebar = ({ onLogout }) => {
                 setNewOrderCount(0);
             }
         };
-        // Hàm fetch số lượng sản phẩm
+        // Hàm fetch số lượng sản phẩm từ API (có thể lấy từ file hoặc database phía backend)
         const fetchProductCount = async () => {
             try {
                 const token = localStorage.getItem('token');

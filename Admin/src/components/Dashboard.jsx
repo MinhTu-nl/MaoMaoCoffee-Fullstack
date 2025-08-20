@@ -59,6 +59,7 @@ const Dashboard = () => {
         fetchData();
     }, [period]);
 
+    // Hàm lấy dữ liệu tổng quan từ server (API), có thể lấy dữ liệu từ file hoặc database phía backend
     const fetchData = async () => {
         try {
             setLoading(true);
@@ -67,13 +68,14 @@ const Dashboard = () => {
             const token = localStorage.getItem('token');
             const headers = { Authorization: `Bearer ${token}` };
 
+            // Gọi đồng thời nhiều API để lấy dữ liệu dashboard
             const [revenueRes, statusRes, categoriesRes, productsRes, usersRes, topProductsRes] = await Promise.all([
-                axios.get(backEndURL + `/api/stats/revenue?period=${period}`, { headers }),
-                axios.get(backEndURL + `/api/stats/order-status?period=${period}`, { headers }),
-                axios.get(backEndURL + `/api/product/list?limit=1000`, { headers }),
-                axios.get(backEndURL + `/api/product/list?limit=1`, { headers }),
-                axios.get(backEndURL + `/api/user/list`, { headers }),
-                axios.get(backEndURL + `/api/stats/top-products?period=${period}&limit=10`, { headers })
+                axios.get(backEndURL + `/api/stats/revenue?period=${period}`, { headers }), // Doanh thu
+                axios.get(backEndURL + `/api/stats/order-status?period=${period}`, { headers }), // Trạng thái đơn hàng
+                axios.get(backEndURL + `/api/product/list?limit=1000`, { headers }), // Danh sách sản phẩm
+                axios.get(backEndURL + `/api/product/list?limit=1`, { headers }), // Tổng số sản phẩm
+                axios.get(backEndURL + `/api/user/list`, { headers }), // Danh sách người dùng
+                axios.get(backEndURL + `/api/stats/top-products?period=${period}&limit=10`, { headers }) // Top sản phẩm bán chạy
             ]);
 
             setRevenueData(revenueRes.data.data || {
@@ -97,7 +99,7 @@ const Dashboard = () => {
             }));
             setProductCategories(categoryData);
 
-            // Lấy tổng số sản phẩm
+            // Lấy tổng số sản phẩm từ API (có thể lấy từ file/database phía backend)
             setTotalProducts(productsRes.data.pagination?.total || 0);
 
             // Lấy tổng số người dùng

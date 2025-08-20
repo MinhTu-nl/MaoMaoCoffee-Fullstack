@@ -75,4 +75,10 @@ productSchema.methods.getPriceBySize = function (size) {
 };
 
 const ProductModel = mongoose.models.product || mongoose.model('product', productSchema);
-export default ProductModel; 
+export default ProductModel;
+
+// Ghi chú:
+// - `price` lưu dưới dạng Map (key: size, value: number). Khi trả về API thường cần chuyển Map -> object.
+// - `images` là array URL (đã upload lên Cloudinary trong controller).
+// - `sizes` danh sách các size hợp lệ cho sản phẩm.
+// - `getPriceBySize(size)` là helper trả giá theo size, fallback về 'M' nếu size không tồn tại.

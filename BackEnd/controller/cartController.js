@@ -1,10 +1,13 @@
 import userModel from "../model/userModel.js"
 
+// Controller quản lý giỏ hàng lưu trực tiếp trong document user (cartData)
+
 const addToCart = async (req, res) => {
     try {
         const { itemId, sizes } = req.body
         const userId = req.user.id
 
+        // Validate input
         if (!itemId || !sizes) {
             return res.status(400).json({
                 success: false,
@@ -20,6 +23,7 @@ const addToCart = async (req, res) => {
             })
         }
 
+        // cartData structure: { itemId: { size: quantity, ... }, ... }
         let cartData = userData.cartData || {}
 
         if (cartData[itemId]) {
@@ -32,6 +36,7 @@ const addToCart = async (req, res) => {
             cartData[itemId] = { [sizes]: 1 }
         }
 
+        // Cập nhật lại user document với cart mới
         await userModel.findByIdAndUpdate(userId, { cartData })
         res.json({
             success: true,
@@ -51,6 +56,7 @@ const updateCart = async (req, res) => {
         const { itemId, sizes, quantity } = req.body
         const userId = req.user.id
 
+        // Validate params
         if (!itemId || !sizes || quantity === undefined) {
             return res.status(400).json({
                 success: false,
@@ -82,6 +88,7 @@ const updateCart = async (req, res) => {
             })
         }
 
+        // Nếu quantity = 0 => xoá mục size, nếu không còn size nào thì xoá itemId
         if (quantity === 0) {
             delete cartData[itemId][sizes]
             if (Object.keys(cartData[itemId]).length === 0) {
@@ -118,6 +125,7 @@ const getUserCart = async (req, res) => {
         }
 
         const cartData = userData.cartData || {}
+
         res.json({
             success: true,
             cartData,

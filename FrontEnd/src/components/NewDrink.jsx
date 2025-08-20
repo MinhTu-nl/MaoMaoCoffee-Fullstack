@@ -7,8 +7,8 @@ const NewDrink = () => {
     const { products } = useContext(ShopContext)
     const [newDrink, setNewDrink] = useState([])
 
+    // Khi products thay đổi: shuffle danh sách và lấy 10 phần tử để hiển thị mục "New Drink"
     useEffect(() => {
-        // Create a copy of products array and shuffle it
         const shuffledProducts = [...products]
             .sort(() => Math.random() - 0.5)
             .slice(0, 10)

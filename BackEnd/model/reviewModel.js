@@ -29,3 +29,8 @@ const reviewSchema = new mongoose.Schema({
 
 const Review = mongoose.model('Review', reviewSchema)
 export default Review
+
+// Ghi chú:
+// - Review tham chiếu tới user và product.
+// - `rating` giới hạn từ 1..5.
+// - `createdAt` lưu thời điểm tạo review.

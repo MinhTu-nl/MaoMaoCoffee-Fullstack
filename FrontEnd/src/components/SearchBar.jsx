@@ -4,8 +4,11 @@ import { useLocation } from 'react-router-dom'
 import { assets } from '../assets/assets'
 
 const SearchBar = () => {
+    // Lấy state tìm kiếm và điều khiển hiển thị từ context
     const { search, setSearch, showSearch, setShowSearch } = useContext(ShopContext)
+    // visible: kiểm tra liệu search bar có nên hiển thị trên route hiện tại
     const [visible, setVisible] = useState(false)
+    // isAnimating/isOpening: điều khiển class animation khi mở/đóng
     const [isAnimating, setIsAnimating] = useState(false)
     const [isOpening, setIsOpening] = useState(false)
     const location = useLocation()
@@ -19,6 +22,7 @@ const SearchBar = () => {
     }, [location])
 
     // Effect để xử lý animation khi mở search bar
+    // Effect để bật animation mở khi showSearch chuyển true trên route hợp lệ
     useEffect(() => {
         if (showSearch && visible) {
             setIsOpening(true)
@@ -29,6 +33,7 @@ const SearchBar = () => {
     }, [showSearch, visible])
 
     // Xử lý animation khi đóng search bar
+    // Khi đóng: bật animation, sau thời gian animation -> tắt showSearch
     const handleClose = () => {
         setIsAnimating(true)
         setTimeout(() => {
@@ -38,6 +43,7 @@ const SearchBar = () => {
     }
 
     // Xử lý animation khi xóa nội dung
+    // Clear: thêm class animation shake lên input rồi reset search sau animation
     const handleClear = () => {
         const input = document.querySelector('.search-input')
         if (input) {

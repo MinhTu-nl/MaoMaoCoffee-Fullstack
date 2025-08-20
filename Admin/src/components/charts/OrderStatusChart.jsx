@@ -1,6 +1,7 @@
 import React from 'react';
 import { Doughnut } from 'react-chartjs-2';
 
+// Biểu đồ trạng thái đơn hàng, nhận dữ liệu từ server (có thể từ file hoặc database phía backend)
 const OrderStatusChart = ({ data }) => {
     // Đảm bảo data là array
     const statusData = Array.isArray(data) ? data : [];

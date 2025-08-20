@@ -16,4 +16,9 @@ router.get('/count/:productId', getReviewCountByProduct)
 // Lấy số lượng review cho tất cả sản phẩm
 router.get('/count-all', getReviewCountAll)
 
+// Ghi chú:
+// - POST /add: user cần login (authMiddleware)
+// - DELETE /remove/:id: user chỉ được xoá review của mình
+// - GET /product/:productId: trả về review của sản phẩm (populate user)
+
 export default router

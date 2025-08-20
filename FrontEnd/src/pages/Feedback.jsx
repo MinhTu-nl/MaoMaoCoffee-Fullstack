@@ -1,3 +1,12 @@
+/*
+ * Page: Feedback.jsx
+ * Purpose: Gửi đánh giá/feedback (rating + comment, optional image uploads).
+ * Main behavior: Thu thập rating và comment, optional upload media, gọi API tạo review, hiển thị trạng thái.
+ * Inputs: Rating, comment, files.
+ * Outputs: POST review, cập nhật UI (success/error).
+ * Edge cases: File too large, duplicate submissions, validation độ dài comment.
+ */
+
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShopContext } from '../contexts/ShopContext';

@@ -9,18 +9,24 @@ export const addReview = async (req, res) => {
     try {
         const { productId, rating, comment } = req.body
         const user = req.user._id || req.user.id
-        // Kiểm tra đã review chưa
+
+        // Kiểm tra nếu user đã đánh giá sản phẩm này trước đó
         const existed = await Review.findOne({ user, productId })
         if (existed) return res.status(400).json({ message: 'Bạn đã đánh giá sản phẩm này!' })
+
+        // Tạo review mới
         const review = await Review.create({ user, productId, rating, comment })
-        // Lấy thông tin user
+
+        // Lấy thông tin user để hiển thị trong notification
         const userInfo = await User.findById(user)
-        // Tạo notification cho admin
+
+        // Tạo notification cho admin để biết có review mới
         await Notification.create({
             type: 'review',
             message: `Người dùng ${userInfo?.name || user} vừa đánh giá sản phẩm`,
             data: { reviewId: review._id, userId: user, productId }
         });
+
         res.status(201).json(review)
     } catch (err) {
         res.status(500).json({ message: err.message })
@@ -32,10 +38,12 @@ export const deleteReview = async (req, res) => {
     try {
         const review = await Review.findById(req.params.id)
         if (!review) return res.status(404).json({ message: 'Không tìm thấy review!' })
-        // Chỉ user tạo review mới được xoá
+
+        // Chỉ user tạo review mới được xoá (bảo mật)
         if (review.user.toString() !== req.user._id.toString()) {
             return res.status(403).json({ message: 'Bạn không có quyền xoá review này!' })
         }
+
         await review.deleteOne()
         res.json({ message: 'Đã xoá review!' })
     } catch (err) {
@@ -47,9 +55,13 @@ export const deleteReview = async (req, res) => {
 export const getReviewsByProduct = async (req, res) => {
     try {
         const { productId } = req.params
+
+        // Validate productId
         if (!mongoose.Types.ObjectId.isValid(productId)) {
             return res.status(400).json({ message: 'productId không hợp lệ!' })
         }
+
+        // Trả về danh sách review kèm tên user
         const reviews = await Review.find({ productId }).populate('user', 'name')
         res.json(reviews)
     } catch (err) {
@@ -71,11 +83,12 @@ export const getReviewCountByProduct = async (req, res) => {
 // Lấy số lượng review cho tất cả sản phẩm
 export const getReviewCountAll = async (req, res) => {
     try {
-        // Lấy tất cả review, group theo productId
+        // Dùng aggregation để nhóm số lượng review theo productId
         const counts = await Review.aggregate([
             { $group: { _id: "$productId", count: { $sum: 1 } } }
         ]);
-        // Chuyển thành object { productId: count, ... }
+
+        // Chuyển mảng kết quả thành object { productId: count }
         const result = {};
         counts.forEach(item => {
             result[item._id] = item.count;

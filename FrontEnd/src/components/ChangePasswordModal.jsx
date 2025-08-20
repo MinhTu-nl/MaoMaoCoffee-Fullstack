@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { assets } from '../assets/assets';
 
 const ChangePasswordModal = ({ isOpen, onClose, onSubmit, loading }) => {
+    // State chứa dữ liệu form và lỗi validation
     const [formData, setFormData] = useState({
         currentPassword: '',
         newPassword: '',
@@ -9,6 +10,7 @@ const ChangePasswordModal = ({ isOpen, onClose, onSubmit, loading }) => {
     });
     const [errors, setErrors] = useState({});
 
+    // Xử lý thay đổi input: cập nhật state và xóa lỗi tương ứng
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -24,6 +26,7 @@ const ChangePasswordModal = ({ isOpen, onClose, onSubmit, loading }) => {
         }
     };
 
+    // Validate form trước khi submit, trả về boolean
     const validateForm = () => {
         const newErrors = {};
 
@@ -47,6 +50,7 @@ const ChangePasswordModal = ({ isOpen, onClose, onSubmit, loading }) => {
         return Object.keys(newErrors).length === 0;
     };
 
+    // Khi submit: validate rồi gọi onSubmit (được truyền từ parent)
     const handleSubmit = (e) => {
         e.preventDefault();
         if (validateForm()) {
@@ -54,6 +58,7 @@ const ChangePasswordModal = ({ isOpen, onClose, onSubmit, loading }) => {
         }
     };
 
+    // Reset form local và gọi onClose để đóng modal
     const handleClose = () => {
         setFormData({
             currentPassword: '',

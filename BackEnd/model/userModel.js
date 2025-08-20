@@ -22,4 +22,9 @@ const userSchema = new mongoose.Schema({
 }, { minimize: false })
 
 const userModel = mongoose.models.user || mongoose.model('user', userSchema);
-export default userModel; 
+export default userModel;
+
+// Ghi chú:
+// - `cartData` lưu giỏ hàng trên document user (cấu trúc tuỳ ứng dụng: productId, size, quantity,...).
+// - `contactData` giữ lịch sử liên hệ/feedback của user (dùng cho admin xem và trả lời).
+// - `{ minimize: false }` đảm bảo Mongoose không loại bỏ các trường rỗng khi lưu.

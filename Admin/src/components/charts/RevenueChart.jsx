@@ -1,6 +1,7 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
 
+// Biểu đồ doanh thu, nhận dữ liệu từ server (có thể từ file hoặc database phía backend)
 const RevenueChart = ({ data }) => {
     // Đảm bảo data là array
     const revenueData = Array.isArray(data) ? data : [];

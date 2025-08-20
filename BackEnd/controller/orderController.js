@@ -7,20 +7,23 @@ import Notification from '../model/notificationModel.js'
 const placeOrder = async (req, res) => {
     let session;
     try {
-        // Try to start a transaction, but continue without it if not available
+        // Cố gắng bắt đầu transaction (nếu MongoDB cluster hỗ trợ), nếu không thì tiếp tục không transaction.
         try {
             session = await mongoose.startSession();
             session.startTransaction();
         } catch (error) {
+            // Một số môi trường (ví dụ: free-tier MongoDB Atlas hoặc cấu hình cục bộ) không hỗ trợ transaction.
+            // Trong trường hợp đó, ta vẫn cho phép tiếp tục nhưng log cảnh báo.
             console.warn('MongoDB transactions not available, proceeding without transaction');
         }
 
         const { items, amount, address, branchId } = req.body
-        const userId = req.user.id // Get userId from authenticated user
+        const userId = req.user.id // Lấy userId từ token đã được middleware gán
 
         console.log('Received order request:', { userId, items, amount, address, branchId });
 
-        // Validate input data
+        // --- VALIDATIONS ---
+        // Kiểm tra items phải là mảng và không rỗng
         if (!items || !Array.isArray(items) || items.length === 0) {
             return res.status(400).json({
                 success: false,
@@ -28,6 +31,7 @@ const placeOrder = async (req, res) => {
             })
         }
 
+        // Kiểm tra amount hợp lệ
         if (!amount || amount <= 0) {
             return res.status(400).json({
                 success: false,
@@ -35,7 +39,7 @@ const placeOrder = async (req, res) => {
             })
         }
 
-        // Validate address data more explicitly
+        // Kiểm tra address có trường cần thiết
         if (!address || typeof address !== 'object' || !address.street || !address.city || !address.country) {
             console.error('Error: Invalid address data.', address);
             return res.status(400).json({
@@ -52,7 +56,7 @@ const placeOrder = async (req, res) => {
             })
         }
 
-        // Check if branchId is a valid ObjectId before using it in queries
+        // Kiểm tra branchId hợp lệ theo ObjectId
         if (!mongoose.Types.ObjectId.isValid(branchId)) {
             console.error('Error: Invalid branchId format.', branchId);
             return res.status(400).json({
@@ -61,7 +65,7 @@ const placeOrder = async (req, res) => {
             });
         }
 
-        // Check if user exists
+        // Kiểm tra user tồn tại
         const user = await userModel.findById(userId)
         if (!user) {
             console.error('Error: User not found for userId', userId);
@@ -71,7 +75,9 @@ const placeOrder = async (req, res) => {
             })
         }
 
-        // Fetch product details for each item to include category
+        // --- LẤY THÔNG TIN SẢN PHẨM VÀ XÁC NHẬN GIÁ ---
+        // Với mỗi item, lấy product để xác nhận category, images và giá tương ứng với size.
+        // Đặc biệt: model product có thể lưu price dưới dạng Map (khi lưu từ client) hoặc object.
         const itemsWithCategory = await Promise.all(items.map(async (item) => {
             console.log(`Fetching product for item ID: ${item.productId}, size: ${item.size}`);
             const product = await ProductModel.findById(item.productId);
@@ -83,17 +89,20 @@ const placeOrder = async (req, res) => {
 
             let price;
             if (product.price instanceof Map) {
+                // Nếu price là Map, dùng .get(size)
                 price = product.price.get(item.size);
                 console.log(`Product ${item.productId} has price as Map. Price for size ${item.size}: ${price}`);
             } else if (typeof product.price === 'object' && product.price !== null) {
-                // Handle plain object prices if not a Map (e.g., from direct JSON import)
+                // Nếu price là object (ví dụ khi chuyển đổi), lấy theo key size
                 price = product.price[item.size];
                 console.log(`Product ${item.productId} has price as plain object. Price for size ${item.size}: ${price}`);
             } else {
+                // Nếu không có object/Map, coi như giá cố định cho mọi size
                 price = product.price; // Assume a single price if not an object/Map
                 console.log(`Product ${item.productId} has single price: ${price}`);
             }
 
+            // Nếu không tìm thấy giá hợp lệ thì throw để abort order
             if (price === undefined || price === null || isNaN(price)) {
                 console.error(`Price not found or invalid for size ${item.size} of product ${item.productId}. Product price object:`, product.price);
                 throw new Error(`Price not found or invalid for size ${item.size} of product ${item.productId}`);
@@ -108,6 +117,7 @@ const placeOrder = async (req, res) => {
             };
         }));
 
+        // Tạo object order theo schema
         const orderData = {
             userId,
             items: itemsWithCategory,
@@ -123,17 +133,18 @@ const placeOrder = async (req, res) => {
 
         console.log('Order data to be saved:', JSON.stringify(orderData, null, 2));
 
+        // Lưu order; nếu có session thì truyền vào để transaction hoạt động
         const newOrder = new orderModel(orderData)
         await newOrder.save(session ? { session } : {})
 
-        // Tạo notification cho admin
+        // Tạo notification cho admin (side-effect)
         await Notification.create({
             type: 'order',
             message: `Người dùng ${user.name} (${user.email}) vừa đặt hàng mới`,
             data: { orderId: newOrder._id, userId: user._id, name: user.name, email: user.email }
         });
 
-        // Clear user's cart after successful order
+        // Xóa giỏ hàng của user sau khi đặt hàng thành công
         await userModel.findByIdAndUpdate(
             userId,
             { cartData: {} },
@@ -150,6 +161,7 @@ const placeOrder = async (req, res) => {
             orderId: newOrder._id
         })
     } catch (error) {
+        // Nếu có session, rollback transaction
         if (session) {
             await session.abortTransaction()
         }

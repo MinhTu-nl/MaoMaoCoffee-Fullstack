@@ -11,13 +11,16 @@ const typeColor = {
 };
 
 const Notification = () => {
+    // Danh sách thông báo
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [unreadCount, setUnreadCount] = useState(0);
 
+    // token lấy từ localStorage để gọi API (Bearer token trong header)
     const token = localStorage.getItem('token');
 
+    // Lấy tất cả thông báo
     const fetchNotifications = async () => {
         setLoading(true);
         setError('');
@@ -32,6 +35,7 @@ const Notification = () => {
         setLoading(false);
     };
 
+    // Lấy số lượng thông báo chưa đọc và lưu vào localStorage để dùng ở header/app
     const fetchUnreadCount = async () => {
         try {
             const res = await axios.get(`${backEndURL}/api/notification/unread/count`, {
@@ -50,6 +54,7 @@ const Notification = () => {
         fetchUnreadCount();
     }, []);
 
+    // Đánh dấu thông báo là đã đọc => gọi PATCH, sau đó refresh danh sách và số lượng chưa đọc
     const markAsRead = async (id) => {
         try {
             await axios.patch(`${backEndURL}/api/notification/${id}/read`, {}, {
@@ -62,6 +67,7 @@ const Notification = () => {
         }
     };
 
+    // Xoá thông báo => gọi DELETE rồi refresh
     const deleteNotification = async (id) => {
         try {
             await axios.delete(`${backEndURL}/api/notification/${id}`, {

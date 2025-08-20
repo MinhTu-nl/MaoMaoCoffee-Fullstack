@@ -1,3 +1,12 @@
+/*
+ * Page: About.jsx
+ * Purpose: Trang giới thiệu (About) — mô tả công ty/ứng dụng.
+ * Main behavior: Hiển thị nội dung tĩnh hoặc nội dung lấy từ CMS/API; thường là layout thông tin.
+ * Inputs: Không yêu cầu props cụ thể; có thể dùng context (theme/user).
+ * Outputs: Giao diện text/hình ảnh, liên kết đến các trang khác.
+ * Edge cases: Nội dung dài, lỗi tải ảnh; cân nhắc SEO/meta tags.
+ */
+
 import React from 'react'
 import { assets } from '../assets/assets'
 import { useNavigate } from 'react-router-dom'

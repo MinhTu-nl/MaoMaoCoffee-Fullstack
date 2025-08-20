@@ -1,3 +1,12 @@
+/*
+ * Page: Order.jsx
+ * Purpose: Hiển thị danh sách/chi tiết đơn hàng của người dùng.
+ * Main behavior: Fetch orders, show status, xem chi tiết, hành động (hủy/track) nếu có.
+ * Inputs: Auth token, optional orderId param.
+ * Outputs: List/chi tiết order, API calls cho actions.
+ * Edge cases: User chưa login, trạng thái order thay đổi (real-time), pagination.
+ */
+
 import React, { useContext, useEffect, useState } from 'react'
 import { ShopContext } from '../contexts/ShopContext'
 import Title from '../components/Title'

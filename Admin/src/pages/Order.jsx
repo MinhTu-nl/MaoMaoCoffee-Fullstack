@@ -7,11 +7,13 @@ import { assets } from '../assets/assets.js'
 
 const Order = ({ token }) => {
     const currency = 'VNĐ'
+    // danh sách đơn hàng
     const [orders, setOrders] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
 
     // Hàm chuyển đổi trạng thái sang tiếng Việt
+    // map trạng thái tiếng Anh sang tiếng Việt để hiển thị ở UI
     const getStatusInVietnamese = (status) => {
         const statusMap = {
             'Order Placed': 'Đã đặt hàng',
@@ -23,6 +25,7 @@ const Order = ({ token }) => {
         return statusMap[status] || status;
     }
 
+    // Lấy tất cả đơn hàng (yêu cầu token để xác thực)
     const fetchAllOrders = async () => {
         if (!token) {
             setError('Vui lòng đăng nhập để xem đơn hàng')
@@ -46,6 +49,7 @@ const Order = ({ token }) => {
             }
         } catch (e) {
             console.error(e)
+            // xử lý lỗi auth 401: session hết hạn
             if (e.response && e.response.status === 401) {
                 setError('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.')
                 toast.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.')
@@ -59,6 +63,7 @@ const Order = ({ token }) => {
         }
     }
 
+    // reload khi token thay đổi hoặc lần đầu mount
     useEffect(() => {
         fetchAllOrders()
     }, [token])
@@ -71,6 +76,7 @@ const Order = ({ token }) => {
         'Delivered',
     ]
 
+    // Thay đổi trạng thái đơn hàng (PATCH). UI ngăn người dùng chọn trạng thái lùi lại.
     const statusHandler = async (event, orderId, currentStatus) => {
         const selectedStatus = event.target.value
 
@@ -106,6 +112,7 @@ const Order = ({ token }) => {
         }
     }
 
+    // Toggle trạng thái thanh toán (PATCH) - backend nhận boolean `payment`
     const paymentStatusHandler = async (orderId, currentStatus) => {
         try {
             const res = await axios.patch(

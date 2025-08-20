@@ -1,3 +1,12 @@
+/*
+ * Page: Cart.jsx
+ * Purpose: Hiển thị giỏ hàng của người dùng.
+ * Main behavior: Lấy state giỏ hàng (context/Redux/localStorage), hiển thị items, tính tổng, thay đổi số lượng, xóa item, chuyển tới checkout.
+ * Inputs: Cart state, handlers để cập nhật cart.
+ * Outputs: Danh sách sản phẩm, tổng tiền, action (checkout/add/remove/update).
+ * Edge cases: Giỏ rỗng, đồng bộ multi-tab, sản phẩm hết hàng khi checkout.
+ */
+
 import React, { useContext, useEffect, useState } from 'react'
 import { ShopContext } from "../contexts/ShopContext"
 import Title from '../components/Title'

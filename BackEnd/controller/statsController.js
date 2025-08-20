@@ -2,6 +2,8 @@ import orderModel from '../model/orderModel.js';
 import ProductModel from '../model/productsModel.js';
 
 // Lấy dữ liệu doanh thu theo thời gian
+// Query params: period = 'day'|'week'|'month'|'year'
+// Trả về tổng doanh thu, số đơn và doanh thu theo ngày trong khoảng thời gian
 export const getRevenue = async (req, res) => {
     try {
         const { period = 'month' } = req.query;
@@ -25,14 +27,17 @@ export const getRevenue = async (req, res) => {
                 startDate = new Date(now.setDate(1)).getTime();
         }
 
+        // Lấy các đơn đã giao trong khoảng thời gian bắt đầu
         const orders = await orderModel.find({
             date: { $gte: startDate },
             status: 'Delivered'
         });
 
+        // Tổng doanh thu và số đơn
         const revenue = orders.reduce((total, order) => total + order.amount, 0);
         const orderCount = orders.length;
 
+        // Nhóm doanh thu theo ngày (YYYY-MM-DD)
         const dailyRevenue = orders.reduce((acc, order) => {
             const date = new Date(order.date).toISOString().split('T')[0];
             acc[date] = (acc[date] || 0) + order.amount;
@@ -59,6 +64,7 @@ export const getRevenue = async (req, res) => {
 };
 
 // Lấy dữ liệu top sản phẩm bán chạy
+// Lấy top sản phẩm bán chạy (theo số lượng) trong khoảng thời gian
 export const getTopProducts = async (req, res) => {
     try {
         const { limit = 10 } = req.query;
@@ -89,6 +95,7 @@ export const getTopProducts = async (req, res) => {
             status: 'Delivered'
         });
 
+        // Tổng hợp số lượng và doanh thu theo tên sản phẩm
         const productSales = {};
         orders.forEach(order => {
             order.items.forEach(item => {
@@ -104,6 +111,7 @@ export const getTopProducts = async (req, res) => {
             });
         });
 
+        // Sắp xếp theo số lượng giảm dần và lấy top N
         const topProducts = Object.values(productSales)
             .sort((a, b) => b.quantity - a.quantity)
             .slice(0, parseInt(limit));
@@ -121,6 +129,7 @@ export const getTopProducts = async (req, res) => {
 };
 
 // Lấy dữ liệu phân loại sản phẩm
+// Lấy thống kê doanh thu theo category
 export const getCategories = async (req, res) => {
     try {
         const { period = 'month' } = req.query;
@@ -149,6 +158,7 @@ export const getCategories = async (req, res) => {
             status: 'Delivered'
         });
 
+        // Tổng hợp doanh thu và số đơn theo category
         const categoryRevenue = {};
         orders.forEach(order => {
             order.items.forEach(item => {
@@ -180,6 +190,7 @@ export const getCategories = async (req, res) => {
 };
 
 // Lấy dữ liệu trạng thái đơn hàng
+// Lấy số lượng đơn theo trạng thái
 export const getOrderStatus = async (req, res) => {
     try {
         const { period = 'month' } = req.query;
@@ -207,6 +218,7 @@ export const getOrderStatus = async (req, res) => {
             date: { $gte: startDate }
         });
 
+        // Đếm số đơn theo từng trạng thái
         const statusCount = {};
         orders.forEach(order => {
             if (!statusCount[order.status]) {

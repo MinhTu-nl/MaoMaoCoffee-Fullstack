@@ -68,3 +68,10 @@ const orderSchema = new mongoose.Schema({
 
 const orderModel = mongoose.models.order || mongoose.model('order', orderSchema)
 export default orderModel;
+
+// Ghi chú:
+// - `userId` lưu id user (kiểu string trong repo này) và có index để tìm nhanh.
+// - `items` là mảng các item (thường chứa productId, size, quantity, price, name, category...).
+// - `amount` tổng tiền; `date` lưu timestamp (Number) để truy vấn theo time range.
+// - `branch` tham chiếu tới model branch để biết đơn thuộc chi nhánh nào.
+// - `status`, `deliveryStatus`, `payment` dùng để theo dõi luồng đơn.

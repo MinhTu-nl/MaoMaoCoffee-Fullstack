@@ -1,3 +1,12 @@
+/*
+ * Page: Product.jsx
+ * Purpose: Trang chi tiết sản phẩm.
+ * Main behavior: Fetch product by id, hiển thị gallery, giá, mô tả, reviews, thêm vào cart.
+ * Inputs: route param productId, API.
+ * Outputs: UI chi tiết, add-to-cart event, review submission.
+ * Edge cases: Product không tồn tại (404), biến thể sản phẩm, tồn kho, SEO/meta tags.
+ */
+
 import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { ShopContext } from '../contexts/ShopContext'

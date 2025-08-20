@@ -2,20 +2,22 @@ import express from 'express';
 import userModel from '../model/userModel.js';
 import Notification from '../model/notificationModel.js';
 
-// User gửi contact
+// User gửi contact: push vào mảng contactData trong document user và tạo notification cho admin
 export const addContact = async (req, res) => {
     try {
         const { name, email, message } = req.body;
         const userId = req.user.id;
+        // Tạo object contact nhỏ với _id tạm (timestamp) và date
         const contact = { name, email, message, date: new Date(), _id: new Date().getTime().toString() };
 
+        // Push vào mảng contactData của user
         await userModel.findByIdAndUpdate(
             userId,
             { $push: { contactData: contact } }
         );
-        // Lấy thông tin user
+        // Lấy thông tin user để hiển thị trong notification
         const user = await userModel.findById(userId);
-        // Tạo notification cho admin
+        // Tạo notification cho admin để biết user đã gửi contact
         await Notification.create({
             type: 'contact',
             message: `Người dùng ${user?.name || name} (${user?.email || email}) vừa gửi liên hệ`,
@@ -27,15 +29,15 @@ export const addContact = async (req, res) => {
     }
 };
 
-// Admin xem tất cả contact của mọi user
+// Admin xem tất cả contact của mọi user: gom tất cả contactData từ user lại thành 1 mảng
 export const getAllContacts = async (req, res) => {
     try {
         // Chỉ admin mới được phép
         if (!req.user.isAdmin) return res.status(403).json({ success: false, message: 'Forbidden' });
 
-        // Lấy tất cả contactData từ tất cả user
+        // Lấy các trường contactData, name, email từ tất cả users
         const users = await userModel.find({}, { contactData: 1, _id: 1, name: 1, email: 1 });
-        // Gom tất cả contact lại thành 1 mảng
+        // Gom tất cả contact lại thành 1 mảng để admin duyệt
         const allContacts = [];
         users.forEach(user => {
             user.contactData.forEach(contact => {
@@ -54,7 +56,7 @@ export const getAllContacts = async (req, res) => {
     }
 };
 
-// Admin xoá contact theo _id và userId
+// Admin xoá contact theo userId và contactId: sử dụng $pull
 export const deleteContact = async (req, res) => {
     try {
         if (!req.user.isAdmin) return res.status(403).json({ success: false, message: 'Forbidden' });
@@ -70,7 +72,7 @@ export const deleteContact = async (req, res) => {
     }
 };
 
-// Admin gửi phản hồi cho contact
+// Admin gửi phản hồi (feedback) cho contact: cập nhật trường contactData.$.feedback
 export const sendFeedback = async (req, res) => {
     try {
         const { userId, contactId } = req.params;
@@ -87,12 +89,12 @@ export const sendFeedback = async (req, res) => {
     }
 };
 
-// User lấy contactData của mình (bao gồm phản hồi từ admin)
+// User lấy contactData của mình (có phản hồi từ admin nếu có)
 export const getUserContacts = async (req, res) => {
     try {
         const userId = req.user.id;
 
-        // Lấy user và chỉ lấy contactData
+        // Lấy user và chỉ lấy contactData, name, email
         const user = await userModel.findById(userId, { contactData: 1, name: 1, email: 1 });
 
         if (!user) {
@@ -102,7 +104,7 @@ export const getUserContacts = async (req, res) => {
             });
         }
 
-        // Sắp xếp contactData theo thời gian mới nhất trước
+        // Sắp xếp contactData theo date giảm dần (mới nhất trước)
         const sortedContacts = user.contactData.sort((a, b) => new Date(b.date) - new Date(a.date));
 
         res.json({

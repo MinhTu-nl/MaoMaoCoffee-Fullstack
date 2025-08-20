@@ -4,18 +4,29 @@ import { backEndURL } from '../App'
 import { toast } from 'react-toastify'
 import ImageUploadArea from '../components/ImageUploadArea'
 
-const MAX_IMAGES = 4;
+const MAX_IMAGES = 4; // giới hạn số lượng ảnh upload
 
+// Trang thêm sản phẩm mới. Xử lý upload ảnh, nhập thông tin, gửi dữ liệu lên server.
 const Add = ({ token }) => {
+    // State lưu danh sách ảnh sản phẩm (mảng file hoặc null cho ô rỗng)
     const [images, setImages] = useState([null]);
+    // State lưu tên sản phẩm (controlled input)
     const [name, setName] = useState('')
+    // State lưu mô tả sản phẩm
     const [description, setDescription] = useState('')
+    // State lưu giá theo từng size (object: { S: 10000, M: 12000 })
     const [price, setPrice] = useState({})
+    // State lưu loại sản phẩm
     const [category, setCategory] = useState('coffee')
+    // State lưu nhóm sản phẩm
     const [subCategory, setSubCategory] = useState('drink')
+    // State lưu các size sản phẩm (mảng string)
     const [sizes, setSizes] = useState([])
+    // State đánh dấu sản phẩm bán chạy
     const [bestseller, setBestseller] = useState(false)
 
+    // Xử lý khi chọn/chỉnh sửa ảnh
+    // Khi người dùng chọn file ảnh cho ô thứ `idx` => cập nhật mảng `images`
     const handleImageChange = (idx, e) => {
         const file = e.target.files[0];
         if (file) {
@@ -27,14 +38,20 @@ const Add = ({ token }) => {
         }
     };
 
+    // Thêm một ô upload ảnh mới
+    // Thêm một ô upload mới (nếu chưa đạt MAX_IMAGES)
     const handleAddImage = () => {
         if (images.length < MAX_IMAGES) setImages(prev => [...prev, null]);
     };
 
+    // Xoá một ảnh khỏi danh sách
+    // Xoá ô ảnh theo chỉ số
     const handleRemoveImage = (idx) => {
         setImages(prev => prev.filter((_, i) => i !== idx));
     };
 
+    // Xử lý thay đổi giá cho từng size
+    // Thay đổi giá theo size: chuyển value sang Number và lưu vào `price[size]`
     const handlePriceChange = (size, value) => {
         setPrice(prev => ({
             ...prev,
@@ -42,22 +59,29 @@ const Add = ({ token }) => {
         }))
     }
 
+    // Xử lý submit form thêm sản phẩm
+    // Kiểm tra dữ liệu, tạo FormData, gửi lên server
+    // Submit form: validate, build FormData (có ảnh) và gọi API
     const onSumbitHandler = async (e) => {
         e.preventDefault()
+        // Kiểm tra các trường bắt buộc
         if (!name || !description || !category || !subCategory || sizes.length === 0) {
             toast.error('Please fill in all required fields')
             return
         }
+        // Kiểm tra đã upload ít nhất một ảnh
         if (!images.some(img => img !== null)) {
             toast.error('Please upload at least one image')
             return
         }
+        // Kiểm tra đã nhập giá cho tất cả size
         const missingPrices = sizes.filter(size => !price[size])
         if (missingPrices.length > 0) {
             toast.error(`Please set prices for sizes: ${missingPrices.join(', ')}`)
             return
         }
         try {
+            // Tạo FormData để gửi dữ liệu sản phẩm (bao gồm cả ảnh)
             const formData = new FormData()
             formData.append('name', name)
             formData.append('description', description)
@@ -66,9 +90,11 @@ const Add = ({ token }) => {
             formData.append('subCategory', subCategory)
             formData.append('sizes', JSON.stringify(sizes))
             formData.append('bestseller', bestseller)
+            // đính kèm từng file ảnh vào FormData nếu tồn tại
             images.forEach((img, idx) => {
                 if (img) formData.append(`image${idx + 1}`, img)
             })
+            // Gửi request thêm sản phẩm lên server. Header 'token' được dùng bởi backend để xác thực
             const res = await axios.post(backEndURL + `/api/product/add`, formData, {
                 headers: {
                     token,
@@ -77,6 +103,7 @@ const Add = ({ token }) => {
             })
             if (res.data.success) {
                 toast.success(res.data.message)
+                // reset form sau khi thêm thành công
                 setName('')
                 setDescription('')
                 setPrice({})
@@ -88,15 +115,12 @@ const Add = ({ token }) => {
             }
         } catch (err) {
             console.error('Error adding product:', err)
+            // Thông báo lỗi chi tiết nếu có response từ server, nếu không thì dò lỗi kết nối
             if (err.response) {
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
                 toast.error(err.response.data.message || 'Server error occurred')
             } else if (err.request) {
-                // The request was made but no response was received
                 toast.error('No response from server. Please check your connection.')
             } else {
-                // Something happened in setting up the request that triggered an Error
                 toast.error(err.message || 'Something went wrong')
             }
         }

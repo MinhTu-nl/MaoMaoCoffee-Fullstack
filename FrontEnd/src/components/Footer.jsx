@@ -29,6 +29,7 @@ const links = [
     { name: 'Liên hệ', to: '/Contact' },
 ];
 
+// Footer component: static data arrays `contactInfo` và `links` được map để render phần liên hệ và link nhanh
 const Footer = () => {
     return (
         <footer className="mt-20 bg-white/90 backdrop-blur-md shadow-[0_-2px_16px_0_rgba(0,0,0,0.04)]">

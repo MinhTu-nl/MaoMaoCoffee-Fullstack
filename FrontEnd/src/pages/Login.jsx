@@ -1,3 +1,12 @@
+/*
+ * Page: Login.jsx
+ * Purpose: Đăng nhập người dùng.
+ * Main behavior: Form email/password, gọi API xác thực, lưu token (localStorage/cookie), redirect sau login.
+ * Inputs: Email/username, password, optional remember-me.
+ * Outputs: Session/token, cập nhật auth context, redirect.
+ * Edge cases: Hiển thị lỗi xác thực, rate-limiting, bảo mật khi lưu token.
+ */
+
 import React, { useContext, useEffect, useState } from 'react'
 import { assets } from '../assets/assets'
 import { ShopContext } from '../contexts/ShopContext'
@@ -94,7 +103,14 @@ const Login = () => {
                     />
 
                     <div className='flex justify-between text-sm mt-2'>
-                        <button type="button" className='text-blue-950 hover:text-[#00509d] transition-colors duration-300'>
+                        <button
+                            type="button"
+                            onClick={() => toast.info(
+                                `Ghi chú: Chúng tôi sẽ gửi hướng dẫn đặt lại mật khẩu tới email của bạn.\nVui lòng kiểm tra cả hộp thư đến và mục spam. Nếu không nhận được, liên hệ support@maomao.coffee`,
+                                { autoClose: 5000 }
+                            )}
+                            className='text-blue-950 hover:text-[#00509d] transition-colors duration-300'
+                        >
                             Quên Mật Khẩu?
                         </button>
                         <button

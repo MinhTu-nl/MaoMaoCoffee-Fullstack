@@ -3,36 +3,33 @@ import userModel from '../model/userModel.js';
 import bcrypt from 'bcrypt'
 import validator from 'validator'
 
+// Tạo JWT token đơn giản với payload chứa user id
 const createToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET)
 }
 
+// Đăng nhập user: kiểm tra email/password, trả về token nếu hợp lệ
 const loginUser = async (req, res) => {
     try {
 
         const { email, password } = req.body;
-        // Tìm kiếm user trong database dựa vào email
+        // Tìm user theo email
         const user = await userModel.findOne({ email })
 
-        //Kiểm tra nếu không tìm thấy user, Kiểm tra nếu không tìm thấy user
         if (!user) return res.json({
             success: false,
             message: 'User not found'
         })
 
-        // So sánh password người dùng nhập với password đã được mã hóa trong database
+        // So sánh password plaintext với hash trong DB
         const isMatch = await bcrypt.compare(password, user.password)
 
-        // Nếu password khớp:
-        //     Tạo JWT token với ID của user
-        //     Trả về response thành công kèm token
         if (isMatch) {
             const token = createToken(user._id)
             res.json({
                 success: true,
                 token
             })
-            // ngược lại: trả về res thất bại vs thông báo lỗi
         } else {
             res.json({
                 success: false,
@@ -49,6 +46,7 @@ const loginUser = async (req, res) => {
 }
 
 
+// Đăng ký user: kiểm tra email hợp lệ, password đủ dài, hash password rồi lưu
 const registerUser = async (req, res) => {
     try {
         const { name, email, password } = req.body
@@ -108,9 +106,9 @@ const adminLogin = async (req, res) => {
             });
         }
 
-        // Tạo token với payload là object chứa email
+        // Tạo token cho admin (payload chứa email admin). Thời hạn 24h
         const token = jwt.sign(
-            { email: process.env.ADMIN_EMAIL }, // Payload là object
+            { email: process.env.ADMIN_EMAIL },
             process.env.JWT_SECRET,
             { expiresIn: '24h' }
         );
@@ -224,7 +222,7 @@ const changePassword = async (req, res) => {
             });
         }
 
-        // Verify current password
+        // Xác thực mật khẩu hiện tại trước khi cho phép đổi mật khẩu
         const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
         if (!isCurrentPasswordValid) {
             return res.status(400).json({
@@ -233,11 +231,10 @@ const changePassword = async (req, res) => {
             });
         }
 
-        // Hash new password
+        // Hash mật khẩu mới và lưu vào DB
         const salt = await bcrypt.genSalt(10);
         const hashedNewPassword = await bcrypt.hash(newPassword, salt);
 
-        // Update password
         user.password = hashedNewPassword;
         await user.save();
 

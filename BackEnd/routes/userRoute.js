@@ -19,3 +19,8 @@ userRouter.get('/list', adminAuth, listUsers)
 userRouter.get('/:id', adminAuth, getUser)
 
 export default userRouter
+
+// Ghi chú:
+// - /login, /register: public
+// - /get và /change-password: user phải có token hợp lệ (middleware `auth` hoặc `authMiddleware`)
+// - Các route admin yêu cầu token admin (adminAuth)

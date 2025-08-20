@@ -1,3 +1,12 @@
+/*
+ * Page: Menu.jsx
+ * Purpose: Hiển thị danh sách sản phẩm theo danh mục (menu/catalog).
+ * Main behavior: Fetch products by category/search, hỗ trợ pagination hoặc infinite scroll, filter và sort.
+ * Inputs: Query params (category, search, page), API.
+ * Outputs: Danh sách sản phẩm, controls lọc/sắp xếp.
+ * Edge cases: No results, debounce search, xử lý filter đồng thời.
+ */
+
 import React, { useContext, useEffect, useState } from 'react'
 import { ShopContext } from '../contexts/ShopContext'
 import { assets } from '../assets/assets'

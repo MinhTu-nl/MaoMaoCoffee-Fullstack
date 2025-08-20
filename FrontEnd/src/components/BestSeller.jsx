@@ -9,9 +9,11 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 
 const BestSeller = () => {
+    // Lấy danh sách products từ context và lọc ra các sản phẩm bestseller
     const { products } = useContext(ShopContext)
     const [bestseller, setBestSeller] = useState([])
 
+    // Khi products thay đổi, lọc các item có flag bestseller và lấy tối đa 8 phần tử
     useEffect(() => {
         const bestProduct = products.filter((item) => (item.bestseller));
         setBestSeller(bestProduct.slice(0, 8))

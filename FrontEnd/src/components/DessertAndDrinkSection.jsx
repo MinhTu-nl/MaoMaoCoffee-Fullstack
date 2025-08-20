@@ -14,6 +14,7 @@ import coldBrew from "../assets/CB01.png"
 import { ShopContext } from '../contexts/ShopContext';
 
 const DessertAndDrinkSection = () => {
+    // Lấy hàm navigate từ context để điều hướng khi click item
     const { navigate } = useContext(ShopContext)
 
     const items = [
@@ -26,6 +27,7 @@ const DessertAndDrinkSection = () => {
         { title: 'Cold', title2: 'Brew', image: coldBrew, category: 'coldbew' },
     ];
 
+    // Khi click item: điều hướng tới trang Menu kèm query param category (nếu có)
     const handleItemClick = (category) => {
         if (category) {
             navigate(`/Menu?category=${category}`);
@@ -58,6 +60,7 @@ const DessertAndDrinkSection = () => {
         </div>
     );
 
+    // Nếu có ít nhất 2 items thì render Swiper carousel với config autoplay và breakpoints
     if (items.length >= 2) {
         return (
             <div className="py-12 md:py-16 bg-gradient-to-b from-white via-gray-50/50 to-white relative overflow-hidden">

@@ -5,13 +5,16 @@ import { ShopContext } from '../contexts/ShopContext';
 import axios from 'axios';
 
 const NotificationBell = () => {
+    // State: chứa thông báo, số chưa đọc, trạng thái dropdown, loading và detect mobile
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [showDropdown, setShowDropdown] = useState(false);
     const [loading, setLoading] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
+    // Lấy token và backendURL từ context để gọi API bảo mật
     const { token, backendURL } = useContext(ShopContext);
 
+    // Khi có token (user đăng nhập), fetch notifications
     useEffect(() => {
         if (token) {
             fetchNotifications();
@@ -27,6 +30,7 @@ const NotificationBell = () => {
         return () => mediaQuery.removeEventListener('change', handleChange);
     }, []);
 
+    // Gọi API lấy notifications của user (bảo mật bằng Bearer token)
     const fetchNotifications = async () => {
         try {
             setLoading(true);
@@ -38,6 +42,7 @@ const NotificationBell = () => {
             });
 
             if (response.data.success) {
+                // Lưu danh sách và tính số thông báo chưa đọc
                 setNotifications(response.data.notifications);
                 const unread = response.data.notifications.filter(n => !n.isRead).length;
                 setUnreadCount(unread);
@@ -49,6 +54,7 @@ const NotificationBell = () => {
         }
     };
 
+    // Gọi API đánh dấu 1 notification là đã đọc và cập nhật state local nếu thành công
     const markAsRead = async (notificationId) => {
         try {
             const response = await axios.patch(`${backendURL}/api/notification/user/${notificationId}/read`, {}, {
@@ -73,6 +79,7 @@ const NotificationBell = () => {
     };
 
     // Lock background scroll when the dropdown is open on mobile
+    // Khóa scroll nền khi dropdown mở trên mobile để tránh cuộn xung đột
     useEffect(() => {
         if (isMobile && showDropdown) {
             const originalOverflow = document.body.style.overflow;

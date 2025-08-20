@@ -5,21 +5,24 @@ import { backEndURL } from '../App'
 import { toast } from 'react-toastify'
 
 const User = () => {
+    // danh sách user
     const [users, setUsers] = useState([])
+    // index của dropdown chi tiết đang mở
     const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
+    // phân trang
     const [currentPage, setCurrentPage] = useState(1);
     const usersPerPage = 12;
     const [searchTerm, setSearchTerm] = useState('');
     // State lưu phản hồi cho từng contact (key: contactId)
     const [replyMessages, setReplyMessages] = useState({});
+    // trạng thái gửi riêng cho từng contact
     const [sendingReply, setSendingReply] = useState({});
-    // Xử lý thay đổi input phản hồi
+    // Xử lý thay đổi input phản hồi (controlled input cho từng contact)
     const handleReplyChange = (contactId, value) => {
         setReplyMessages(prev => ({ ...prev, [contactId]: value }));
     };
 
-    // Gửi phản hồi admin
-    // Gửi phản hồi admin (đúng API)
+    // Gửi phản hồi admin cho contact: PUT /api/contact/feedback/:userId/:contactId
     const handleSendReply = async (contactId, userId) => {
         const reply = replyMessages[contactId]?.trim();
         if (!reply) return;
@@ -33,7 +36,7 @@ const User = () => {
             );
             toast.success('Gửi phản hồi thành công!');
             setReplyMessages(prev => ({ ...prev, [contactId]: '' }));
-            // Sau khi gửi, cập nhật lại feedback cho contact trên UI (nếu cần)
+            // Update local UI: gán feedback vào contact tương ứng
             setUsers(prevUsers => prevUsers.map(u => {
                 if (u._id !== userId) return u;
                 return {

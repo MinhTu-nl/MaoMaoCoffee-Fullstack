@@ -6,11 +6,15 @@ import NotificationBell from './NotificationBell'
 import axios from 'axios'
 
 const Navbar = () => {
+    // visible: mobile menu open/close
     const [visible, setVisible] = useState(false)
+    // Lấy hàm và state từ ShopContext để dùng (search, cart count, navigation, token, backendURL)
     const { setShowSearch, getCartCount, navigate, token, setToken, setCartItems, backendURL } = useContext(ShopContext)
+    // State chứa số lượng feedback và orders (lấy từ API nếu có token)
     const [feedbackCount, setFeedbackCount] = useState(0)
     const [orderCount, setOrderCount] = useState(0)
 
+    // Khi token thay đổi: gọi API lấy số lượng feedback và đơn hàng (dùng Bearer token)
     useEffect(() => {
         if (!token) {
             setFeedbackCount(0)
@@ -42,6 +46,7 @@ const Navbar = () => {
         }).catch(() => setOrderCount(0))
     }, [token, backendURL])
 
+    // Logout: clear token + cart local và redirect đến Login
     const logout = () => {
         navigate('/Login')
         localStorage.removeItem('token')
@@ -50,6 +55,7 @@ const Navbar = () => {
         setVisible(false)
     }
 
+    // Khi click search icon: bật showSearch trong context và điều hướng tới /Menu
     const handleSearchClick = () => {
         setShowSearch(true)
         navigate('/Menu')

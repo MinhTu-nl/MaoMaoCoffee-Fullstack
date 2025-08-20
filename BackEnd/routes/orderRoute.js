@@ -23,4 +23,11 @@ orderRouter.patch('/payment/:orderId', adminAuth, updatePaymentStatus)
 // Cancel order (requires user authentication)
 orderRouter.delete('/:orderId', verifyToken, deleteOrder)
 
+// Ghi chú:
+// - POST /place: body chứa items/amount/address/branchId
+// - GET /all: admin lấy tất cả đơn (có thể filter status)
+// - GET /user: user lấy đơn của chính mình (dựa vào req.user)
+// - PATCH /status/:orderId: admin cập nhật trạng thái đơn
+// - DELETE /:orderId: user có thể hủy đơn (tuỳ điều kiện trong controller)
+
 export default orderRouter

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
 
+// Biểu đồ sản phẩm bán chạy, nhận dữ liệu từ server (có thể từ file hoặc database phía backend)
 const ProductsChart = ({ data }) => {
     // Đảm bảo data là array
     const productsData = Array.isArray(data) ? data : [];

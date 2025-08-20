@@ -1,8 +1,11 @@
 import jwt from 'jsonwebtoken';
 
+// Middleware xác thực JWT (phiên bản async)
+// Tương tự `auth.js` nhưng được đặt tên khác trong repo.
+// Mong đợi header: Authorization: "Bearer <token>".
 const authMiddleware = async (req, res, next) => {
     try {
-        // Get token from header
+        // Lấy token từ header
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             return res.status(401).json({
@@ -13,14 +16,15 @@ const authMiddleware = async (req, res, next) => {
 
         const token = authHeader.split(' ')[1];
 
-        // Verify token
+        // Verify token bằng secret trong env
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        // Add user info to request
+        // Gắn payload đã decode vào req.user để controller sử dụng
         req.user = decoded;
 
         next();
     } catch (error) {
+        // Ghi log để dễ debug thông tin token lỗi
         console.error('Auth middleware error:', error);
         return res.status(401).json({
             success: false,

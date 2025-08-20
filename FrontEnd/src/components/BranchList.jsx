@@ -3,39 +3,56 @@ import axios from 'axios'
 import { ShopContext } from '../contexts/ShopContext'
 
 const BranchList = ({ onSelect, selectedBranch }) => {
+    // Lấy URL backend từ context để dùng cho các request
     const { backendURL } = useContext(ShopContext)
+    // State chứa danh sách chi nhánh lấy từ server
     const [branches, setBranches] = useState([])
+    // State báo đang tải dữ liệu (spinner)
     const [loading, setLoading] = useState(true)
+    // State lưu lỗi (message) khi fetch hoặc parse thất bại
     const [error, setError] = useState(null)
+    // Từ khoá tìm kiếm dùng để lọc danh sách (tên hoặc địa điểm)
     const [searchTerm, setSearchTerm] = useState('')
+    // Điều khiển hiển thị tất cả chi nhánh hay theo trang nhỏ
     const [showAll, setShowAll] = useState(false)
+    // Số mục hiển thị khi không bật "Xem thêm"
     const ITEMS_PER_PAGE = 5
 
     useEffect(() => {
+        // Hàm fetch danh sách chi nhánh từ server và xử lý nhiều dạng response khác nhau
         const fetchBranches = async () => {
             try {
+                // Gọi API GET lấy danh sách chi nhánh
                 const response = await axios.get(backendURL + '/api/branch/list')
+                // Một số backend trả trực tiếp mảng, một số trả object với fields khác nhau
                 if (Array.isArray(response.data)) {
+                    // Trường hợp: response.data là mảng chi nhánh
                     setBranches(response.data)
                     setError(null)
                 } else if (response.data.success && Array.isArray(response.data.branches)) {
+                    // Trường hợp: response.data.branches chứa mảng chi nhánh (pattern phổ biến)
                     setBranches(response.data.branches)
                     setError(null)
                 } else if (response.data.success && Array.isArray(response.data.data)) {
+                    // Trường hợp: response.data.data chứa mảng chi nhánh
                     setBranches(response.data.data)
                     setError(null)
                 } else {
+                    // Nếu không match bất kỳ định dạng nào, coi là lỗi dữ liệu
                     setError('Định dạng dữ liệu không hợp lệ')
                     setBranches([])
                 }
             } catch (error) {
+                // Bắt lỗi mạng / exception, lưu thông báo lỗi để hiển thị
                 setError(error.message || 'Lỗi kết nối đến server')
                 setBranches([])
             } finally {
+                // Luôn kết thúc trạng thái loading dù thành công hay lỗi
                 setLoading(false)
             }
         }
 
+        // Nếu có backendURL thì gọi hàm fetch, nếu không thì báo lỗi cấu hình
         if (backendURL) {
             fetchBranches()
         } else {
@@ -44,6 +61,7 @@ const BranchList = ({ onSelect, selectedBranch }) => {
         }
     }, [backendURL])
 
+    // Lọc danh sách chi nhánh theo searchTerm (so sánh không phân biệt hoa thường với tên hoặc địa điểm)
     const filteredBranches = branches.filter(branch =>
         branch.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         branch.location.toLowerCase().includes(searchTerm.toLowerCase())
@@ -132,6 +150,7 @@ const BranchList = ({ onSelect, selectedBranch }) => {
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-center">
                                     <button
+                                        // Gọi callback onSelect (nếu có) để truyền chi nhánh đã chọn về parent
                                         onClick={() => onSelect && onSelect(branch)}
                                         className={`px-4 py-2 rounded-md text-sm font-medium transition-colors
                                             ${selectedBranch?._id === branch._id
@@ -161,6 +180,7 @@ const BranchList = ({ onSelect, selectedBranch }) => {
                                 <p className="text-sm text-gray-500 mt-1">{branch.location}</p>
                             </div>
                             <button
+                                // Gọi callback onSelect (nếu có) để truyền chi nhánh đã chọn về parent
                                 onClick={() => onSelect && onSelect(branch)}
                                 className={`px-3 py-1 rounded-md text-sm font-medium transition-colors
                                     ${selectedBranch?._id === branch._id
@@ -179,6 +199,7 @@ const BranchList = ({ onSelect, selectedBranch }) => {
             {filteredBranches.length > ITEMS_PER_PAGE && (
                 <div className="text-center mt-4">
                     <button
+                        // Chuyển trạng thái hiển thị tất cả hoặc rút gọn
                         onClick={() => setShowAll(!showAll)}
                         className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
                     >

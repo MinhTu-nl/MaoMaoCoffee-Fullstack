@@ -1,6 +1,8 @@
 import Notification from '../model/notificationModel.js';
 
-// Lấy tất cả thông báo (admin)
+// Admin endpoints
+
+// Lấy tất cả thông báo (admin) - sắp xếp theo createdAt giảm dần
 export const getAllNotifications = async (req, res) => {
     try {
         const notifications = await Notification.find().sort({ createdAt: -1 });
@@ -22,7 +24,7 @@ export const createNotification = async (req, res) => {
     }
 };
 
-// Đánh dấu đã đọc (admin)
+// Đánh dấu một thông báo đã đọc (admin)
 export const markAsRead = async (req, res) => {
     try {
         const { id } = req.params;
@@ -34,7 +36,7 @@ export const markAsRead = async (req, res) => {
     }
 };
 
-// Xóa thông báo (admin)
+// Xóa một thông báo (admin)
 export const deleteNotification = async (req, res) => {
     try {
         const { id } = req.params;
@@ -46,7 +48,7 @@ export const deleteNotification = async (req, res) => {
     }
 };
 
-// Đánh dấu tất cả đã đọc (admin)
+// Đánh dấu tất cả thông báo chưa đọc là đã đọc (admin)
 export const markAllAsRead = async (req, res) => {
     try {
         // Sử dụng $set để đảm bảo update đúng chuẩn MongoDB
@@ -79,12 +81,14 @@ export const getUnreadCount = async (req, res) => {
     }
 };
 
-// User lấy notifications liên quan đến mình
+// User endpoints
+
+// User lấy notifications liên quan đến mình (dựa trên data.userId)
 export const getUserNotifications = async (req, res) => {
     try {
         const userId = req.user.id;
 
-        // Lấy notifications có data.userId trùng với userId của user hiện tại
+        // Lấy notifications có data.userId trùng với userId hiện tại
         const notifications = await Notification.find({
             'data.userId': userId
         }).sort({ createdAt: -1 });
@@ -102,7 +106,7 @@ export const getUserNotifications = async (req, res) => {
     }
 };
 
-// User đánh dấu notification đã đọc
+// User đánh dấu một thông báo của mình là đã đọc
 export const markUserNotificationAsRead = async (req, res) => {
     try {
         const userId = req.user.id;

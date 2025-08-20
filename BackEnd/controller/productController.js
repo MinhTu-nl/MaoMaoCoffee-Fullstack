@@ -13,13 +13,14 @@ const addProduct = async (req, res) => {
             })
         }
 
-        // Parse and validate price object
+        // --- Xử lý price ---
+        // price có thể gửi dưới dạng JSON string hoặc object. Mục tiêu là chuyển về Map để lưu vào schema.
         let priceMap
         try {
             const priceObj = typeof price === 'string' ? JSON.parse(price) : price
             priceMap = new Map(Object.entries(priceObj))
 
-            // Validate each price is a positive number
+            // Validate mỗi giá phải là số dương
             for (const [size, value] of priceMap) {
                 const numValue = Number(value)
                 if (isNaN(numValue) || numValue <= 0) {
@@ -28,6 +29,7 @@ const addProduct = async (req, res) => {
                         message: `Invalid price for size ${size}`
                     })
                 }
+                // Lưu lại giá đã chuyển sang number
                 priceMap.set(size, numValue)
             }
         } catch (error) {
@@ -37,7 +39,8 @@ const addProduct = async (req, res) => {
             })
         }
 
-        // Handle images
+        // --- Ảnh ---
+        // Kiểm tra files từ multipart/form-data (multer) phải tồn tại
         if (!req.files || Object.keys(req.files).length === 0) {
             return res.status(400).json({
                 success: false,
@@ -52,7 +55,7 @@ const addProduct = async (req, res) => {
             }
         }
 
-        // Upload images to Cloudinary
+        // Upload lên Cloudinary và lấy secure_url để lưu
         const imageUrls = await Promise.all(
             images.map(async (image) => {
                 try {
@@ -68,7 +71,7 @@ const addProduct = async (req, res) => {
             })
         )
 
-        // Parse sizes if it's a string
+        // Xử lý sizes (có thể truyền là JSON string)
         let parsedSizes
         try {
             parsedSizes = typeof sizes === 'string' ? JSON.parse(sizes) : sizes
@@ -85,7 +88,7 @@ const addProduct = async (req, res) => {
         const productData = {
             name,
             description,
-            price: priceMap,
+            price: priceMap, // Lưu Map vào DB (schema chấp nhận Map)
             category,
             subCategory,
             bestseller: bestseller === 'true',
@@ -97,6 +100,7 @@ const addProduct = async (req, res) => {
         const product = new ProductModel(productData)
         await product.save()
 
+        // Khi trả về cho client, chuyển Map -> plain object để dễ đọc
         res.status(201).json({
             success: true,
             message: 'Product added successfully',

@@ -23,6 +23,7 @@ const ProductDetailModal = ({ isOpen, onClose, product }) => {
                     {/* Left Side - Images */}
                     <div className="w-1/2">
                         <div className="space-y-3">
+                            {/* Hiển thị danh sách ảnh sản phẩm (lấy từ file hoặc server) */}
                             {product.images?.map((image, index) => (
                                 <div key={index} className="relative w-full">
                                     <img

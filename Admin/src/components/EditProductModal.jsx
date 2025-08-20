@@ -31,9 +31,11 @@ const EditProductModal = ({ product, onClose, onSave, token }) => {
         }));
     };
 
+    // Xử lý submit form: tạo FormData để gửi dữ liệu sản phẩm lên server (có thể bao gồm file ảnh nếu có)
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            // Tạo FormData để gửi dữ liệu dạng multipart/form-data
             const formData = new FormData();
             formData.append('name', name);
             formData.append('description', description);
@@ -43,6 +45,7 @@ const EditProductModal = ({ product, onClose, onSave, token }) => {
             formData.append('price', JSON.stringify(price));
             formData.append('bestseller', bestseller);
 
+            // Gửi request cập nhật sản phẩm (có thể kèm file nếu có)
             await axios.put(
                 backEndURL + `/api/product/update/${product._id}`,
                 formData,

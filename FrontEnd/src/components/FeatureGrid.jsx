@@ -35,6 +35,7 @@ const features = [
     },
 ];
 
+// FeatureGrid: dữ liệu features được định nghĩa trên file và render bằng map (tĩnh, không side-effect)
 const FeatureGrid = () => (
     <section className="w-full grid grid-cols-1 md:grid-cols-4 text-center">
         {features.map((f, i) => (

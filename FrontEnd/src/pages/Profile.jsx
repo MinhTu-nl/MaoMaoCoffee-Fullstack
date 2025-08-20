@@ -1,3 +1,12 @@
+/*
+ * Page: Profile.jsx
+ * Purpose: Trang hồ sơ người dùng — thông tin cá nhân, địa chỉ, lịch sử đơn.
+ * Main behavior: Fetch/update profile, change password, show order history.
+ * Inputs: Auth token, user data.
+ * Outputs: PUT/PATCH update profile, display orders.
+ * Edge cases: Auth required, validation, bảo mật cho fields nhạy cảm.
+ */
+
 import React, { useContext, useEffect, useState } from 'react';
 import { ShopContext } from '../contexts/ShopContext';
 import { assets } from '../assets/assets';

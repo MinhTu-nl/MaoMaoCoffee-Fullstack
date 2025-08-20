@@ -1,3 +1,12 @@
+/*
+ * Page: PlaceOrder.jsx
+ * Purpose: Checkout / Tạo đơn hàng — thu thập địa chỉ, phương thức thanh toán, xác nhận đơn.
+ * Main behavior: Validate address/payment, tính phí ship, tạo order via API, xử lý redirect sau thanh toán.
+ * Inputs: Cart data, user info, payment method.
+ * Outputs: POST create order, redirect tới success/receipt.
+ * Edge cases: Payment fail, race condition (out-of-stock), duplicate submits.
+ */
+
 import React, { useContext, useState, useEffect } from 'react'
 import { ShopContext } from '../contexts/ShopContext'
 import { assets } from '../assets/assets'

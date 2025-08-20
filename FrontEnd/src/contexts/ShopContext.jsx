@@ -29,6 +29,10 @@ const ShopContextProvider = (props) => {
     }, [cartItems]);
 
     // CART PAGE
+    // Thêm sản phẩm vào giỏ hàng local (và đồng bộ lên backend nếu người dùng đã đăng nhập)
+    // - itemId: _id của sản phẩm
+    // - sizes: kích cỡ/variant của sản phẩm
+    // Hành vi: cập nhật state `cartItems`, lưu vào localStorage qua effect, rồi gọi API /api/cart/add khi có token
     const addToCart = async (itemId, sizes) => {
         try {
             // Validate input
@@ -101,6 +105,11 @@ const ShopContextProvider = (props) => {
         }
     }
 
+    // Cập nhật số lượng cho một sản phẩm trong giỏ hàng (theo itemId và sizes)
+    // - itemId: _id của sản phẩm
+    // - sizes: kích cỡ/variant của sản phẩm
+    // - quantity: số lượng mới (0 để xoá mục đó)
+    // Hành vi: sửa state `cartItems`, lưu vào localStorage qua effect, rồi gọi API /api/cart/update khi có token
     const updateQuantity = async (itemId, sizes, quantity) => {
         try {
             // Validate input
@@ -179,6 +188,8 @@ const ShopContextProvider = (props) => {
         }
     }
 
+    // Tính tổng số lượng mục trong giỏ hàng (tổng theo tất cả sizes cho mỗi sản phẩm)
+    // Trả về số nguyên >= 0. Bỏ qua mục không hợp lệ hoặc sản phẩm không tồn tại trong `products`.
     const getCartCount = () => {
         try {
             let totalCount = 0;
@@ -219,6 +230,9 @@ const ShopContextProvider = (props) => {
         }
     }
 
+    // Tính tổng tiền của giỏ hàng dựa trên `cartItems` và `products`
+    // - Hỗ trợ price có thể là object (theo size) hoặc số đơn giá chung
+    // - Trả về tổng tiền (số nguyên)
     const getCartAmount = () => {
         let totalAmount = 0
 
@@ -244,6 +258,8 @@ const ShopContextProvider = (props) => {
 
 
     // USER
+    // Lấy giỏ hàng của người dùng từ backend và cập nhật `cartItems` local
+    // Hành vi: chỉ gọi khi có token; validate dữ liệu trả về, lọc những sản phẩm không tồn tại trong `products`
     const getUserCart = async () => {
         try {
             // Check if user is logged in
@@ -297,6 +313,8 @@ const ShopContextProvider = (props) => {
         }
     }
 
+    // Lấy danh sách sản phẩm từ backend (endpoint /api/product/list) và set vào state `products`
+    // Sử dụng limit lớn để lấy nhiều sản phẩm; báo lỗi bằng toast nếu không thành công
     const getProductData = async () => {
         try {
             const res = await axios.get(backendURL + `/api/product/list?limit=1000`)

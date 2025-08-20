@@ -23,7 +23,7 @@ import desert_icon from "./desert_icon.png"
 import drink_icon from "./drink_icon.png"
 import user_icon from "./user_icon.png"
 import newbox from "./newbox.jpg"
-import banner_icon from './banner_icon.png'
+import banner_icon from './hero_img.png'
 import notification_icon from "./notification_icon.png"
 
 import cb1 from './CB01.png'

@@ -4,8 +4,10 @@ import { Link } from 'react-router-dom';
 import '../../src/index.css'
 
 const ProductItem = ({ id, images, name, price, category }) => {
+    // Lấy tiền tệ từ context để hiển thị cùng giá
     const { currency } = useContext(ShopContext);
 
+    // Chuẩn hoá giá hiển thị: hỗ trợ price là object (theo size) hoặc number
     const getDisplayPrice = () => {
         if (typeof price === 'object') {
             // If price is an object, show the first available price

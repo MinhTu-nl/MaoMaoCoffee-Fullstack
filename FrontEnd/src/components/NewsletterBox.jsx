@@ -3,9 +3,11 @@ import { toast } from 'react-toastify'
 import { assets } from '../assets/assets'
 
 const NewsletterBox = () => {
+    // Form state cho email đăng ký và state isSubmitting để disable button khi đang gửi
     const [email, setEmail] = useState('')
     const [isSubmitting, setIsSubmitting] = useState(false)
 
+    // Xử lý submit form: ở đây giả lập API call bằng timeout, sau đó reset form và thông báo
     const onSubmitHandler = async (event) => {
         event.preventDefault();
         setIsSubmitting(true)

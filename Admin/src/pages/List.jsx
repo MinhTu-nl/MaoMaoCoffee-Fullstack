@@ -8,14 +8,22 @@ import { assets } from '../assets/assets'
 
 const List = ({ token }) => {
 
+    // state chứa danh sách sản phẩm
     const [list, setList] = useState([])
+    // product đang mở modal edit
     const [editingProduct, setEditingProduct] = useState(null);
+    // product đang xem chi tiết (modal)
     const [viewingProduct, setViewingProduct] = useState(null);
+    // tìm kiếm theo tên
     const [searchTerm, setSearchTerm] = useState("");
+    // lọc theo category / subCategory
     const [categoryFilter, setCategoryFilter] = useState('');
     const [subCategoryFilter, setSubCategoryFilter] = useState('');
+    // cache review cho từng productId: reviews[productId] = [..]
     const [reviews, setReviews] = useState({});
+    // trạng thái hiển thị phần review cho từng productId
     const [showReviews, setShowReviews] = useState({});
+    // số lượng review cho từng productId
     const [reviewCounts, setReviewCounts] = useState({});
 
     // Danh sách các loại sản phẩm với tên hiển thị đẹp
@@ -30,6 +38,7 @@ const List = ({ token }) => {
         { value: 'toast', label: 'Bánh nướng' }
     ];
 
+    // Lấy danh sách sản phẩm (limit lớn để lấy hết)
     const fetchList = async () => {
         try {
             const res = await axios.get(backEndURL + `/api/product/list?limit=1000`, {
@@ -47,6 +56,7 @@ const List = ({ token }) => {
         }
     }
 
+    // Lấy số lượng review cho tất cả sản phẩm
     const fetchReviewCounts = async () => {
         try {
             const res = await axios.get(backEndURL + `/api/review/count-all`)
@@ -56,6 +66,7 @@ const List = ({ token }) => {
         }
     }
 
+    // Lấy review cho 1 product và cache vào `reviews[productId]`
     const fetchReviews = async (productId) => {
         try {
             const res = await axios.get(backEndURL + `/api/review/product/${productId}`)
@@ -72,6 +83,7 @@ const List = ({ token }) => {
         }
     }
 
+    // Xóa sản phẩm (confirm browser), gọi API DELETE kèm token
     const removeProduct = async (_id) => {
         if (!window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
             return;
@@ -95,10 +107,12 @@ const List = ({ token }) => {
         }
     }
 
+    // Mở modal sửa sản phẩm
     const handleEdit = (item) => {
         setEditingProduct(item)
     }
 
+    // Toggle hiển thị review cho product: nếu chưa có thì fetch trước
     const toggleReviews = (productId) => {
         if (!showReviews[productId]) {
             fetchReviews(productId);
@@ -109,12 +123,13 @@ const List = ({ token }) => {
         }));
     }
 
+    // load danh sách và số review khi component mount
     useEffect(() => {
         fetchList()
         fetchReviewCounts()
     }, [])
 
-    // Tính danh sách đã lọc
+    // Tính danh sách đã lọc theo search + filter
     const filteredList = list
         .filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()))
         .filter(item => !categoryFilter || item.category === categoryFilter)

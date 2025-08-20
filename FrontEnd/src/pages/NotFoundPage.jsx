@@ -1,3 +1,12 @@
+/*
+ * Page: NotFoundPage.jsx
+ * Purpose: Trang 404 — hiển thị khi route không khớp.
+ * Main behavior: Hiển thị message, link quay về trang chủ hoặc trang trước.
+ * Inputs: Optional attempted route.
+ * Outputs: Giao diện 404.
+ * Edge cases: Giữ layout nhất quán, server-side render trả status 404 nếu cần.
+ */
+
 import React, { useContext } from 'react';
 import { ShopContext } from '../contexts/ShopContext';
 

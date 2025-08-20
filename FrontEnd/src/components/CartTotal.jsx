@@ -3,8 +3,10 @@ import { ShopContext } from '../contexts/ShopContext'
 import Title from './Title'
 
 const CartTotal = ({ items }) => {
+    // Lấy các giá trị và hàm tính từ context (dùng cho tính toán tổng, tiền ship, và hiển thị tiền tệ)
     const { currency, delivery_fee, getCartAmount, products } = useContext(ShopContext)
 
+    // Hàm lấy giá hiển thị của product dựa trên productId và size (hỗ trợ price là object theo size hoặc số đơn)
     const getProductDisplayPrice = (productId, size) => {
         const product = products.find(p => p._id === productId);
         if (!product) return 0;
@@ -45,7 +47,7 @@ const CartTotal = ({ items }) => {
                 </div>
                 <hr />
                 <div className='flex justify-between'>
-                    <p>Phí ship: </p>
+                    <p>Phí (đã bao gồm VAT): </p>
                     <p>{delivery_fee} {currency}</p>
                 </div>
                 <hr />

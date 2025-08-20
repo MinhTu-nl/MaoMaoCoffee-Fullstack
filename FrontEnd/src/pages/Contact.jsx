@@ -1,3 +1,12 @@
+/*
+ * Page: Contact.jsx
+ * Purpose: Trang liên hệ — form gửi phản hồi hoặc yêu cầu hỗ trợ.
+ * Main behavior: Form validation (name/email/message), submit POST tới API, show success/error feedback.
+ * Inputs: Các trường form, có thể captcha.
+ * Outputs: Yêu cầu HTTP, thông báo trạng thái cho người dùng.
+ * Edge cases: Validation, lỗi mạng, rate-limiting/duplicate submits.
+ */
+
 import React, { useContext, useState } from 'react'
 import { assets } from '../assets/assets'
 import { ShopContext } from '../contexts/ShopContext';
