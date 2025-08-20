@@ -21,6 +21,8 @@ const List = ({ token }) => {
     const [subCategoryFilter, setSubCategoryFilter] = useState('');
     // cache review cho từng productId: reviews[productId] = [..]
     const [reviews, setReviews] = useState({});
+    // checkbox: chỉ hiển thị sản phẩm có đánh giá
+    const [onlyWithReviews, setOnlyWithReviews] = useState(false);
     // trạng thái hiển thị phần review cho từng productId
     const [showReviews, setShowReviews] = useState({});
     // số lượng review cho từng productId
@@ -135,6 +137,12 @@ const List = ({ token }) => {
         .filter(item => !categoryFilter || item.category === categoryFilter)
         .filter(item => !subCategoryFilter || item.subCategory === subCategoryFilter);
 
+    // Nếu checkbox bật, chỉ giữ sản phẩm có review (>0) dựa trên reviewCounts cache
+    const filteredListWithReviews = filteredList.filter(item => {
+        if (!onlyWithReviews) return true
+        return (reviewCounts[item._id] ?? 0) > 0
+    })
+
     return (
         <div className="p-4 sm:p-6">
             {/* Header với thống kê */}
@@ -198,6 +206,23 @@ const List = ({ token }) => {
                             ))}
                         </select>
                     </div>
+
+                    {/* Styled toggle: chỉ show sản phẩm có review */}
+                    <div className='sm:w-40 flex items-center'>
+                        <label className='flex items-center cursor-pointer select-none'>
+                            <div className='relative'>
+                                <input
+                                    type='checkbox'
+                                    className='sr-only'
+                                    checked={onlyWithReviews}
+                                    onChange={e => setOnlyWithReviews(e.target.checked)}
+                                />
+                                <div className={`block w-11 h-6 rounded-full transition-colors ${onlyWithReviews ? 'bg-purple-600' : 'bg-gray-300'}`}></div>
+                                <div className={`dot absolute left-1 top-1 w-4 h-4 rounded-full bg-white transition-transform ${onlyWithReviews ? 'transform translate-x-5' : ''}`}></div>
+                            </div>
+                            <span className='ml-3 text-sm text-gray-700'>Review</span>
+                        </label>
+                    </div>
                 </div>
             </div>
 
@@ -218,7 +243,7 @@ const List = ({ token }) => {
                 />
             )}
 
-            <p className='text-xs sm:text-sm text-gray-500 mb-4'>Số lượng sản phẩm hiện có: {filteredList.length}</p>
+            <p className='text-xs sm:text-sm text-gray-500 mb-4'>Số lượng sản phẩm hiện có: {filteredListWithReviews.length}</p>
 
             {/* Danh sách sản phẩm */}
             <div className='space-y-3'>
@@ -233,12 +258,12 @@ const List = ({ token }) => {
                 </div>
 
                 {/* Data */}
-                {filteredList.length === 0 ? (
+                {filteredListWithReviews.length === 0 ? (
                     <div className="text-center py-8 bg-gray-50 rounded-lg">
                         <p className="text-gray-500">Không tìm thấy sản phẩm nào</p>
                     </div>
                 ) : (
-                    filteredList.map((item, index) => (
+                    filteredListWithReviews.map((item, index) => (
                         <div key={index} className="bg-white rounded-lg shadow-sm overflow-hidden">
                             {/* Product Info - Mobile */}
                             <div className="sm:hidden p-3 border-b">

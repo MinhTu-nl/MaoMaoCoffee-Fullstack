@@ -9,6 +9,8 @@ const Order = ({ token }) => {
     const currency = 'VNĐ'
     // danh sách đơn hàng
     const [orders, setOrders] = useState([])
+    // time filter state: 'All', '24h', '7d', '30d', 'thisMonth'
+    const [timeFilter, setTimeFilter] = useState('All')
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
 
@@ -67,6 +69,29 @@ const Order = ({ token }) => {
     useEffect(() => {
         fetchAllOrders()
     }, [token])
+
+    // Helper to check if an order date falls within the selected time filter
+    const isInTimeRange = (orderDate, filter) => {
+        if (!orderDate) return false
+        const d = new Date(orderDate)
+        if (isNaN(d)) return false
+        const now = new Date()
+        const diff = now - d
+        switch (filter) {
+            case '24h':
+                return diff <= 24 * 60 * 60 * 1000
+            case '7d':
+                return diff <= 7 * 24 * 60 * 60 * 1000
+            case 'thisMonth':
+                return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()
+            case 'All':
+            default:
+                return true
+        }
+    }
+
+    // Derived filtered list according to selected time filter
+    const filteredOrders = orders.filter(o => isInTimeRange(o.date, timeFilter))
 
     const allowedStatuses = [
         'Order Placed',
@@ -141,9 +166,11 @@ const Order = ({ token }) => {
 
     // Derived metrics for stats
     const totalOrders = orders.length
-    const paidCount = orders.filter(o => o.payment).length
-    const unpaidCount = totalOrders - paidCount
-    const paidRate = totalOrders ? Math.round((paidCount / totalOrders) * 100) : 0
+    // use filteredOrders for stats so the cards show the currently filtered dataset
+    const totalOrdersFiltered = filteredOrders.length
+    const paidCount = filteredOrders.filter(o => o.payment).length
+    const unpaidCount = totalOrdersFiltered - paidCount
+    const paidRate = totalOrdersFiltered ? Math.round((paidCount / totalOrdersFiltered) * 100) : 0
 
     if (loading) {
         return (
@@ -169,11 +196,29 @@ const Order = ({ token }) => {
             {/* Header + Payment stats in one row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
                 <div className="rounded-lg border border-gray-200 bg-white p-4">
-                    <div className="flex items-center gap-3">
-                        <img src={assets.order_icon} alt="Quản lý đơn hàng" className="h-8 w-8" />
-                        <div>
-                            <h1 className="text-2xl font-bold text-blue-950">Quản lý đơn hàng</h1>
-                            <p className="text-sm text-gray-600">Theo dõi, cập nhật trạng thái và thanh toán</p>
+                    <div className="flex items-center gap-3 justify-between">
+                        <div className="flex items-center gap-3">
+                            <img src={assets.order_icon} alt="Quản lý đơn hàng" className="h-8 w-8" />
+                            <div>
+                                <h1 className="text-xl font-bold text-blue-950">Quản lý đơn hàng</h1>
+                                <p className="text-sm text-gray-600">Theo dõi, cập nhật trạng thái và thanh toán</p>
+                            </div>
+                        </div>
+
+                        {/* Time filter select */}
+                        <div className="ml-4">
+                            <label htmlFor="timeFilter" className="sr-only">Lọc theo thời gian</label>
+                            <select
+                                id="timeFilter"
+                                value={timeFilter}
+                                onChange={(e) => setTimeFilter(e.target.value)}
+                                className="p-2 border border-gray-300 rounded-md bg-white text-sm text-gray-800"
+                            >
+                                <option value="All">Tất cả</option>
+                                <option value="24h">Khoảng 24 giờ qua</option>
+                                <option value="7d">1 tuần</option>
+                                <option value="thisMonth">Tháng này</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -191,12 +236,12 @@ const Order = ({ token }) => {
                 </div>
             </div>
             <div className="space-y-4">
-                {orders.length === 0 ? (
+                {filteredOrders.length === 0 ? (
                     <div className="text-center text-blue-950 py-8 text-lg">
                         Không có đơn hàng nào
                     </div>
                 ) : (
-                    orders.map((order, index) => (
+                    filteredOrders.map((order, index) => (
                         order && order.items && Array.isArray(order.items) ? (
                             <div
                                 key={order._id || index}
